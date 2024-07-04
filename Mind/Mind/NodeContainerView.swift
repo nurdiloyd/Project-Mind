@@ -3,7 +3,9 @@ import PhotosUI
 import CoreData
 
 struct NodeContainerView: View {
-    @ObservedObject var node: NodeEntity
+    //@ObservedObject var node: NodeData
+    let node: NodeData
+    
     @State private var selectedImage: NSImage? = nil
     @State private var hasImage: Bool = false
     @State private var isHovering: Bool = false
@@ -64,7 +66,7 @@ struct NodeContainerView: View {
                 updateLastPosition(node)
             }
             
-            if let children = node.children as? Set<NodeEntity>, children.count > 0 {
+            if let children = node.children as? Set<NodeData>, children.count > 0 {
                 VStack(alignment: .leading) {
                     ForEach(Array(children), id: \.self) { child in
                         NodeContainerView(node: child)
@@ -97,19 +99,19 @@ struct NodeContainerView: View {
         moveNode(node, deltaX: offset.width, deltaY: offset.height)
     }
 
-    private func moveNode(_ node: NodeEntity, deltaX: Double, deltaY: Double) {
-        let newX = node.lastX + deltaX
-        let newY = node.lastY + deltaY
+    private func moveNode(_ node: NodeData, deltaX: Double, deltaY: Double) {
+        let newX = node.lastPositionX + deltaX
+        let newY = node.lastPositionY + deltaY
+
         setPosition(node, positionX: newX, positionY: newY)
-        
-        if let children = node.children as? Set<NodeEntity> {
+        if let children = node.children as? Set<NodeData> {
             for child in children {
                 moveNode(child, deltaX: deltaX, deltaY: deltaY)
             }
         }
     }
 
-    private func setPosition(_ node: NodeEntity, positionX: CGFloat, positionY: CGFloat) {
+    private func setPosition(_ node: NodeData, positionX: CGFloat, positionY: CGFloat) {
         let minX = containerWidth / 2 +  (node.parent != nil ? (node.parent!.positionX + containerWidth / 2 + 10) : 0)
         let maxX = Double(BoardView.boardSize - containerWidth / 2)
         let minY = containerHeight / 2
@@ -151,18 +153,20 @@ struct NodeContainerView: View {
     }
     
     private func saveNode() {
+        /*
         do {
             try node.managedObjectContext?.save()
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        }*/
     }
 
     private func deleteNode() {
         withAnimation {
             isDeleting = true
         }
+        /*
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             viewContext.delete(node)
             do {
@@ -171,10 +175,11 @@ struct NodeContainerView: View {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
-        }
+        }*/
     }
 
     private func addChildNode() {
+        /*
         withAnimation {
             let newChildNode = NodeEntity(context: viewContext)
             newChildNode.id = UUID()
@@ -191,13 +196,13 @@ struct NodeContainerView: View {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
-        }
+        }*/
     }
     
-    private func updateLastPosition(_ node: NodeEntity) {
-        node.lastX = node.positionX
-        node.lastY = node.positionY
-        if let children = node.children as? Set<NodeEntity> {
+    private func updateLastPosition(_ node: NodeData) {
+        node.lastPositionX = node.positionX
+        node.lastPositionY = node.positionY
+        if let children = node.children as? Set<NodeData> {
             for child in children {
                 updateLastPosition(child)
             }

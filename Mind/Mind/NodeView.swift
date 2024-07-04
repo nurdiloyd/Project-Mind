@@ -3,7 +3,9 @@ import SwiftUI
 struct NodeView: View {
     @State private var isEditing: Bool = false
     @Binding var customImage: NSImage?
-    @ObservedObject var node: NodeEntity
+//    @ObservedObject var node: NodeEntity
+    let node: NodeData
+
     @State var inputText: String = ""
 
     public static let titleHeight: CGFloat = 30
@@ -30,12 +32,12 @@ struct NodeView: View {
                     .textFieldStyle(PlainTextFieldStyle())
                     .frame(height: NodeView.titleHeight)
                 } else {
-                    Text(node.title ?? "New Node")
+                    Text(node.title)
                         .foregroundColor(Color(NSColor.windowFrameTextColor))
                         .font(.headline)
                         .frame(height: NodeView.titleHeight)
                         .onTapGesture(count: 1) {
-                            inputText = node.title ?? ""
+                            inputText = node.title
                             isEditing = true
                         }
                 }
@@ -56,17 +58,11 @@ struct NodeView: View {
     }
     
     private func saveNode() {
-        do {
+        /*do {
             try node.managedObjectContext?.save()
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-    }
-}
-
-struct NodeView_Previews: PreviewProvider {
-    static var previews: some View {
-        NodeView(customImage: .constant(nil), node: NodeEntity(context: PersistenceController.preview.container.viewContext))
+        }*/
     }
 }

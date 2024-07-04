@@ -75,15 +75,6 @@ struct ContentView: View
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
     
-    private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat
-    {
-        let minEdgeLength = min(geometrySize.width, geometrySize.height)
-        let minScale: CGFloat = minEdgeLength / BoardView.boardSize
-        let maxScale: CGFloat = minEdgeLength / self.boxSize
-        let newScale = value.clamped(to: minScale...maxScale)
-        return newScale
-    }
-
     var body: some View
     {
         GeometryReader
@@ -128,13 +119,19 @@ struct ContentView: View
             )
         }
     }
+    
+    private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat
+    {
+        let minEdgeLength = min(geometrySize.width, geometrySize.height)
+        let minScale: CGFloat = minEdgeLength / BoardView.boardSize
+        let maxScale: CGFloat = minEdgeLength / self.boxSize
+        let newScale = value.clamped(to: minScale...maxScale)
+        return newScale
+    }
 }
 
-struct HelloWorldView_Previews: PreviewProvider
-{
-    static var previews: some View
-    {
-        ContentView()
-    }
+#Preview {
+    ContentView()
+        .modelContainer(for: [NodeData.self])
 }
 

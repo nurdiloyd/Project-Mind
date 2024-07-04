@@ -5,17 +5,21 @@ import Foundation
 final class NodeData {
     @Attribute(.unique) var id: UUID
     var title: String
-    var position: CGSize
-    var lastPosition: CGSize
+    var positionX: Double
+    var positionY: Double
+    var lastPositionX: Double
+    var lastPositionY: Double
     var imageName: String?
     var parent: NodeData?
     var children: [NodeData] = []
 
-    init(id: UUID = UUID(), title: String, position: CGSize, imageName: String? = nil, parent: NodeData? = nil) {
+    init(id: UUID = UUID(), title: String, positionX: Double, positionY: Double, imageName: String? = nil, parent: NodeData? = nil) {
         self.id = id
         self.title = title
-        self.position = position
-        self.lastPosition = position
+        self.positionX = positionX
+        self.positionY = positionY
+        self.lastPositionX = positionX
+        self.lastPositionY = positionY
         self.imageName = imageName
         self.parent = parent
     }

@@ -33,12 +33,12 @@ struct Project_MindApp: App {
 }
 */
 struct MindApp: App {
-   // let persistenceController = PersistenceController.shared
-    
     var body: some Scene
     {
         WindowGroup
         {
+            let _ = UserDefaults.standard.set(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
+            let _ = print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path)
             ContentView()
                 .onAppear
                 {
@@ -57,9 +57,7 @@ struct MindApp: App {
                         }
                     }
                 }
-            //AppWindow(content: ContentView())
-              //  .environment(\.managedObjectContext, persistenceController.container.viewContext)
-        //)
         }
+        .modelContainer(for: [NodeData.self])
     }
 }

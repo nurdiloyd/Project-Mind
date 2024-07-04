@@ -1,15 +1,19 @@
 import SwiftUI
-import CoreData
+import SwiftData
 
 struct BoardView: View {
+    @Query() private var nodes: [NodeData]
+    @Environment(\.modelContext) private var context
+
     @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
+  /*  @FetchRequest(
         entity: NodeEntity.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \NodeEntity.title, ascending: true)]
     ) private var nodes: FetchedResults<NodeEntity>
-    static var boardSize: CGFloat = 10000
+   */
+   static var boardSize: CGFloat = 10000
 
-    var rootNodes: [NodeEntity] {
+    var rootNodes: [NodeData] {
         return nodes.filter { $0.parent == nil }
     }
 
@@ -18,7 +22,9 @@ struct BoardView: View {
             ZStack {
                 VStack {
                     Button(action: {
-                        addNode(posX: geometry.size.width / 2, posY: geometry.size.height / 2 - 200)
+                        var positionX = geometry.size.width / 2
+                        var positionY = geometry.size.height / 2 - 200
+                        addNode(positionX: positionX, positionY: positionY)
                     }) {
                         Label("Add Node", systemImage: "plus.circle")
                             .bold()
@@ -29,7 +35,7 @@ struct BoardView: View {
                     .buttonBorderShape(.roundedRectangle)
 
                     Button(action: {
-                        clearBoard()
+                        //clearBoard()
                     }) {
                         Label("Clear Board", systemImage: "trash")
                             .bold()
@@ -43,32 +49,31 @@ struct BoardView: View {
                 .frame(width: 150)
                 .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 
+                ForEach(nodes, id: \.id) { node in
+                    NodeContainerView(node: node)
+                }
+                
+                /*
                 ForEach(rootNodes) { rootNode in
                     NodeContainerView(node: rootNode)
-                }
+                }*/
             }
             .padding()
         }
     }
     
-    private func addNode(posX: CGFloat, posY: CGFloat) {
+    private func addNode(positionX: CGFloat, positionY: CGFloat) {
         withAnimation {
-            let newNode = NodeEntity(context: viewContext)
-            newNode.id = UUID()
-            newNode.title = "New Node"
-            newNode.positionX = posX
-            newNode.positionY = posY
-            newNode.imageName = ""
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+        }
+        let newNode = NodeData(title: "Title", positionX: positionX, positionY: positionY, imageName: "")
+        context.insert(newNode)
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
         }
     }
-
+/*
     private func clearBoard() {
         for node in nodes {
             viewContext.delete(node)
@@ -80,6 +85,7 @@ struct BoardView: View {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
+ */
 }
 
 struct BoardView_Previews: PreviewProvider {
