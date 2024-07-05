@@ -95,6 +95,8 @@ struct ContentView: View {
                     .background(Color(NSColor.windowBackgroundColor))
                     .onAppear {
                         let minEdgeLength = min(geometry.size.width, geometry.size.height)
+                        //self.scale = minEdgeLength / self.size
+                        //self.lastScaleValue = self.scale
                     }
                     .onChange(of: geometry.size) { _, newSize in
                         self.scale = self.getScale(for: newSize, value: self.scale)
