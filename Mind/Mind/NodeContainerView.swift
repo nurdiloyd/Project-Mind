@@ -3,6 +3,7 @@ import PhotosUI
 import CoreData
 
 struct NodeContainerView: View {
+    @Environment(\.modelContext) private var context
     let node: NodeData
     
     @State private var selectedImage: NSImage? = nil
@@ -18,7 +19,7 @@ struct NodeContainerView: View {
     var body: some View {
         HStack {
             VStack(spacing: stackSpace) {
-                if isHovering {
+                //if isHovering {
                     NodeContainerTopView(
                         importImage: { data in
                             importImage(data: data)
@@ -31,24 +32,24 @@ struct NodeContainerView: View {
                         },
                         hasImage: $hasImage
                     )
-                    .opacity(isHovering ? 1 : 0)
-                    .animation(.easeInOut, value: isHovering)
-                }
+                    //.opacity(isHovering ? 1 : 0)
+                    //.animation(.easeInOut, value: isHovering)
+                //}
                 
                 NodeView(
                     customImage: $selectedImage,
                     node: node
                 )
                 
-                if isHovering {
+                //if isHovering {
                     NodeContainerBottomView(
                         buttonAction: {
                             deleteNode()
                         }
                     )
-                    .opacity(isHovering ? 1 : 0)
-                    .animation(.easeInOut, value: isHovering)
-                }
+                    //.opacity(isHovering ? 1 : 0)
+                    //.animation(.easeInOut, value: isHovering)
+                //}
             }
             .onHover { hovering in
                 withAnimation {
@@ -65,7 +66,7 @@ struct NodeContainerView: View {
                 updateLastPosition(node)
             }
             
-            if let children = node.children as? Set<NodeData>, children.count > 0 {
+            if let children = node.children as? [NodeData], children.count > 0 {
                 VStack(alignment: .leading) {
                     ForEach(Array(children), id: \.self) { child in
                         NodeContainerView(node: child)
@@ -103,7 +104,7 @@ struct NodeContainerView: View {
         let newY = node.lastPositionY + deltaY
 
         setPosition(node, positionX: newX, positionY: newY)
-        if let children = node.children as? Set<NodeData> {
+        if let children = node.children as? [NodeData] {
             for child in children {
                 moveNode(child, deltaX: deltaX, deltaY: deltaY)
             }
@@ -178,30 +179,28 @@ struct NodeContainerView: View {
     }
 
     private func addChildNode() {
-        /*
         withAnimation {
-            let newChildNode = NodeEntity(context: viewContext)
-            newChildNode.id = UUID()
-            newChildNode.title = "Child Node"
-            newChildNode.positionX = node.positionX + containerWidth + 10
-            newChildNode.positionY = node.positionY
-            newChildNode.imageName = ""
-            node.addToChildren(newChildNode)
-            newChildNode.parent = node
+            let newNode = NodeData(title: "Title",
+                                   positionX: node.positionX + containerWidth + 10,
+                                   positionY: node.positionY,
+                                   imageName: "",
+                                   parent: node)
             
+            node.addChild(node: newNode)
+            
+            context.insert(newNode)
             do {
-                try viewContext.save()
+                try context.save()
             } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print(error.localizedDescription)
             }
-        }*/
+        }
     }
     
     private func updateLastPosition(_ node: NodeData) {
         node.lastPositionX = node.positionX
         node.lastPositionY = node.positionY
-        if let children = node.children as? Set<NodeData> {
+        if let children = node.children as? [NodeData] {
             for child in children {
                 updateLastPosition(child)
             }

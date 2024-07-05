@@ -10,9 +10,9 @@ final class NodeData {
     var lastPositionX: Double
     var lastPositionY: Double
     var imageName: String?
-    var parent: NodeData?
-    var children: [NodeData] = []
-
+    @Relationship var parent: NodeData?
+    @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
+    
     init(id: UUID = UUID(), title: String, positionX: Double, positionY: Double, imageName: String? = nil, parent: NodeData? = nil) {
         self.id = id
         self.title = title
@@ -22,5 +22,10 @@ final class NodeData {
         self.lastPositionY = positionY
         self.imageName = imageName
         self.parent = parent
+    }
+    
+    public func addChild(node: NodeData)
+    {
+        children.append(node)
     }
 }

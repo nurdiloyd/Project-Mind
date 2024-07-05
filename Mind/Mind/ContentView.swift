@@ -150,8 +150,13 @@ struct ContentView: View {
 
     private func addNode(positionX: CGFloat, positionY: CGFloat) {
         withAnimation {
-            let newNode = NodeData(title: "Title", positionX: Double(positionX), positionY: Double(positionY), imageName: "")
+            let newNode = NodeData(title: "Title", 
+                                   positionX: Double(positionX),
+                                   positionY: Double(positionY),
+                                   imageName: "")
+            
             context.insert(newNode)
+            
             do {
                 try context.save()
             } catch {
