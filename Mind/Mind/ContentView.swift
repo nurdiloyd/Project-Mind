@@ -64,20 +64,18 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
-    @Query() private var nodes: [NodeData]
-    
+    @Query private var nodes: [NodeData]
+
     var rootNodes: [NodeData] {
-        nodes.filter {
-            $0.parent == nil
-        }
+        nodes.filter { $0.parent == nil }
     }
-    
+
     @State var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
-    @State var currentSize : CGSize = .zero
+    @State var currentSize: CGSize = .zero
     static let boardSize: CGFloat = 10000
-    
+
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -97,8 +95,6 @@ struct ContentView: View {
                     .background(Color(NSColor.windowBackgroundColor))
                     .onAppear {
                         let minEdgeLength = min(geometry.size.width, geometry.size.height)
-                        //self.scale = minEdgeLength / self.size
-                        //self.lastScaleValue = self.scale
                     }
                     .onChange(of: geometry.size) { _, newSize in
                         self.scale = self.getScale(for: newSize, value: self.scale)
@@ -122,28 +118,26 @@ struct ContentView: View {
             }
         }
         .toolbar {
-            ToolbarItem() {
+            ToolbarItem {
                 Button {
                     let positionX = currentSize.width / 2
                     let positionY = currentSize.height / 2 - 200
                     addNode(positionX: positionX, positionY: positionY)
-                } 
-                label: {
+                } label: {
                     Image(systemName: "plus.circle")
                 }
             }
-            
-            ToolbarItem() {
+
+            ToolbarItem {
                 Button {
                     clearBoard()
-                }
-                label: {
+                } label: {
                     Image(systemName: "trash").foregroundStyle(.red)
                 }
             }
         }
     }
-    
+
     private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat {
         let minEdgeLength = min(geometrySize.width, geometrySize.height)
         let minScale: CGFloat = minEdgeLength / ContentView.boardSize
@@ -151,30 +145,26 @@ struct ContentView: View {
         let newScale = value.clamped(to: minScale...maxScale)
         return newScale
     }
-    
+
     private func addNode(positionX: CGFloat, positionY: CGFloat) {
         withAnimation {
-            let newNode = NodeData(title: "Title", positionX: positionX, positionY: positionY, imageName: "")
+            let newNode = NodeData(title: "Title", positionX: Double(positionX), positionY: Double(positionY), imageName: "")
             context.insert(newNode)
-            
             do {
                 try context.save()
-            } 
-            catch {
+            } catch {
                 print(error.localizedDescription)
             }
         }
     }
-    
+
     private func clearBoard() {
         for node in nodes {
             context.delete(node)
         }
-        
         do {
             try context.save()
-        } 
-        catch {
+        } catch {
             print(error.localizedDescription)
         }
     }
