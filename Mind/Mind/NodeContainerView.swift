@@ -3,7 +3,6 @@ import PhotosUI
 import CoreData
 
 struct NodeContainerView: View {
-    //@ObservedObject var node: NodeData
     let node: NodeData
     
     @State private var selectedImage: NSImage? = nil

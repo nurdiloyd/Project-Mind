@@ -33,6 +33,7 @@ struct PersistenceController {
         let controller = PersistenceController(inMemory: true)
         let viewContext = controller.container.viewContext
 
+        /*
         // Create sample data for preview
         for _ in 0..<10 {
             let newNode = NodeEntity(context: viewContext)
@@ -42,7 +43,7 @@ struct PersistenceController {
             newNode.positionY = Double.random(in: 0..<300)
             newNode.imageName = ""
         }
-
+*/
         do {
             try viewContext.save()
         } catch {

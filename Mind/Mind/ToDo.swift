@@ -44,28 +44,6 @@ struct ToDoListView: View {
     }
 }
 
-//
-//  AddToDoListItemScreen.swift
-//  Another ToDo App
-//
-//  Created by Joash Tubaga on 6/21/23.
-//
-
-import SwiftUI
-import SwiftData
-
-
-
-//
-//  ToDoDetailScreen.swift
-//  Another ToDo App
-//
-//  Created by Joash Tubaga on 6/21/23.
-//
-
-import SwiftUI
-import SwiftData
-
 struct ToDoDetailScreen: View {
     
     @State private var name: String = ""
