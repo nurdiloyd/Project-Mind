@@ -1,6 +1,5 @@
 import SwiftUI
 import PhotosUI
-import CoreData
 
 struct NodeContainerView: View {
     @Environment(\.modelContext) private var context
@@ -17,38 +16,22 @@ struct NodeContainerView: View {
     var body: some View {
         HStack {
             VStack(spacing: stackSpace) {
-                //if isHovering {
-                    NodeContainerTopView(
-                        importImage: { imageData in
-                            importImage(imageData: imageData)
-                        },
-                        deleteImage: {
-                            deleteImage()
-                        },
-                        addChildNode: {
-                            addChildNode()
-                        },
-                        hasImage: $hasImage
-                    )
-                    //.opacity(isHovering ? 1 : 0)
-                    //.animation(.easeInOut, value: isHovering)
-                //}
+                NodeContainerTopView(
+                    importImage: importImage,
+                    deleteImage: deleteImage,
+                    addChildNode: addChildNode,
+                    hasImage: $hasImage
+                )
                 
                 NodeView(
                     node: node,
                     image: $selectedImage,
-                    setTitle: {title in setTitle(title: title)}
+                    setTitle: setTitle
                 )
                 
-                //if isHovering {
-                    NodeContainerBottomView(
-                        buttonAction: {
-                            deleteNode()
-                        }
-                    )
-                    //.opacity(isHovering ? 1 : 0)
-                    //.animation(.easeInOut, value: isHovering)
-                //}
+                NodeContainerBottomView(
+                    buttonAction: deleteNode
+                )
             }
             .onHover { hovering in
                 withAnimation {
@@ -65,9 +48,9 @@ struct NodeContainerView: View {
                 updateLastPosition(node)
             }
             
-            if let children = node.children as? [NodeData], children.count > 0 {
+            if node.children.count > 0 {
                 VStack(alignment: .leading) {
-                    ForEach(Array(children), id: \.self) { child in
+                    ForEach(node.children, id: \.self) { child in
                         NodeContainerView(node: child)
                     }
                 }
@@ -79,7 +62,7 @@ struct NodeContainerView: View {
                     DragGesture()
                         .onChanged { value in
                             withAnimation {
-                                var delta = value.translation
+                                let delta = value.translation
                                 moveNode(node, deltaX: delta.width, deltaY: delta.height)
                             }
                         }
@@ -94,8 +77,7 @@ struct NodeContainerView: View {
         }
     }
     
-    private func setTitle(title: String)
-    {
+    private func setTitle(title: String) {
         if !title.isEmptyOrWithWhiteSpace {
             node.title = title
             saveContext()
@@ -108,15 +90,13 @@ struct NodeContainerView: View {
 
         setPosition(node, positionX: newX, positionY: newY)
         
-        if let children = node.children as? [NodeData] {
-            for child in children {
-                moveNode(child, deltaX: deltaX, deltaY: deltaY)
-            }
+        for child in node.children {
+            moveNode(child, deltaX: deltaX, deltaY: deltaY)
         }
     }
 
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
-        let minX = containerWidth / 2 +  (node.parent != nil ? (node.parent!.positionX + containerWidth / 2 + 10) : 0)
+        let minX = containerWidth / 2 + (node.parent != nil ? (node.parent!.positionX + containerWidth / 2 + 10) : 0)
         let maxX = Double(ContentView.boardSize - containerWidth / 2)
         
         let minY = containerHeight / 2
@@ -130,17 +110,15 @@ struct NodeContainerView: View {
         node.lastPositionX = node.positionX
         node.lastPositionY = node.positionY
         
-        if let children = node.children as? [NodeData] {
-            for child in children {
-                updateLastPosition(child)
-            }
+        for child in node.children {
+            updateLastPosition(child)
         }
     }
     
     private func loadNode() {
         if node.imageName != nil && node.imageName != "" {
             if let imageData = FileHelper.loadImageFromFile(filename: node.imageName ?? "") {
-                var nsImage = NSImage(data: imageData)
+                let nsImage = NSImage(data: imageData)
                 self.selectedImage = nsImage
                 print("Image loaded successfully")
             } else {
@@ -193,16 +171,18 @@ struct NodeContainerView: View {
     
     private func addChildNode() {
         withAnimation {
-            let newNode = NodeData(title: "Title",
-                                   positionX: node.positionX + containerWidth + 10,
-                                   positionY: node.positionY,
-                                   imageName: "",
-                                   parent: node)
+            let newNode = NodeData(
+                title: "Title",
+                positionX: node.positionX + containerWidth + 10,
+                positionY: node.positionY,
+                imageName: "",
+                parent: node
+            )
             
             node.addChild(node: newNode)
             
             context.insert(newNode)
-           
+            
             saveContext()
         }
     }
