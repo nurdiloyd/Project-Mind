@@ -10,8 +10,6 @@ struct NodeContainerView: View {
     @State private var hasImage: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
-    @Environment(\.managedObjectContext) private var viewContext
-
     @State var containerHeight: CGFloat = 0
     let containerWidth: CGFloat = 150
     let stackSpace: CGFloat = 8
@@ -21,8 +19,8 @@ struct NodeContainerView: View {
             VStack(spacing: stackSpace) {
                 //if isHovering {
                     NodeContainerTopView(
-                        importImage: { data in
-                            importImage(data: data)
+                        importImage: { imageData in
+                            importImage(imageData: imageData)
                         },
                         deleteImage: {
                             deleteImage()
@@ -80,7 +78,8 @@ struct NodeContainerView: View {
                     DragGesture()
                         .onChanged { value in
                             withAnimation {
-                                move(offset: value.translation)
+                                var delta = value.translation
+                                moveNode(node, deltaX: delta.width, deltaY: delta.height)
                             }
                         }
                         .onEnded { value in
@@ -91,12 +90,7 @@ struct NodeContainerView: View {
         }
         .onAppear {
             loadNode()
-            updateLastPosition(node)
         }
-    }
-
-    public func move(offset: CGSize) {
-        moveNode(node, deltaX: offset.width, deltaY: offset.height)
     }
 
     private func moveNode(_ node: NodeData, deltaX: Double, deltaY: Double) {
@@ -104,6 +98,7 @@ struct NodeContainerView: View {
         let newY = node.lastPositionY + deltaY
 
         setPosition(node, positionX: newX, positionY: newY)
+        
         if let children = node.children as? [NodeData] {
             for child in children {
                 moveNode(child, deltaX: deltaX, deltaY: deltaY)
@@ -111,71 +106,84 @@ struct NodeContainerView: View {
         }
     }
 
-    private func setPosition(_ node: NodeData, positionX: CGFloat, positionY: CGFloat) {
+    private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
         let minX = containerWidth / 2 +  (node.parent != nil ? (node.parent!.positionX + containerWidth / 2 + 10) : 0)
         let maxX = Double(ContentView.boardSize - containerWidth / 2)
+        
         let minY = containerHeight / 2
         let maxY = Double(ContentView.boardSize - containerHeight / 2)
+        
         node.positionX = positionX.clamped(to: minX...maxX)
         node.positionY = positionY.clamped(to: minY...maxY)
     }
     
+    private func updateLastPosition(_ node: NodeData) {
+        node.lastPositionX = node.positionX
+        node.lastPositionY = node.positionY
+        
+        if let children = node.children as? [NodeData] {
+            for child in children {
+                updateLastPosition(child)
+            }
+        }
+    }
+    
     private func loadNode() {
         if node.imageName != nil && node.imageName != "" {
-            if let savedImageData = FileHelper.loadImageFromFile(filename: node.imageName ?? "") {
-                self.selectedImage = NSImage(data: savedImageData)
+            if let imageData = FileHelper.loadImageFromFile(filename: node.imageName ?? "") {
+                var nsImage = NSImage(data: imageData)
+                self.selectedImage = nsImage
                 print("Image loaded successfully")
             } else {
                 print("No image found for filename: \(node.imageName ?? "")")
             }
         }
+        
         hasImage = node.imageName != ""
         updateLastPosition(node)
     }
 
-    private func importImage(data: Data) {
-        if let nsImage = NSImage(data: data) {
+    private func importImage(imageData: Data) {
+        if let nsImage = NSImage(data: imageData) {
             let imageName = "image_\(UUID().uuidString).png"
             selectedImage = nsImage
             node.imageName = imageName
-            FileHelper.saveImageToFile(data: data, filename: imageName)
+            FileHelper.saveImageToFile(data: imageData, filename: imageName)
         }
         
         saveNode()
     }
     
     private func deleteImage() {
-        selectedImage = nil
         FileHelper.deleteSavedImage(filename: node.imageName ?? "")
+        selectedImage = nil
         node.imageName = ""
         
         saveNode()
     }
     
     private func saveNode() {
-        /*
         do {
-            try node.managedObjectContext?.save()
+            try context.save()
         } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }*/
+            print(error.localizedDescription)
+        }
     }
 
     private func deleteNode() {
         withAnimation {
             isDeleting = true
         }
-        /*
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            viewContext.delete(node)
+            context.delete(node)
+            
             do {
-                try viewContext.save()
+                try context.save()
             } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print(error.localizedDescription)
             }
-        }*/
+        }
     }
 
     private func addChildNode() {
@@ -193,16 +201,6 @@ struct NodeContainerView: View {
                 try context.save()
             } catch {
                 print(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func updateLastPosition(_ node: NodeData) {
-        node.lastPositionX = node.positionX
-        node.lastPositionY = node.positionY
-        if let children = node.children as? [NodeData] {
-            for child in children {
-                updateLastPosition(child)
             }
         }
     }
