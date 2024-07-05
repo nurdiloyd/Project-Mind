@@ -4,73 +4,71 @@ import SwiftData
 struct BoardView: View {
     @Query() private var nodes: [NodeData]
     @Environment(\.modelContext) private var context
-
+    
+    var rootNodes: [NodeData] {
+        return nodes.filter { $0.parent == nil }
+    }
+    static var boardSize: CGFloat = 10000
+    @State var currentSize : CGSize = .zero
+    
+    /*
     @Environment(\.managedObjectContext) private var viewContext
-  /*  @FetchRequest(
+    @FetchRequest(
         entity: NodeEntity.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \NodeEntity.title, ascending: true)]
     ) private var nodes: FetchedResults<NodeEntity>
    */
-   static var boardSize: CGFloat = 10000
-
-    var rootNodes: [NodeData] {
-        return nodes.filter { $0.parent == nil }
-    }
-
+    
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                VStack {
-                    Button(action: {
-                        let positionX = geometry.size.width / 2
-                        let positionY = geometry.size.height / 2 - 200
-                        addNode(positionX: positionX, positionY: positionY)
-                    }) {
-                        Label("Add Node", systemImage: "plus.circle")
-                            .bold()
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .buttonBorderShape(.roundedRectangle)
+        ZStack {
+            VStack {
+                Button(action: {
+                    let positionX = currentSize.width / 2
+                    let positionY = currentSize.height / 2 - 200
+                    addNode(positionX: positionX, positionY: positionY)
+                }) {
+                    Label("Add Node", systemImage: "plus.circle")
+                        .bold()
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle)
 
-                    Button(action: {
-                        //clearBoard()
-                    }) {
-                        Label("Clear Board", systemImage: "trash")
-                            .bold()
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.red)
-                    }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.roundedRectangle)
+                Button(action: {
+                    //clearBoard()
+                }) {
+                    Label("Clear Board", systemImage: "trash")
+                        .bold()
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.red)
                 }
-                .frame(width: 150)
-                .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                
-                ForEach(nodes, id: \.id) { node in
-                    NodeContainerView(node: node)
-                }
-                
-                /*
-                ForEach(rootNodes) { rootNode in
-                    NodeContainerView(node: rootNode)
-                }*/
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle)
             }
-            .padding()
+            .frame(width: 150)
+            .position(x: currentSize.width / 2, y: currentSize.height / 2)
+            
+            ForEach(nodes, id: \.id) { node in
+                NodeContainerView(node: node)
+            }
+        }
+        .padding()
+        .readSize { size in
+            currentSize = size
         }
     }
     
     private func addNode(positionX: CGFloat, positionY: CGFloat) {
         withAnimation {
-        }
-        let newNode = NodeData(title: "Title", positionX: positionX, positionY: positionY, imageName: "")
-        context.insert(newNode)
-        do {
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
+            let newNode = NodeData(title: "Title", positionX: positionX, positionY: positionY, imageName: "")
+            context.insert(newNode)
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 /*
