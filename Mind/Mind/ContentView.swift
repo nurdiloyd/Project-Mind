@@ -61,14 +61,6 @@ struct ContentView: View {
 
 import SwiftUI
 
-extension Comparable
-{
-    func clamped(to limits: ClosedRange<Self>) -> Self
-    {
-        return min(max(self, limits.lowerBound), limits.upperBound)
-    }
-}
-
 struct ContentView: View
 {
     @State var lastScaleValue: CGFloat = 1.0
@@ -127,6 +119,14 @@ struct ContentView: View
         let maxScale: CGFloat = minEdgeLength / self.boxSize
         let newScale = value.clamped(to: minScale...maxScale)
         return newScale
+    }
+}
+
+extension Comparable
+{
+    func clamped(to limits: ClosedRange<Self>) -> Self
+    {
+        return min(max(self, limits.lowerBound), limits.upperBound)
     }
 }
 

@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 
-@main
 /*
 struct Project_MindApp: App {
     var sharedModelContainer: ModelContainer = {
@@ -32,6 +31,8 @@ struct Project_MindApp: App {
     }
 }
 */
+
+@main
 struct MindApp: App {
     var body: some Scene
     {

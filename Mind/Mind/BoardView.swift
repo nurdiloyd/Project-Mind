@@ -22,8 +22,8 @@ struct BoardView: View {
             ZStack {
                 VStack {
                     Button(action: {
-                        var positionX = geometry.size.width / 2
-                        var positionY = geometry.size.height / 2 - 200
+                        let positionX = geometry.size.width / 2
+                        let positionY = geometry.size.height / 2 - 200
                         addNode(positionX: positionX, positionY: positionY)
                     }) {
                         Label("Add Node", systemImage: "plus.circle")
