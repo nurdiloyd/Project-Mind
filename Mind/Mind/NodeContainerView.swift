@@ -113,9 +113,9 @@ struct NodeContainerView: View {
 
     private func setPosition(_ node: NodeData, positionX: CGFloat, positionY: CGFloat) {
         let minX = containerWidth / 2 +  (node.parent != nil ? (node.parent!.positionX + containerWidth / 2 + 10) : 0)
-        let maxX = Double(BoardView.boardSize - containerWidth / 2)
+        let maxX = Double(ContentView.boardSize - containerWidth / 2)
         let minY = containerHeight / 2
-        let maxY = Double(BoardView.boardSize - containerHeight / 2)
+        let maxY = Double(ContentView.boardSize - containerHeight / 2)
         node.positionX = positionX.clamped(to: minX...maxX)
         node.positionY = positionY.clamped(to: minY...maxY)
     }

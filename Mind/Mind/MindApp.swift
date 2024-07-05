@@ -8,11 +8,13 @@
 import SwiftUI
 import SwiftData
 
-/*
-struct Project_MindApp: App {
+@main
+struct MindApp: App {
+    /*
     var sharedModelContainer: ModelContainer = {
+        
         let schema = Schema([
-            Item.self,
+            NodeData.self, ToDo.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -22,18 +24,7 @@ struct Project_MindApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(sharedModelContainer)
-    }
-}
-*/
-
-@main
-struct MindApp: App {
+    */
     var body: some Scene
     {
         WindowGroup
@@ -59,6 +50,8 @@ struct MindApp: App {
                     }
                 }
         }
-        .modelContainer(for: [NodeData.self])
+        //.modelContainer(sharedModelContainer)
+
+        .modelContainer(for: [NodeData.self, ToDo.self])
     }
 }
