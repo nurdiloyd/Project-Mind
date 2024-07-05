@@ -20,9 +20,3 @@ struct NodeContainerBottomView: View {
         .shadow(radius: 8)
     }
 }
-
-struct NodeContainerBottomView_Previews: PreviewProvider {
-    static var previews: some View {
-        NodeContainerBottomView(buttonAction: {})
-    }
-}

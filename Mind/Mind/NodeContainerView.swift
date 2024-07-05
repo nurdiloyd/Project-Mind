@@ -35,8 +35,9 @@ struct NodeContainerView: View {
                 //}
                 
                 NodeView(
-                    customImage: $selectedImage,
-                    node: node
+                    node: node,
+                    image: $selectedImage,
+                    setTitle: {title in setTitle(title: title)}
                 )
                 
                 //if isHovering {
@@ -84,7 +85,7 @@ struct NodeContainerView: View {
                         }
                         .onEnded { value in
                             updateLastPosition(node)
-                            saveNode()
+                            saveContext()
                         }
                 )
         }
@@ -92,7 +93,15 @@ struct NodeContainerView: View {
             loadNode()
         }
     }
-
+    
+    private func setTitle(title: String)
+    {
+        if !title.isEmptyOrWithWhiteSpace {
+            node.title = title
+            saveContext()
+        }
+    }
+    
     private func moveNode(_ node: NodeData, deltaX: Double, deltaY: Double) {
         let newX = node.lastPositionX + deltaX
         let newY = node.lastPositionY + deltaY
@@ -151,7 +160,7 @@ struct NodeContainerView: View {
             FileHelper.saveImageToFile(data: imageData, filename: imageName)
         }
         
-        saveNode()
+        saveContext()
     }
     
     private func deleteImage() {
@@ -159,17 +168,9 @@ struct NodeContainerView: View {
         selectedImage = nil
         node.imageName = ""
         
-        saveNode()
+        saveContext()
     }
     
-    private func saveNode() {
-        do {
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
     private func deleteNode() {
         withAnimation {
             isDeleting = true
@@ -178,14 +179,18 @@ struct NodeContainerView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             context.delete(node)
             
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
+            saveContext()
         }
     }
 
+    private func saveContext() {
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
     private func addChildNode() {
         withAnimation {
             let newNode = NodeData(title: "Title",
@@ -197,11 +202,8 @@ struct NodeContainerView: View {
             node.addChild(node: newNode)
             
             context.insert(newNode)
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
+           
+            saveContext()
         }
     }
 }

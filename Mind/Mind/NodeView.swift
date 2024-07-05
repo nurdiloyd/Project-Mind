@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct NodeView: View {
-    @State private var isEditing: Bool = false
-    @Binding var customImage: NSImage?
-//    @ObservedObject var node: NodeEntity
     let node: NodeData
-
+    @Binding var image: NSImage?
+    var setTitle: (String) -> Void
+    
+    @State private var isEditing: Bool = false
     @State var inputText: String = ""
 
     public static let titleHeight: CGFloat = 30
@@ -14,7 +14,7 @@ struct NodeView: View {
         return NodeView.titleHeight + (haveImage ? imageHeight : 0)
     }
     var haveImage: Bool {
-        return customImage != nil
+        return image != nil
     }
     
     var body: some View {
@@ -22,10 +22,7 @@ struct NodeView: View {
                 if isEditing {
                     TextField("Node Title", text: $inputText, onCommit: {
                         isEditing = false
-                        if !inputText.isEmpty {
-                            node.title = inputText
-                            saveNode()
-                        }
+                        setTitle(inputText)
                     })
                     .foregroundColor(Color(NSColor.windowFrameTextColor))
                     .multilineTextAlignment(.center)
@@ -42,7 +39,7 @@ struct NodeView: View {
                         }
                 }
                 
-                if let customImage = customImage {
+                if let customImage = image {
                     Image(nsImage: customImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -55,14 +52,5 @@ struct NodeView: View {
             .background(Color(NSColor.windowBackgroundColor))
             .cornerRadius(11)
             .shadow(radius: 8)
-    }
-    
-    private func saveNode() {
-        /*do {
-            try node.managedObjectContext?.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }*/
     }
 }

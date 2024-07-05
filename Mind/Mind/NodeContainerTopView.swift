@@ -60,14 +60,3 @@ struct NodeContainerTopView: View {
         .shadow(radius: 8)
     }
 }
-
-struct NodeContainerTop_Previews: PreviewProvider {
-    static var previews: some View {
-        NodeContainerTopView(
-            importImage: { _ in },
-            deleteImage: { },
-            addChildNode: { },
-            hasImage: .constant(false)
-        )
-    }
-}
