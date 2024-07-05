@@ -62,15 +62,12 @@ struct ContentView: View {
 import SwiftUI
 import SwiftData
 
-struct ContentView: View
-{
+struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query() private var nodes: [NodeData]
     
-    var rootNodes: [NodeData] 
-    {
-        nodes.filter
-        {
+    var rootNodes: [NodeData] {
+        nodes.filter {
             $0.parent == nil
         }
     }
@@ -81,19 +78,13 @@ struct ContentView: View
     @State var currentSize : CGSize = .zero
     static let boardSize: CGFloat = 10000
     
-    var body: some View
-    {
-        NavigationStack 
-        {
-            GeometryReader
-            { geometry in
-                ScrollView([.horizontal, .vertical], showsIndicators: true)
-                {
-                    ZStack
-                    {
-                        ZStack
-                        {
-                            ZStack{
+    var body: some View {
+        NavigationStack {
+            GeometryReader { geometry in
+                ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                    ZStack {
+                        ZStack {
+                            ZStack {
                                 ForEach(rootNodes, id: \.id) { node in
                                     NodeContainerView(node: node)
                                 }
@@ -104,14 +95,12 @@ struct ContentView: View
                     }
                     .frame(width: ContentView.boardSize * self.scale, height: ContentView.boardSize * self.scale)
                     .background(Color(NSColor.windowBackgroundColor))
-                    .onAppear
-                    {
+                    .onAppear {
                         let minEdgeLength = min(geometry.size.width, geometry.size.height)
                         //self.scale = minEdgeLength / self.size
                         //self.lastScaleValue = self.scale
                     }
-                    .onChange(of: geometry.size)
-                    { _, newSize in
+                    .onChange(of: geometry.size) { _, newSize in
                         self.scale = self.getScale(for: newSize, value: self.scale)
                         self.lastScaleValue = self.scale
                     }
@@ -120,53 +109,42 @@ struct ContentView: View
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .gesture(
                     MagnificationGesture()
-                        .onChanged
-                    { value in
-                        self.scale = self.getScale(for: geometry.size, value: self.lastScaleValue * value)
-                    }
-                        .onEnded
-                    { value in
-                        self.lastScaleValue = self.scale
-                    }
+                        .onChanged { value in
+                            self.scale = self.getScale(for: geometry.size, value: self.lastScaleValue * value)
+                        }
+                        .onEnded { value in
+                            self.lastScaleValue = self.scale
+                        }
                 )
                 .readSize { size in
                     currentSize = size
                 }
             }
         }
-        .toolbar 
-        {
-            ToolbarItem() 
-            {
-                Button 
-                {
+        .toolbar {
+            ToolbarItem() {
+                Button {
                     let positionX = currentSize.width / 2
                     let positionY = currentSize.height / 2 - 200
                     addNode(positionX: positionX, positionY: positionY)
                 } 
-                label:
-                {
+                label: {
                     Image(systemName: "plus.circle")
                 }
             }
             
-            ToolbarItem()
-            {
-                Button 
-                {
+            ToolbarItem() {
+                Button {
                     clearBoard()
                 }
-                label:
-                {
+                label: {
                     Image(systemName: "trash").foregroundStyle(.red)
-                    
                 }
             }
         }
     }
     
-    private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat
-    {
+    private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat {
         let minEdgeLength = min(geometrySize.width, geometrySize.height)
         let minScale: CGFloat = minEdgeLength / ContentView.boardSize
         let maxScale: CGFloat = minEdgeLength / self.boxSize
@@ -174,53 +152,41 @@ struct ContentView: View
         return newScale
     }
     
-    private func addNode(positionX: CGFloat, positionY: CGFloat) 
-    {
-        withAnimation
-        {
+    private func addNode(positionX: CGFloat, positionY: CGFloat) {
+        withAnimation {
             let newNode = NodeData(title: "Title", positionX: positionX, positionY: positionY, imageName: "")
             context.insert(newNode)
             
-            do 
-            {
+            do {
                 try context.save()
             } 
-            catch
-            {
+            catch {
                 print(error.localizedDescription)
             }
         }
     }
     
-    private func clearBoard() 
-    {
-        for node in nodes 
-        {
+    private func clearBoard() {
+        for node in nodes {
             context.delete(node)
         }
         
-        do
-        {
+        do {
             try context.save()
         } 
-        catch
-        {
+        catch {
             print(error.localizedDescription)
         }
     }
 }
 
-extension Comparable
-{
-    func clamped(to limits: ClosedRange<Self>) -> Self
-    {
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
         return min(max(self, limits.lowerBound), limits.upperBound)
     }
 }
 
-#Preview 
-{
+#Preview {
     ContentView()
         .modelContainer(for: [NodeData.self])
 }
-
