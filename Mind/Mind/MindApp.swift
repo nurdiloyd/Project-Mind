@@ -51,7 +51,6 @@ struct MindApp: App {
                 }
         }
         //.modelContainer(sharedModelContainer)
-
-        .modelContainer(for: [NodeData.self, ToDo.self])
+        .modelContainer(for: [NodeData.self])
     }
 }
