@@ -66,20 +66,31 @@ struct NodeContainerView: View {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            withAnimation {
-                                let delta = value.translation
-                                moveNode(node, deltaX: delta.width, deltaY: delta.height)
-                            }
+                            let delta = value.translation
+                            moveNode(node, deltaX: delta.width, deltaY: delta.height)
                         }
                         .onEnded { value in
-                            updateLastPosition(node)
-                            saveContext()
+                            withAnimation {
+                                snapToGrid()
+                                updateLastPosition(node)
+                                saveContext()
+                            }
                         }
                 )
         }
         .onAppear {
             loadNode()
         }
+    }
+    
+    private func snapToGrid()
+    {
+        var positionX = node.positionX
+        var positionY = node.positionY
+        positionX = (positionX / containerWidth).rounded() * containerWidth
+        positionY = (positionY / 200).rounded() * 200
+
+        setPosition(node, positionX: positionX, positionY: positionY)
     }
     
     private func setTitle(title: String) {
