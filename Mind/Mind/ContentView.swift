@@ -66,50 +66,32 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query private var nodes: [NodeData]
 
-    var rootNodes: [NodeData] {
+    private var rootNodes: [NodeData] {
         nodes.filter { $0.parent == nil }
     }
 
-    @State var lastScaleValue: CGFloat = 1.0
+    @State private var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
-    @State var currentSize: CGSize = .zero
+    @State private var currentSize: CGSize = .zero
     static let boardSize: CGFloat = 10000
 
     var body: some View {
-        NavigationStack {
-            ScrollView([.horizontal, .vertical], showsIndicators: true) {
+        ScrollView([.horizontal, .vertical], showsIndicators: true) {
+            ZStack {
                 ZStack {
-                    ZStack {
-                        ZStack {
-                            ForEach(rootNodes, id: \.id) { node in
-                                NodeContainerView(node: node)
-                            }
-                        }
+                    ForEach(rootNodes, id: \.id) { node in
+                        NodeContainerView(node: node)
                     }
-                    .frame(width: ContentView.boardSize, height: ContentView.boardSize)
-                    .scaleEffect(self.scale)
                 }
-                .frame(width: ContentView.boardSize * self.scale, height: ContentView.boardSize * self.scale)
-                .background(Color(NSColor.windowBackgroundColor))
+                .frame(width: ContentView.boardSize, height: ContentView.boardSize)
+                .scaleEffect(self.scale)
             }
-            .defaultScrollAnchor(.center)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-            .gesture(
-                MagnificationGesture()
-                    .onChanged { value in
-                        self.scale = self.getScale(for: currentSize, value: self.lastScaleValue * value)
-                    }
-                    .onEnded { value in
-                        self.lastScaleValue = self.scale
-                    }
-            )
-            .readSize { size in
-                currentSize = size
-                self.scale = self.getScale(for: currentSize, value: self.scale)
-                self.lastScaleValue = self.scale
-            }
+            .frame(width: ContentView.boardSize * self.scale, height: ContentView.boardSize * self.scale)
+            .background(Color(NSColor.windowBackgroundColor))
         }
+        .defaultScrollAnchor(.center)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .toolbar {
             ToolbarItem {
                 Button {
@@ -128,6 +110,20 @@ struct ContentView: View {
                     Image(systemName: "trash").foregroundStyle(.red)
                 }
             }
+        }
+        .gesture(
+            MagnificationGesture()
+                .onChanged { value in
+                    self.scale = self.getScale(for: currentSize, value: self.lastScaleValue * value)
+                }
+                .onEnded { value in
+                    self.lastScaleValue = self.scale
+                }
+        )
+        .readSize { size in
+            currentSize = size
+            self.scale = self.getScale(for: currentSize, value: self.scale)
+            self.lastScaleValue = self.scale
         }
     }
 
