@@ -16,50 +16,38 @@ struct NodeContainerView: View {
     private let stackSpace: CGFloat = 8
 
     var body: some View {
-        HStack {
-            VStack(spacing: stackSpace) {
-                NodeContainerTopView(
-                    importImage: importImage,
-                    deleteImage: deleteImage,
-                    addChildNode: createChildNode,
-                    hasImage: $hasImage
-                )
-                
-                NodeView(
-                    node: node,
-                    image: $selectedImage,
-                    setTitle: setTitle
-                )
-                
-                NodeContainerBottomView(
-                    buttonAction: deleteThisNode
-                )
-            }
-            .onHover { hovering in
-                withAnimation {
-                    isHovering = hovering
-                }
-            }
-            .frame(width: containerWidth)
-            .scaleEffect(isDeleting ? 0.1 : 1.0)
-            .opacity(isDeleting ? 0.0 : 1.0)
-            .animation(.spring(duration: 0.5), value: isDeleting)
-            .readSize { newSize in
-                containerHeight = newSize.height
-                setPosition(node, positionX: node.positionX, positionY: node.positionY)
-                updateLastPosition(node)
-            }
+        VStack(spacing: stackSpace) {
+            NodeContainerTopView(
+                importImage: importImage,
+                deleteImage: deleteImage,
+                addChildNode: createChildNode,
+                hasImage: $hasImage
+            )
             
-            if node.children.count > 0 {
-                VStack(alignment: .leading) {
-                    ForEach(node.children, id: \.self) { child in
-                        NodeContainerView(node: child,
-                        createNode: createNode,
-                        deleteNode: deleteNode,
-                        saveContext: saveContext)
-                    }
-                }
+            NodeView(
+                node: node,
+                image: $selectedImage,
+                setTitle: setTitle
+            )
+            
+            NodeContainerBottomView(
+                buttonAction: deleteThisNode
+            )
+        }
+        .onHover { hovering in
+            withAnimation {
+                isHovering = hovering
             }
+        }
+        .frame(width: containerWidth)
+        .scaleEffect(isDeleting ? 0.1 : 1.0)
+        .opacity(isDeleting ? 0.0 : 1.0)
+        .animation(.spring(duration: 0.5), value: isDeleting)
+        .onAppear {
+            loadNode()
+        }
+        .readSize { newSize in
+            containerHeight = newSize.height
         }
         .if(node.parent == nil) {
             $0.position(CGPoint(x: CGFloat(node.positionX), y: CGFloat(node.positionY)))
@@ -70,16 +58,13 @@ struct NodeContainerView: View {
                             moveNode(node, deltaX: delta.width, deltaY: delta.height)
                         }
                         .onEnded { value in
-                            withAnimation {
-                                snapToGrid()
+                            //withAnimation {
+                                //snapToGrid()
                                 updateLastPosition(node)
                                 saveContext()
-                            }
+                            //}
                         }
                 )
-        }
-        .onAppear {
-            loadNode()
         }
     }
     
@@ -118,8 +103,8 @@ struct NodeContainerView: View {
         let minY = containerHeight / 2
         let maxY = Double(ContentView.boardSize - containerHeight / 2)
         
-        node.positionX = positionX.clamped(to: minX...maxX)
-        node.positionY = positionY.clamped(to: minY...maxY)
+        node.positionX = positionX//.clamped(to: minX...maxX)
+        node.positionY = positionY//.clamped(to: minY...maxY)
     }
     
     private func updateLastPosition(_ node: NodeData) {
@@ -143,7 +128,6 @@ struct NodeContainerView: View {
         }
         
         hasImage = node.imageName != ""
-        updateLastPosition(node)
     }
 
     private func importImage(imageData: Data) {
@@ -178,7 +162,7 @@ struct NodeContainerView: View {
     
     private func createChildNode() {
         createNode("Title",
-                   node.positionX + containerWidth + 10,
+                   node.positionX + containerWidth + stackSpace,
                    node.positionY,
                    node)
     }
