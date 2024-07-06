@@ -78,45 +78,36 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            GeometryReader { geometry in
-                ScrollView([.horizontal, .vertical], showsIndicators: true) {
+            ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                ZStack {
                     ZStack {
                         ZStack {
-                            ZStack {
-                                ForEach(rootNodes, id: \.id) { node in
-                                    NodeContainerView(node: node)
-                                }
+                            ForEach(rootNodes, id: \.id) { node in
+                                NodeContainerView(node: node)
                             }
                         }
-                        .frame(width: ContentView.boardSize, height: ContentView.boardSize)
-                        .scaleEffect(self.scale)
                     }
-                    .frame(width: ContentView.boardSize * self.scale, height: ContentView.boardSize * self.scale)
-                    .background(Color(NSColor.windowBackgroundColor))
-                    .onAppear {
-                        let minEdgeLength = min(geometry.size.width, geometry.size.height)
-                        //self.scale = minEdgeLength / self.size
-                        //self.lastScaleValue = self.scale
+                    .frame(width: ContentView.boardSize, height: ContentView.boardSize)
+                    .scaleEffect(self.scale)
+                }
+                .frame(width: ContentView.boardSize * self.scale, height: ContentView.boardSize * self.scale)
+                .background(Color(NSColor.windowBackgroundColor))
+            }
+            .defaultScrollAnchor(.center)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+            .gesture(
+                MagnificationGesture()
+                    .onChanged { value in
+                        self.scale = self.getScale(for: currentSize, value: self.lastScaleValue * value)
                     }
-                    .onChange(of: geometry.size) { _, newSize in
-                        self.scale = self.getScale(for: newSize, value: self.scale)
+                    .onEnded { value in
                         self.lastScaleValue = self.scale
                     }
-                }
-                .defaultScrollAnchor(.center)
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                .gesture(
-                    MagnificationGesture()
-                        .onChanged { value in
-                            self.scale = self.getScale(for: geometry.size, value: self.lastScaleValue * value)
-                        }
-                        .onEnded { value in
-                            self.lastScaleValue = self.scale
-                        }
-                )
-                .readSize { size in
-                    currentSize = size
-                }
+            )
+            .readSize { size in
+                currentSize = size
+                self.scale = self.getScale(for: currentSize, value: self.scale)
+                self.lastScaleValue = self.scale
             }
         }
         .toolbar {
