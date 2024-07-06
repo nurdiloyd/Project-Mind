@@ -22,6 +22,8 @@ final class NodeData {
         self.lastPositionY = positionY
         self.imageName = imageName
         self.parent = parent
+        
+        parent?.addChild(node: self)
     }
     
     public func addChild(node: NodeData)

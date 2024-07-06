@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE3ED4472C37A22E00F411B1 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3ED4462C37A22E00F411B1 /* StringExtensions.swift */; };
+		CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */; };
 		CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58B2C36351D003EFDE5 /* MindApp.swift */; };
 		CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58D2C36351D003EFDE5 /* ContentView.swift */; };
 		CE7AD5922C36351E003EFDE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7AD5912C36351E003EFDE5 /* Assets.xcassets */; };
@@ -18,12 +18,11 @@
 		CE7AD5A52C3635C5003EFDE5 /* NodeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */; };
 		CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */; };
 		CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */; };
-		CE7AD5AB2C3635FC003EFDE5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5AA2C3635FC003EFDE5 /* PersistenceController.swift */; };
 		CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE3ED4462C37A22E00F411B1 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtensions.swift; sourceTree = "<group>"; };
 		CE7AD5882C36351D003EFDE5 /* Mind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mind.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7AD58B2C36351D003EFDE5 /* MindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindApp.swift; sourceTree = "<group>"; };
 		CE7AD58D2C36351D003EFDE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -36,7 +35,6 @@
 		CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainerView.swift; sourceTree = "<group>"; };
 		CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
-		CE7AD5AA2C3635FC003EFDE5 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -55,7 +53,6 @@
 			isa = PBXGroup;
 			children = (
 				CE7AD59E2C36357E003EFDE5 /* FileHelper.swift */,
-				CE7AD5AA2C3635FC003EFDE5 /* PersistenceController.swift */,
 				CE5BBFEE2C37A89E0030217A /* Extensions */,
 			);
 			path = Helpers;
@@ -65,7 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */,
-				CE3ED4462C37A22E00F411B1 /* StringExtensions.swift */,
+				CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -182,10 +179,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE3ED4472C37A22E00F411B1 /* StringExtensions.swift in Sources */,
+				CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */,
 				CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */,
 				CE7AD5A12C363599003EFDE5 /* NodeContainerBottomView.swift in Sources */,
-				CE7AD5AB2C3635FC003EFDE5 /* PersistenceController.swift in Sources */,
 				CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */,
 				CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */,
 				CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */,

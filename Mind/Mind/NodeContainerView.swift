@@ -2,16 +2,18 @@ import SwiftUI
 import PhotosUI
 
 struct NodeContainerView: View {
-    @Environment(\.modelContext) private var context
     let node: NodeData
+    public var createNode: (String, CGFloat, CGFloat, NodeData) -> Void
+    public var deleteNode: (NodeData) -> Void
+    public var saveContext: () -> Void
     
     @State private var selectedImage: NSImage? = nil
     @State private var hasImage: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
-    @State var containerHeight: CGFloat = 0
-    let containerWidth: CGFloat = 150
-    let stackSpace: CGFloat = 8
+    @State private var containerHeight: CGFloat = 0
+    private let containerWidth: CGFloat = 150
+    private let stackSpace: CGFloat = 8
 
     var body: some View {
         HStack {
@@ -19,7 +21,7 @@ struct NodeContainerView: View {
                 NodeContainerTopView(
                     importImage: importImage,
                     deleteImage: deleteImage,
-                    addChildNode: addChildNode,
+                    addChildNode: createChildNode,
                     hasImage: $hasImage
                 )
                 
@@ -30,7 +32,7 @@ struct NodeContainerView: View {
                 )
                 
                 NodeContainerBottomView(
-                    buttonAction: deleteNode
+                    buttonAction: deleteThisNode
                 )
             }
             .onHover { hovering in
@@ -51,7 +53,10 @@ struct NodeContainerView: View {
             if node.children.count > 0 {
                 VStack(alignment: .leading) {
                     ForEach(node.children, id: \.self) { child in
-                        NodeContainerView(node: child)
+                        NodeContainerView(node: child,
+                        createNode: createNode,
+                        deleteNode: deleteNode,
+                        saveContext: saveContext)
                     }
                 }
             }
@@ -149,41 +154,21 @@ struct NodeContainerView: View {
         saveContext()
     }
     
-    private func deleteNode() {
+    private func deleteThisNode() {
         withAnimation {
             isDeleting = true
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            context.delete(node)
-            
+            deleteNode(node)
             saveContext()
-        }
-    }
-
-    private func saveContext() {
-        do {
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
         }
     }
     
-    private func addChildNode() {
-        withAnimation {
-            let newNode = NodeData(
-                title: "Title",
-                positionX: node.positionX + containerWidth + 10,
-                positionY: node.positionY,
-                imageName: "",
-                parent: node
-            )
-            
-            node.addChild(node: newNode)
-            
-            context.insert(newNode)
-            
-            saveContext()
-        }
+    private func createChildNode() {
+        createNode("Title",
+                   node.positionX + containerWidth + 10,
+                   node.positionY,
+                   node)
     }
 }

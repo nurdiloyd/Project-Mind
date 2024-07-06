@@ -1,13 +1,4 @@
-//
-//  ContentView.swift
-//  Project-Mind
-//
-//  Created by Nurdogan Karaman on 3.07.2024.
-//
 /*
-import SwiftUI
-import SwiftData
-
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
@@ -36,26 +27,6 @@ struct ContentView: View {
             Text("Select an item")
         }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
-}
-
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
 */
 
@@ -65,11 +36,11 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query private var nodes: [NodeData]
-
+    
     private var rootNodes: [NodeData] {
         nodes.filter { $0.parent == nil }
     }
-
+    
     @State private var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
@@ -81,7 +52,10 @@ struct ContentView: View {
             ZStack {
                 ZStack {
                     ForEach(rootNodes, id: \.id) { node in
-                        NodeContainerView(node: node)
+                        NodeContainerView(node: node,
+                        createNode: createNode,
+                        deleteNode: deleteNode,
+                        saveContext: saveContext)
                     }
                 }
                 .frame(width: ContentView.boardSize, height: ContentView.boardSize)
@@ -97,7 +71,7 @@ struct ContentView: View {
                 Button {
                     let positionX = currentSize.width / 2
                     let positionY = currentSize.height / 2 - 200
-                    addNode(positionX: positionX, positionY: positionY)
+                    createNode(title:"Title", positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
                 }
@@ -135,38 +109,42 @@ struct ContentView: View {
         return newScale
     }
 
-    private func addNode(positionX: CGFloat, positionY: CGFloat) {
+    private func createNode(title: String, positionX: CGFloat, positionY: CGFloat, parent: NodeData? = nil) {
         withAnimation {
-            let newNode = NodeData(title: "Title", 
+            let newNode = NodeData(title: title,
                                    positionX: Double(positionX),
-                                   positionY: Double(positionY),
-                                   imageName: "")
+                                   positionY: Double(positionY),imageName: "",
+                                   parent: parent)
             
-            context.insert(newNode)
-            
+            insertNode(newNode)
+            saveContext()
+        }
+    }
+
+    private func clearBoard() {
+        for node in nodes {
+            deleteNode(node)
+        }
+        
+        saveContext()
+    }
+    
+    public func insertNode(_ node: NodeData) {
+        context.insert(node)
+    }
+
+    public func deleteNode(_ node: NodeData) {
+        context.delete(node)
+    }
+    
+    public func saveContext() {
+        if context.hasChanges {
             do {
                 try context.save()
             } catch {
                 print(error.localizedDescription)
             }
         }
-    }
-
-    private func clearBoard() {
-        for node in nodes {
-            context.delete(node)
-        }
-        do {
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-}
-
-extension Comparable {
-    func clamped(to limits: ClosedRange<Self>) -> Self {
-        return min(max(self, limits.lowerBound), limits.upperBound)
     }
 }
 
