@@ -19,7 +19,7 @@ struct NodeTreeView: View {
             }
             .background(.gray)
             .cornerRadius(10)
-            .position(x:node.positionX + 150 + 30, y: node.positionY)
+            .position(x:node.positionX + 150 + 8, y: node.positionY)
             
             ForEach(node.children, id: \.id) { child in
                 NodeTreeView(node: child,
