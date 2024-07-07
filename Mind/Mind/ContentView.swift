@@ -61,7 +61,6 @@ struct ContentView: View {
                                      createNode: createNode,
                                      deleteNode: deleteNode,
                                      saveContext: saveContext)
-                        
                     }
                 }
                 .frame(width: ContentView.boardSize, height: ContentView.boardSize)
@@ -75,8 +74,8 @@ struct ContentView: View {
         .toolbar {
             ToolbarItem {
                 Button {
-                    let positionX = ContentView.boardSize * scale / 2
-                    let positionY = ContentView.boardSize * scale / 2
+                    let positionX = ContentView.boardSize  / 2
+                    let positionY = ContentView.boardSize  / 2
                     createNode(title:"Title", positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
