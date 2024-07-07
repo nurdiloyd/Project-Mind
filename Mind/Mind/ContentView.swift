@@ -51,16 +51,11 @@ struct ContentView: View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
             ZStack {
                 ZStack {
-                    ForEach(rootNodes, id: \.id) { node in
+                    ForEach(nodes, id: \.id) { node in
                         NodeContainerView(node: node,
-                                          createNode: createNode,
-                                          deleteNode: deleteNode,
-                                          saveContext: saveContext)
-                        
-                        NodeTreeView(node: node,
-                                     createNode: createNode,
-                                     deleteNode: deleteNode,
-                                     saveContext: saveContext)
+                                      createNode: createNode,
+                                      deleteNode: deleteNode,
+                                      saveContext: saveContext)
                     }
                 }
                 .frame(width: ContentView.boardSize, height: ContentView.boardSize)

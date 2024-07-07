@@ -11,7 +11,6 @@ struct NodeContainerView: View {
     @State private var hasImage: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
-    @State private var containerHeight: CGFloat = 0
     private let containerWidth: CGFloat = 150
     private let stackSpace: CGFloat = 8
 
@@ -30,9 +29,12 @@ struct NodeContainerView: View {
                 setTitle: setTitle
             )
             
-            NodeContainerBottomView(
-                buttonAction: deleteThisNode
-            )
+            //if (isHovering)
+            //{
+                NodeContainerBottomView(
+                    buttonAction: deleteThisNode
+                )
+            //}
         }
         .onHover { hovering in
             withAnimation {
@@ -47,31 +49,43 @@ struct NodeContainerView: View {
             loadNode()
         }
         .readSize { newSize in
-            containerHeight = newSize.height
+            node.containerHeight = newSize.height
+            if node.parent != nil
+            {
+                withAnimation {
+                    rearrangePositionY(node.parent ?? node)
+                    saveContext()
+                }
+            }
         }
-        .if(node.parent == nil) {
-            $0.position(CGPoint(x: CGFloat(node.positionX), y: CGFloat(node.positionY)))
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            let delta = value.translation
-                            moveNode(node, deltaX: delta.width, deltaY: delta.height)
+        .position(CGPoint(x: CGFloat(node.globalPositionX), y: CGFloat(node.globalPositionY)))
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    let delta = value.translation
+                    moveNode(node, deltaX: delta.width, deltaY: delta.height)
+                }
+                .onEnded { value in
+                    if node.parent != nil
+                    {
+                        withAnimation {
+                            setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
                         }
-                        .onEnded { value in
-                            //withAnimation {
-                                //snapToGrid()
-                                updateLastPosition(node)
-                                saveContext()
-                            //}
-                        }
-                )
-        }
+                    }
+                    else
+                    {
+                        //snapToGrid()
+                        updateLastPosition(node)
+                        saveContext()
+                    }
+                }
+        )
     }
     
     private func snapToGrid()
     {
-        var positionX = node.positionX
-        var positionY = node.positionY
+        var positionX = node.localPositionX
+        var positionY = node.localPositionY
         positionX = (positionX / containerWidth).rounded() * containerWidth
         positionY = (positionY / 200).rounded() * 200
 
@@ -91,29 +105,22 @@ struct NodeContainerView: View {
 
         setPosition(node, positionX: newX, positionY: newY)
         
-        for child in node.children {
-            moveNode(child, deltaX: deltaX, deltaY: deltaY)
-        }
     }
 
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
-        let minX = containerWidth / 2 + (node.parent != nil ? (node.parent!.positionX + containerWidth / 2 + 10) : 0)
+        let minX = containerWidth / 2 + (node.parent != nil ? (node.parent!.localPositionX + containerWidth / 2 + 10) : 0)
         let maxX = Double(ContentView.boardSize - containerWidth / 2)
         
-        let minY = containerHeight / 2
-        let maxY = Double(ContentView.boardSize - containerHeight / 2)
+        let minY = node.containerHeight / 2
+        let maxY = Double(ContentView.boardSize - node.containerHeight / 2)
         
-        node.positionX = positionX//.clamped(to: minX...maxX)
-        node.positionY = positionY//.clamped(to: minY...maxY)
+        node.localPositionX = positionX//.clamped(to: minX...maxX)
+        node.localPositionY = positionY//.clamped(to: minY...maxY)
     }
     
     private func updateLastPosition(_ node: NodeData) {
-        node.lastPositionX = node.positionX
-        node.lastPositionY = node.positionY
-        
-        for child in node.children {
-            updateLastPosition(child)
-        }
+        node.lastPositionX = node.localPositionX
+        node.lastPositionY = node.localPositionY
     }
     
     private func loadNode() {
@@ -155,15 +162,46 @@ struct NodeContainerView: View {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            let parent = node.parent
+            for child in node.children {
+                child.localPositionX = child.globalPositionX
+                child.localPositionY = child.globalPositionY
+                updateLastPosition(child)
+            }
+            
             deleteNode(node)
+
             saveContext()
+            if parent != nil
+            {
+                withAnimation {
+                    rearrangePositionY(parent ?? node)
+                }
+            }
         }
     }
     
     private func createChildNode() {
-        createNode("Title",
-                   node.positionX + containerWidth + stackSpace,
-                   node.positionY,
-                   node)
+        createNode("Title", 0, 0, node)
+        
+        withAnimation {
+            rearrangePositionY(node)
+        }
+    }
+    
+    private func rearrangePositionY(_ node: NodeData)
+    {
+        var totalHeight = 0.0
+        for child in node.children {
+            totalHeight += child.containerHeight
+        }
+        
+        var currentY = totalHeight / 2
+        for child in node.children {
+            child.localPositionX = containerWidth + stackSpace
+            child.localPositionY = currentY - child.containerHeight / 2
+            currentY -= child.containerHeight
+            updateLastPosition(child)
+        }
     }
 }
