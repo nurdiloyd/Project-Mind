@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE17257B2C3B685B0000EAB1 /* NodeTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */; };
 		CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */; };
 		CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58B2C36351D003EFDE5 /* MindApp.swift */; };
 		CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58D2C36351D003EFDE5 /* ContentView.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeTreeView.swift; sourceTree = "<group>"; };
 		CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtensions.swift; sourceTree = "<group>"; };
 		CE7AD5882C36351D003EFDE5 /* Mind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mind.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7AD58B2C36351D003EFDE5 /* MindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindApp.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 			children = (
 				CE7AD58B2C36351D003EFDE5 /* MindApp.swift */,
 				CE7AD58D2C36351D003EFDE5 /* ContentView.swift */,
+				CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */,
 				CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */,
 				CE7AD5A22C3635B4003EFDE5 /* NodeContainerTopView.swift */,
 				CE7AD5A02C363599003EFDE5 /* NodeContainerBottomView.swift */,
@@ -179,6 +182,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE17257B2C3B685B0000EAB1 /* NodeTreeView.swift in Sources */,
 				CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */,
 				CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */,
 				CE7AD5A12C363599003EFDE5 /* NodeContainerBottomView.swift in Sources */,

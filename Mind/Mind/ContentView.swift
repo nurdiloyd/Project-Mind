@@ -35,12 +35,9 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
-    @Query private var nodes: [NodeData]
-    
-    private var rootNodes: [NodeData] {
-        nodes.filter { $0.parent == nil }
-    }
-    
+    @Query(filter: #Predicate<NodeData> { nodeData in
+        nodeData.parent == nil
+    }) private var nodes: [NodeData]
     @State private var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
@@ -52,7 +49,7 @@ struct ContentView: View {
             ZStack {
                 ZStack {
                     ForEach(nodes, id: \.id) { node in
-                        NodeContainerView(node: node,
+                        NodeTreeView(node: node,
                                       createNode: createNode,
                                       deleteNode: deleteNode,
                                       saveContext: saveContext)
@@ -113,7 +110,8 @@ struct ContentView: View {
         withAnimation {
             let newNode = NodeData(title: title,
                                    positionX: Double(positionX),
-                                   positionY: Double(positionY),imageName: "",
+                                   positionY: Double(positionY),
+                                   imageName: "",
                                    parent: parent)
             
             insertNode(newNode)

@@ -5,13 +5,14 @@ import Foundation
 final class NodeData {
     @Attribute(.unique) var id: UUID
     var title: String
-    var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0)}
-    var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0)}
+    var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
+    var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
     var localPositionX: Double = 0
     var localPositionY: Double = 0
     var lastPositionX: Double
     var lastPositionY: Double
     var imageName: String?
+    var order: Int = 0
     @Relationship var parent: NodeData?
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
     var containerHeight: Double = 106
@@ -29,9 +30,9 @@ final class NodeData {
         
         parent?.addChild(node: self)
     }
-    
-    public func addChild(node: NodeData)
-    {
+
+    private func addChild(node: NodeData) {
+        node.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
         children.append(node)
     }
 }

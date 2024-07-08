@@ -191,13 +191,15 @@ struct NodeContainerView: View {
     
     private func rearrangePositionY(_ node: NodeData)
     {
+        let sortedChildren = node.children.sorted(by: { $0.order > $1.order })
+        
         var totalHeight = 0.0
-        for child in node.children {
+        for child in sortedChildren {
             totalHeight += child.containerHeight
         }
         
         var currentY = totalHeight / 2
-        for child in node.children {
+        for child in sortedChildren {
             child.localPositionX = containerWidth + stackSpace
             child.localPositionY = currentY - child.containerHeight / 2
             currentY -= child.containerHeight

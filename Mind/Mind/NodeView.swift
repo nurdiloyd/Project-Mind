@@ -29,7 +29,7 @@ struct NodeView: View {
                     .textFieldStyle(PlainTextFieldStyle())
                     .frame(height: NodeView.titleHeight)
                 } else {
-                    Text(node.title)
+                    Text("\(node.order) \(node.title)")
                         .foregroundColor(Color(NSColor.windowFrameTextColor))
                         .font(.headline)
                         .frame(height: NodeView.titleHeight)
