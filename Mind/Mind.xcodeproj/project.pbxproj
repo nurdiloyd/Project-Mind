@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		CE17257B2C3B685B0000EAB1 /* NodeTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */; };
 		CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */; };
+		CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62E71A2C3CC52300129F2F /* EntranceView.swift */; };
+		CE62E71D2C3CC79E00129F2F /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62E71C2C3CC79E00129F2F /* BoardView.swift */; };
 		CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58B2C36351D003EFDE5 /* MindApp.swift */; };
 		CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58D2C36351D003EFDE5 /* ContentView.swift */; };
 		CE7AD5922C36351E003EFDE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7AD5912C36351E003EFDE5 /* Assets.xcassets */; };
@@ -25,6 +27,8 @@
 /* Begin PBXFileReference section */
 		CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeTreeView.swift; sourceTree = "<group>"; };
 		CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtensions.swift; sourceTree = "<group>"; };
+		CE62E71A2C3CC52300129F2F /* EntranceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceView.swift; sourceTree = "<group>"; };
+		CE62E71C2C3CC79E00129F2F /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		CE7AD5882C36351D003EFDE5 /* Mind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mind.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7AD58B2C36351D003EFDE5 /* MindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindApp.swift; sourceTree = "<group>"; };
 		CE7AD58D2C36351D003EFDE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -90,6 +94,8 @@
 			children = (
 				CE7AD58B2C36351D003EFDE5 /* MindApp.swift */,
 				CE7AD58D2C36351D003EFDE5 /* ContentView.swift */,
+				CE62E71A2C3CC52300129F2F /* EntranceView.swift */,
+				CE62E71C2C3CC79E00129F2F /* BoardView.swift */,
 				CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */,
 				CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */,
 				CE7AD5A22C3635B4003EFDE5 /* NodeContainerTopView.swift */,
@@ -184,6 +190,7 @@
 			files = (
 				CE17257B2C3B685B0000EAB1 /* NodeTreeView.swift in Sources */,
 				CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */,
+				CE62E71D2C3CC79E00129F2F /* BoardView.swift in Sources */,
 				CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */,
 				CE7AD5A12C363599003EFDE5 /* NodeContainerBottomView.swift in Sources */,
 				CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */,
@@ -191,6 +198,7 @@
 				CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */,
 				CE7AD59F2C36357E003EFDE5 /* FileHelper.swift in Sources */,
 				CE7AD5A52C3635C5003EFDE5 /* NodeContainerView.swift in Sources */,
+				CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */,
 				CE7AD5A32C3635B4003EFDE5 /* NodeContainerTopView.swift in Sources */,
 				CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */,
 			);
