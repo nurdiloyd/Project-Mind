@@ -8,29 +8,32 @@ struct EntranceView: View {
     var openBoard: (BoardData) -> Void
     
     var body: some View {
-        VStack {
-            Image(systemName: "sun.max")
-                .resizable()
-                .frame(width: 100, height: 100)
-            
-            if boards.count > 0 {
-                ForEach(boards, id: \.id) { board in
-                    Button(action: {
-                        openBoard(board)
-                    }) {
-                        Text(board.title)
-                            .font(.title)
-                            .padding()
+        ScrollView([.horizontal, .vertical], showsIndicators: false) {
+            VStack {
+                Image(systemName: "sun.max")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                
+                if boards.count > 0 {
+                    ForEach(boards, id: \.id) { board in
+                        Button(action: {
+                            openBoard(board)
+                        }) {
+                            Text(board.title)
+                                .font(.title)
+                                .padding()
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
+                } else {
+                    Text("Please select or create a board.")
                 }
-            } else {
-                Text("Please select or create a board.")
             }
+            .safeAreaPadding(.all)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .defaultScrollAnchor(.center)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color(NSColor.windowBackgroundColor))
-        .safeAreaPadding(.all)
         .toolbar {
             ToolbarItem {
                 Button {

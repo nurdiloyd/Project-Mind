@@ -9,7 +9,9 @@ struct ContentView: View {
         Group {
             if showBoardPage, let board = selectedBoard {
                 BoardView(board: board, onBack: {
-                    showBoardPage = false
+                    withAnimation {
+                        showBoardPage = false
+                    }
                 })
             } else {
                 EntranceView(openBoard: { board in
