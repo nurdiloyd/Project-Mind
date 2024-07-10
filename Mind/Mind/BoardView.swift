@@ -5,6 +5,7 @@ import Cocoa
 struct BoardView: View {
     @Environment(\.modelContext) private var context
     let board: BoardData
+    let onBack: () -> Void
     
     @State private var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
@@ -18,9 +19,9 @@ struct BoardView: View {
                 ZStack {
                     ForEach(board.nodes, id: \.id) { node in
                         NodeTreeView(node: node,
-                                      createNode: createNode,
-                                      deleteNode: deleteNode,
-                                      saveContext: saveContext)
+                                     createNode: createNode,
+                                     deleteNode: deleteNode,
+                                     saveContext: saveContext)
                     }
                 }
                 .frame(width: BoardView.boardSize, height: BoardView.boardSize)
@@ -32,7 +33,19 @@ struct BoardView: View {
         .defaultScrollAnchor(.center)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .toolbar {
-            ToolbarItem {
+            ToolbarItemGroup(placement: .principal) {
+                Button(action: {
+                    onBack()
+                }) {
+                    Image(systemName: "house")
+                }
+                
+                Text(board.title)
+                    .font(.headline)
+            }
+            
+            ToolbarItemGroup(placement: .primaryAction) {
+                Spacer()
                 Button {
                     let positionX = BoardView.boardSize / 2
                     let positionY = BoardView.boardSize / 2
@@ -40,9 +53,7 @@ struct BoardView: View {
                 } label: {
                     Image(systemName: "plus.circle")
                 }
-            }
-
-            ToolbarItem {
+                
                 Button {
                     clearBoard()
                 } label: {

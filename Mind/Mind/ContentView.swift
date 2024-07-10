@@ -8,13 +8,22 @@ struct ContentView: View {
     var body: some View {
         Group {
             if showBoardPage, let board = selectedBoard {
-                BoardView(board: board)
+                BoardView(board: board, onBack: {
+                    showBoardPage = false
+                })
             } else {
                 EntranceView(openBoard: { board in
                     selectedBoard = board
-                    showBoardPage = true
+                    withAnimation {
+                        showBoardPage = true
+                    }
                 })
             }
         }
     }
+}
+
+#Preview {
+    ContentView()
+        .modelContainer(for: [BoardData.self, NodeData.self])
 }
