@@ -16,12 +16,15 @@ struct NodeContainerView: View {
 
     var body: some View {
         VStack(spacing: stackSpace) {
-            NodeContainerTopView(
-                importImage: importImage,
-                deleteImage: deleteImage,
-                addChildNode: createChildNode,
-                hasImage: $hasImage
-            )
+            if (isHovering)
+            {
+                NodeContainerTopView(
+                    importImage: importImage,
+                    deleteImage: deleteImage,
+                    addChildNode: createChildNode,
+                    hasImage: $hasImage
+                )
+            }
             
             NodeView(
                 node: node,
@@ -29,12 +32,12 @@ struct NodeContainerView: View {
                 setTitle: setTitle
             )
             
-            //if (isHovering)
-            //{
+            if (isHovering)
+            {
                 NodeContainerBottomView(
                     buttonAction: deleteThisNode
                 )
-            //}
+            }
         }
         .onHover { hovering in
             withAnimation {
@@ -63,7 +66,9 @@ struct NodeContainerView: View {
             DragGesture()
                 .onChanged { value in
                     let delta = value.translation
-                    moveNode(node, deltaX: delta.width, deltaY: delta.height)
+                    withAnimation {
+                        moveNode(node, deltaX: delta.width, deltaY: delta.height)
+                    }
                 }
                 .onEnded { value in
                     if node.parent != nil
@@ -74,7 +79,7 @@ struct NodeContainerView: View {
                     }
                     else
                     {
-                        //snapToGrid()
+                        snapToGrid(node)
                         updateLastPosition(node)
                         saveContext()
                     }
@@ -82,12 +87,12 @@ struct NodeContainerView: View {
         )
     }
     
-    private func snapToGrid()
+    private func snapToGrid(_ node: NodeData)
     {
         var positionX = node.localPositionX
         var positionY = node.localPositionY
-        positionX = (positionX / containerWidth).rounded() * containerWidth
-        positionY = (positionY / 200).rounded() * 200
+        positionX = (positionX / (containerWidth + stackSpace)).rounded() * (containerWidth + stackSpace)
+        positionY = (positionY / 50).rounded() * 50
 
         setPosition(node, positionX: positionX, positionY: positionY)
     }
@@ -104,15 +109,15 @@ struct NodeContainerView: View {
         let newY = node.lastPositionY + deltaY
 
         setPosition(node, positionX: newX, positionY: newY)
-        
+        snapToGrid(node)
     }
 
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
         let minX = containerWidth / 2 + (node.parent != nil ? (node.parent!.localPositionX + containerWidth / 2 + 10) : 0)
-        let maxX = Double(ContentView.boardSize - containerWidth / 2)
+        let maxX = Double(BoardView.boardSize - containerWidth / 2)
         
         let minY = node.containerHeight / 2
-        let maxY = Double(ContentView.boardSize - node.containerHeight / 2)
+        let maxY = Double(BoardView.boardSize - node.containerHeight / 2)
         
         node.localPositionX = positionX//.clamped(to: minX...maxX)
         node.localPositionY = positionY//.clamped(to: minY...maxY)
@@ -163,10 +168,13 @@ struct NodeContainerView: View {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let parent = node.parent
-            for child in node.children {
-                child.localPositionX = child.globalPositionX
-                child.localPositionY = child.globalPositionY
-                updateLastPosition(child)
+            withAnimation {
+                for child in node.children {
+                    snapToGrid(child)
+                    child.localPositionX = child.globalPositionX
+                    child.localPositionY = child.globalPositionY
+                    updateLastPosition(child)
+                }
             }
             
             deleteNode(node)

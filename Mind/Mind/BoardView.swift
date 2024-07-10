@@ -1,13 +1,11 @@
 import SwiftUI
 import SwiftData
+import Cocoa
 
 struct BoardView: View {
     @Environment(\.modelContext) private var context
-    @Query(filter: #Predicate<NodeData> { nodeData in
-        nodeData.parent == nil
-    }) private var nodes: [NodeData]
+    let board: BoardData
     
-    @State private var showBoardPage: Bool = false
     @State private var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
@@ -18,7 +16,7 @@ struct BoardView: View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
             ZStack {
                 ZStack {
-                    ForEach(nodes, id: \.id) { node in
+                    ForEach(board.nodes, id: \.id) { node in
                         NodeTreeView(node: node,
                                       createNode: createNode,
                                       deleteNode: deleteNode,
@@ -85,16 +83,18 @@ struct BoardView: View {
                                    imageName: "",
                                    parent: parent)
             
+            board.nodes.append(newNode)
             insertNode(newNode)
             saveContext()
         }
     }
 
     private func clearBoard() {
-        for node in nodes {
+        for node in board.nodes {
             deleteNode(node)
         }
         
+        board.nodes.removeAll()
         saveContext()
     }
     
@@ -115,9 +115,4 @@ struct BoardView: View {
             }
         }
     }
-}
-
-#Preview {
-    ContentView()
-        .modelContainer(for: [NodeData.self])
 }

@@ -35,6 +35,6 @@ struct MindApp: App {
                     }
                 }
         }
-        .modelContainer(for: [NodeData.self])
+        .modelContainer(for: [BoardData.self, NodeData.self])
     }
 }

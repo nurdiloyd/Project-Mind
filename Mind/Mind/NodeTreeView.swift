@@ -21,8 +21,3 @@ struct NodeTreeView: View {
         }
     }
 }
-
-#Preview {
-    ContentView()
-        .modelContainer(for: [NodeData.self])
-}

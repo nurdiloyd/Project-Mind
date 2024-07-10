@@ -22,6 +22,7 @@
 		CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */; };
 		CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */; };
 		CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */; };
+		CEA338752C3CD93000266B55 /* BoardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA338742C3CD93000266B55 /* BoardData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtensions.swift; sourceTree = "<group>"; };
 		CE62E71A2C3CC52300129F2F /* EntranceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceView.swift; sourceTree = "<group>"; };
 		CE62E71C2C3CC79E00129F2F /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		CE62E71E2C3CD1AF00129F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE7AD5882C36351D003EFDE5 /* Mind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mind.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7AD58B2C36351D003EFDE5 /* MindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindApp.swift; sourceTree = "<group>"; };
 		CE7AD58D2C36351D003EFDE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -42,6 +44,7 @@
 		CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
 		CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
+		CEA338742C3CD93000266B55 /* BoardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,10 +104,12 @@
 				CE7AD5A22C3635B4003EFDE5 /* NodeContainerTopView.swift */,
 				CE7AD5A02C363599003EFDE5 /* NodeContainerBottomView.swift */,
 				CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */,
+				CEA338742C3CD93000266B55 /* BoardData.swift */,
 				CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */,
 				CE5BBFED2C37A8960030217A /* Helpers */,
 				CE7AD5932C36351E003EFDE5 /* Preview Content */,
 				CE7AD5962C36351E003EFDE5 /* Mind.entitlements */,
+				CE62E71E2C3CD1AF00129F2F /* Info.plist */,
 				CE7AD5912C36351E003EFDE5 /* Assets.xcassets */,
 			);
 			path = Mind;
@@ -196,6 +201,7 @@
 				CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */,
 				CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */,
 				CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */,
+				CEA338752C3CD93000266B55 /* BoardData.swift in Sources */,
 				CE7AD59F2C36357E003EFDE5 /* FileHelper.swift in Sources */,
 				CE7AD5A52C3635C5003EFDE5 /* NodeContainerView.swift in Sources */,
 				CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */,
@@ -339,6 +345,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Mind/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -367,6 +374,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Mind/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
