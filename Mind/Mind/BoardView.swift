@@ -112,7 +112,7 @@ struct BoardView: View {
     }
     
     public func insertNodeData(_ nodeData: NodeData) {
-        context.delete(nodeData)
+        context.insert(nodeData)
     }
 
     public func deleteNodeData(_ nodeData: NodeData) {

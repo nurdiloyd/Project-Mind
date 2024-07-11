@@ -14,21 +14,30 @@ struct EntranceView: View {
                     .resizable()
                     .frame(width: 100, height: 100)
                 
-                if boards.count > 0 {
-                    ForEach(boards, id: \.id) { board in
-                        BoardCardView(board: board,
-                                      openBoard: openBoard,
-                                      deleteBoard:deleteBoard,
-                                      setTitle: setTitle)
+                VStack{
+                    if boards.count > 0 {
+                        ForEach(boards, id: \.id) { board in
+                            BoardCardView(board: board,
+                                          openBoard: openBoard,
+                                          deleteBoard:deleteBoard,
+                                          setTitle: setTitle)
+                        }
+                    } else {
+                        Text("Please create a board.")
+                            .font(.title3)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(NSColor.darkGray))
+                                .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/))
+                        
                     }
-                } else {
-                    Text("Please select or create a board.")
                 }
+                .frame(minHeight: 200)
             }
-            .safeAreaPadding(.all)
+            .ignoresSafeArea()
         }
         .defaultScrollAnchor(.center)
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(NSColor.windowBackgroundColor))
         .toolbar {
             ToolbarItem {

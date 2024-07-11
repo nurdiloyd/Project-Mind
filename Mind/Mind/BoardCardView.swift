@@ -8,36 +8,52 @@ struct BoardCardView: View {
     public var setTitle: (BoardData, String) -> Void
     
     @State private var isEditing: Bool = false
+    @FocusState private var isFocus: Bool
     @State var inputText: String = ""
-    @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
     
     var body: some View {
-        ZStack() {
+        HStack {            
             Button(action: {
                 openBoard(board)
             }) {
-                if isEditing {
-                    TextField("Node Title", text: $inputText, onCommit: {
+                if isEditing
+                {
+                    TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
+                        if !isStart
+                        {
+                            isEditing = false
+                            setTitle(board, inputText)
+                        }
+                    })
+                    .font(.title2)
+                    .focused($isFocus)
+                    .onSubmit {
                         isEditing = false
                         setTitle(board, inputText)
-                    })
-                    .foregroundColor(Color(NSColor.windowFrameTextColor))
+                    }
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
-                    .frame(height: NodeView.titleHeight)
-                } else {
+                    .frame(width: 120, height: 40)
+                }
+                else {
                     Text("\(board.title)")
-                        .foregroundColor(Color(NSColor.windowFrameTextColor))
                         .font(.title)
-                        .frame(height: NodeView.titleHeight)
-                        .onTapGesture(count: 1) {
-                            inputText = board.title
-                            isEditing = true
-                        }
+                        .frame(width: 120, height: 40)
                 }
             }
-            .buttonStyle(.bordered)
+            
+            Button(action: {
+                inputText = board.title
+                isEditing = true
+                isFocus.toggle()
+            }) {
+                Image(systemName: "square.and.pencil")
+                    .bold()
+            }
+            .tint(Color.blue)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
             
             Button(action: {
                 withAnimation {
@@ -48,23 +64,14 @@ struct BoardCardView: View {
             }) {
                 Image(systemName: "minus")
                     .bold()
-                    .frame(maxHeight: .infinity)
             }
             .tint(Color.red)
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .position(x: 140, y: 15)
-            .opacity(isHovering ? 1.0 : 0.0)
-            .animation(.spring(duration: 0.5), value: isHovering)
-            
         }
-        .onHover { hovering in
-            withAnimation {
-                isHovering = hovering
-            }
-        }
-        //.scaleEffect(isDeleting ? 0.1 : 1.0)
-        //.opacity(isDeleting ? 0.0 : 1.0)
-        
+        .padding(3)
+        .background(RoundedRectangle(cornerRadius: 8)
+            .fill(Color(NSColor.darkGray))
+            .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/))
     }
 }
