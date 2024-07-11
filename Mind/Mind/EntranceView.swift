@@ -16,14 +16,10 @@ struct EntranceView: View {
                 
                 if boards.count > 0 {
                     ForEach(boards, id: \.id) { board in
-                        Button(action: {
-                            openBoard(board)
-                        }) {
-                            Text(board.title)
-                                .font(.title)
-                                .padding()
-                        }
-                        .buttonStyle(.bordered)
+                        BoardCardView(board: board,
+                                      openBoard: openBoard,
+                                      deleteBoard:deleteBoard,
+                                      setTitle: setTitle)
                     }
                 } else {
                     Text("Please select or create a board.")
@@ -53,9 +49,16 @@ struct EntranceView: View {
         }
     }
     
+    private func setTitle(_ board: BoardData, title: String) {
+        if !title.isEmptyOrWithWhiteSpace {
+            board.title = title
+            saveContext()
+        }
+    }
+    
     private func createNewBoard() {
         let newBoard = BoardData(title: "New Board")
-        insertBoard(newBoard)
+        insertBoardData(newBoard)
         saveContext()
     }
     
@@ -63,16 +66,30 @@ struct EntranceView: View {
         for board in boards {
             deleteBoard(board)
         }
+    }
+    
+    private func deleteBoard(_ board: BoardData) {
+        for node in board.nodes {
+            deleteNodeData(node)
+        }
+        
+        board.nodes.removeAll()
+        
+        deleteBoardData(board)
         
         saveContext()
     }
     
-    public func insertBoard(_ board: BoardData) {
-        context.insert(board)
+    public func deleteNodeData(_ node: NodeData) {
+        context.delete(node)
+    }
+    
+    public func insertBoardData(_ boardData: BoardData) {
+        context.insert(boardData)
     }
 
-    public func deleteBoard(_ board: BoardData) {
-        context.delete(board)
+    public func deleteBoardData(_ boardData: BoardData) {
+        context.delete(boardData)
     }
     
     public func saveContext() {

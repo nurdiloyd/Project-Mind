@@ -17,10 +17,12 @@ struct BoardView: View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
             ZStack {
                 ZStack {
-                    ForEach(board.nodes, id: \.id) { node in
+                    ForEach(board.nodes.filter({ node in
+                        node.parent == nil
+                    }), id: \.id) { node in
                         NodeTreeView(node: node,
                                      createNode: createNode,
-                                     deleteNode: deleteNode,
+                                     deleteNode: deleteNodeData,
                                      saveContext: saveContext)
                     }
                 }
@@ -87,7 +89,7 @@ struct BoardView: View {
     }
 
     private func createNode(title: String, positionX: CGFloat, positionY: CGFloat, parent: NodeData? = nil) {
-        withAnimation {
+        
             let newNode = NodeData(title: title,
                                    positionX: Double(positionX),
                                    positionY: Double(positionY),
@@ -95,26 +97,26 @@ struct BoardView: View {
                                    parent: parent)
             
             board.nodes.append(newNode)
-            insertNode(newNode)
+            insertNodeData(newNode)
             saveContext()
-        }
+        
     }
 
     private func clearBoard() {
         for node in board.nodes {
-            deleteNode(node)
+            deleteNodeData(node)
         }
         
         board.nodes.removeAll()
         saveContext()
     }
     
-    public func insertNode(_ node: NodeData) {
-        context.insert(node)
+    public func insertNodeData(_ nodeData: NodeData) {
+        context.delete(nodeData)
     }
 
-    public func deleteNode(_ node: NodeData) {
-        context.delete(node)
+    public func deleteNodeData(_ nodeData: NodeData) {
+        context.delete(nodeData)
     }
     
     public func saveContext() {
