@@ -22,7 +22,7 @@ struct BoardView: View {
                     }), id: \.id) { node in
                         NodeTreeView(node: node,
                                      createNode: createNode,
-                                     deleteNode: deleteNodeData,
+                                     deleteNode: deleteNode,
                                      saveContext: saveContext)
                     }
                 }
@@ -89,19 +89,38 @@ struct BoardView: View {
     }
 
     private func createNode(title: String, positionX: CGFloat, positionY: CGFloat, parent: NodeData? = nil) {
-        
-            let newNode = NodeData(title: title,
-                                   positionX: Double(positionX),
-                                   positionY: Double(positionY),
-                                   imageName: "",
-                                   parent: parent)
-            
-            board.nodes.append(newNode)
-            insertNodeData(newNode)
-            saveContext()
-        
+        let newNode = NodeData(title: title,
+                               positionX: Double(positionX),
+                               positionY: Double(positionY),
+                               imageName: "",
+                               parent: parent)
+
+        board.nodes.append(newNode)
+        insertNodeData(newNode)
+        saveContext()
     }
 
+    private func deleteNode(_ nodeData: NodeData) -> Bool
+    {
+        if let index = board.nodes.firstIndex(of: nodeData)
+        {
+            if let parent = nodeData.parent {
+                if let parentIndex = parent.children.firstIndex(of: nodeData)
+                {
+                    parent.children.remove(at: parentIndex)
+                }
+            }
+            
+            deleteNodeData(nodeData)
+            board.nodes.remove(at: index)
+            saveContext()
+            
+            return true
+        }
+        
+        return false
+    }
+    
     private func clearBoard() {
         for node in board.nodes {
             deleteNodeData(node)

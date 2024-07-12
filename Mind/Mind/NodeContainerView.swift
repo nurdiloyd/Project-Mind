@@ -4,7 +4,7 @@ import PhotosUI
 struct NodeContainerView: View {
     let node: NodeData
     public var createNode: (String, CGFloat, CGFloat, NodeData) -> Void
-    public var deleteNode: (NodeData) -> Void
+    public var deleteNode: (NodeData) -> Bool
     public var saveContext: () -> Void
     
     @State private var selectedItem: PhotosPickerItem? = nil
@@ -119,9 +119,9 @@ struct NodeContainerView: View {
             }
         }
         .frame(width: containerWidth)
-        .scaleEffect(isDeleting ? 0.1 : 1.0)
+        //.scaleEffect(isDeleting ? 0.1 : 1.0)
         .opacity(isDeleting ? 0.0 : 1.0)
-        .animation(.spring(duration: 0.5), value: isDeleting)
+        .animation(.spring(duration: 0.3), value: isDeleting)
         .onAppear {
             loadNode()
         }
@@ -246,26 +246,38 @@ struct NodeContainerView: View {
         withAnimation {
             isDeleting = true
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             let parent = node.parent
-            withAnimation {
-                for child in node.children {
-                    snapToGrid(child)
-                    child.localPositionX = child.globalPositionX
-                    child.localPositionY = child.globalPositionY
+            let children = node.children
+            let posX = node.globalPositionX
+            let posY = node.globalPositionY
+            let isDeleted = deleteNode(node)
+            
+            if isDeleted
+            {
+                for child in children {
+                    child.localPositionX = child.localPositionX + posX
+                    child.localPositionY = child.localPositionY + posY
                     updateLastPosition(child)
                 }
-            }
-            
-            deleteNode(node)
-
-            saveContext()
-            if parent != nil
-            {
+                
                 withAnimation {
-                    rearrangePositionY(parent ?? node)
+                    if parent != nil
+                    {
+                        rearrangePositionY(parent ?? node)
+                    }
+                    
+                    for child in children {
+                        snapToGrid(child)
+                        updateLastPosition(child)
+                    }
+                    
+                    saveContext()
                 }
+            }
+            else {
+                isDeleting = false
             }
         }
     }
