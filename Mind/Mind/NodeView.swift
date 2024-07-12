@@ -9,11 +9,6 @@ struct NodeView: View {
     @FocusState private var isFocus: Bool
     @State var inputText: String = ""
 
-    public static let titleHeight: CGFloat = 30
-    public let imageHeight: CGFloat = 150
-    var totalHeight: CGFloat {
-        return NodeView.titleHeight + (haveImage ? imageHeight : 0)
-    }
     var haveImage: Bool {
         return image != nil
     }
@@ -37,13 +32,13 @@ struct NodeView: View {
                     .foregroundColor(Color(NSColor.windowFrameTextColor))
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
-                    .frame(height: NodeView.titleHeight)
+                    .frame(height: NodeContainerView.titleHeight)
             }
             else {
                 Text("\(node.title)")
                     .foregroundColor(Color(NSColor.windowFrameTextColor))
                     .font(.headline)
-                    .frame(height: NodeView.titleHeight)
+                    .frame(height: NodeContainerView.titleHeight)
                     .onTapGesture(count: 1) {
                         inputText = node.title
                         isEditing = true
@@ -55,7 +50,7 @@ struct NodeView: View {
                 Image(nsImage: customImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: imageHeight, height: imageHeight)
+                    .frame(width: NodeContainerView.imageHeight, height: NodeContainerView.imageHeight)
                     .clipped()
                     .contentShape(Rectangle())
             }
@@ -64,5 +59,8 @@ struct NodeView: View {
         .background(Color(NSColor.windowBackgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 11))
         .shadow(radius: 5)
+        .readSize { si in
+            print(si)
+        }
     }
 }

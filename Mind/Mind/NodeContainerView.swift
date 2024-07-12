@@ -13,8 +13,16 @@ struct NodeContainerView: View {
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
     @State private var isPickerPresenting: Bool = false
-    private let containerWidth: CGFloat = 150
-    private let stackSpace: CGFloat = 8
+    public static let width: CGFloat = 150
+    public static let maxHeight: CGFloat = NodeContainerView.titleHeight + NodeContainerView.imageHeight
+    public static let minHeight: CGFloat = NodeContainerView.titleHeight
+    public static let titleHeight: CGFloat = 30
+    public static let imageHeight: CGFloat = NodeContainerView.width
+    private static let countCorrespondsMaxHeight: Int = 5
+    private static let hStackSpace: CGFloat = 10
+    private static let vStackSpace: CGFloat =
+            (NodeContainerView.maxHeight - NodeContainerView.minHeight * CGFloat(NodeContainerView.countCorrespondsMaxHeight))
+        / CGFloat(NodeContainerView.countCorrespondsMaxHeight - 1)
 
     var body: some View {
         ZStack {
@@ -29,7 +37,7 @@ struct NodeContainerView: View {
             .overlay{
                 if (isHovering || isPickerPresenting)
                 {
-                    let topLeft = CGPoint(x:-containerWidth / 2, y:-node.containerHeight / 2)
+                    let topLeft = CGPoint(x:-NodeContainerView.width / 2, y:-node.containerHeight / 2)
                     let symbolSize = 10.0
                     
                     Button(action: {
@@ -66,7 +74,7 @@ struct NodeContainerView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:topLeft.x, y:topLeft.y + 30)
+                    .offset(x:topLeft.x, y:topLeft.y + NodeContainerView.titleHeight)
                     .photosPicker(isPresented: $isPickerPresenting,
                                   selection: $selectedItem,
                                   matching: .images,
@@ -90,7 +98,7 @@ struct NodeContainerView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.mini)
                         .clipShape(Circle())
-                        .offset(x:topLeft.x, y:topLeft.y + 45)
+                        .offset(x:topLeft.x, y:topLeft.y + 3 * NodeContainerView.titleHeight / 2)
                     }
                     
                     Button(action: {
@@ -109,7 +117,7 @@ struct NodeContainerView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:-topLeft.x, y:topLeft.y + 15)
+                    .offset(x:-topLeft.x, y:topLeft.y + NodeContainerView.titleHeight / 2)
                 }
             }
         }
@@ -118,7 +126,7 @@ struct NodeContainerView: View {
                 isHovering = hovering
             }
         }
-        .frame(width: containerWidth)
+        .frame(width: NodeContainerView.width)
         //.scaleEffect(isDeleting ? 0.1 : 1.0)
         .opacity(isDeleting ? 0.0 : 1.0)
         .animation(.spring(duration: 0.3), value: isDeleting)
@@ -161,12 +169,13 @@ struct NodeContainerView: View {
         )
     }
     
-    private func snapToGrid(_ node: NodeData)
-    {
+    private func snapToGrid(_ node: NodeData) {
         var positionX = node.localPositionX
         var positionY = node.localPositionY
-        positionX = (positionX / (containerWidth + stackSpace)).rounded() * (containerWidth + stackSpace)
-        positionY = (positionY / 50).rounded() * 50
+        let snapX = NodeContainerView.width + NodeContainerView.hStackSpace
+        let snapY = NodeContainerView.minHeight + NodeContainerView.vStackSpace
+        positionX = (positionX / snapX).rounded() * snapX
+        positionY = (positionY / snapY).rounded() * snapY
 
         setPosition(node, positionX: positionX, positionY: positionY)
     }
@@ -187,8 +196,8 @@ struct NodeContainerView: View {
     }
 
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
-        let minX = containerWidth / 2 + (node.parent != nil ? (node.parent!.localPositionX + containerWidth / 2 + 10) : 0)
-        let maxX = Double(BoardView.boardSize - containerWidth / 2)
+        let minX = NodeContainerView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeContainerView.width / 2 + 10) : 0)
+        let maxX = Double(BoardView.boardSize - NodeContainerView.width / 2)
         
         let minY = node.containerHeight / 2
         let maxY = Double(BoardView.boardSize - node.containerHeight / 2)
@@ -301,7 +310,7 @@ struct NodeContainerView: View {
         
         var currentY = totalHeight / 2
         for child in sortedChildren {
-            child.localPositionX = containerWidth + stackSpace
+            child.localPositionX = NodeContainerView.width + NodeContainerView.vStackSpace
             child.localPositionY = currentY - child.containerHeight / 2
             currentY -= child.containerHeight
             updateLastPosition(child)
