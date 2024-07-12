@@ -51,7 +51,7 @@ struct BoardCardView: View {
                 Image(systemName: "square.and.pencil")
                     .bold()
             }
-            .tint(Color.blue)
+            .tint(Color.white)
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             
@@ -70,8 +70,6 @@ struct BoardCardView: View {
             .controlSize(.large)
         }
         .padding(3)
-        .background(RoundedRectangle(cornerRadius: 8)
-            .fill(Color(NSColor.darkGray))
-            .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/))
+        
     }
 }
