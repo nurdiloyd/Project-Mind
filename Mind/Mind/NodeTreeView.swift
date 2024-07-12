@@ -3,7 +3,7 @@ import SwiftData
 
 struct NodeTreeView: View {
     let node: NodeData
-    public var createNode: (String, CGFloat, CGFloat, NodeData) -> Void
+    public var createNode: (String, NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
     public var saveContext: () -> Void
     

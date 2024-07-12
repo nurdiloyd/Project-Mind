@@ -3,7 +3,7 @@ import PhotosUI
 
 struct NodeContainerView: View {
     let node: NodeData
-    public var createNode: (String, CGFloat, CGFloat, NodeData) -> Void
+    public var createNode: (String, NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
     public var saveContext: () -> Void
     
@@ -74,7 +74,7 @@ struct NodeContainerView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:topLeft.x, y:topLeft.y + NodeContainerView.titleHeight)
+                    .offset(x:topLeft.x, y:topLeft.y + NodeContainerView.minHeight)
                     .photosPicker(isPresented: $isPickerPresenting,
                                   selection: $selectedItem,
                                   matching: .images,
@@ -98,7 +98,7 @@ struct NodeContainerView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.mini)
                         .clipShape(Circle())
-                        .offset(x:topLeft.x, y:topLeft.y + 3 * NodeContainerView.titleHeight / 2)
+                        .offset(x:topLeft.x, y:topLeft.y + 3 * NodeContainerView.minHeight / 2)
                     }
                     
                     Button(action: {
@@ -117,7 +117,7 @@ struct NodeContainerView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:-topLeft.x, y:topLeft.y + NodeContainerView.titleHeight / 2)
+                    .offset(x:-topLeft.x, y:topLeft.y + NodeContainerView.minHeight / 2)
                 }
             }
         }
@@ -127,7 +127,6 @@ struct NodeContainerView: View {
             }
         }
         .frame(width: NodeContainerView.width)
-        //.scaleEffect(isDeleting ? 0.1 : 1.0)
         .opacity(isDeleting ? 0.0 : 1.0)
         .animation(.spring(duration: 0.3), value: isDeleting)
         .onAppear {
@@ -268,7 +267,6 @@ struct NodeContainerView: View {
                 for child in children {
                     child.localPositionX = child.localPositionX + posX
                     child.localPositionY = child.localPositionY + posY
-                    updateLastPosition(child)
                 }
                 
                 withAnimation {
@@ -292,7 +290,7 @@ struct NodeContainerView: View {
     }
     
     private func createChildNode() {
-        createNode("Title", 0, 0, node)
+        createNode("Title", node)
         
         withAnimation {
             rearrangePositionY(node)

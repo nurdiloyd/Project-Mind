@@ -21,7 +21,9 @@ struct BoardView: View {
                         node.parent == nil
                     }), id: \.id) { node in
                         NodeTreeView(node: node,
-                                     createNode: createNode,
+                                     createNode: {title, parent in
+                                            createNode(title: title, parent: parent)
+                                        },
                                      deleteNode: deleteNode,
                                      saveContext: saveContext)
                     }
@@ -88,7 +90,7 @@ struct BoardView: View {
         return newScale
     }
 
-    private func createNode(title: String, positionX: CGFloat, positionY: CGFloat, parent: NodeData? = nil) {
+    private func createNode(title: String, parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {
         let newNode = NodeData(title: title,
                                positionX: Double(positionX),
                                positionY: Double(positionY),
