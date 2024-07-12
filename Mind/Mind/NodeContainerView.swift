@@ -12,7 +12,7 @@ struct NodeContainerView: View {
     @State private var hasImage: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
-    @State private var isPickerPresented: Bool = false
+    @State private var isPickerPresenting: Bool = false
     private let containerWidth: CGFloat = 150
     private let stackSpace: CGFloat = 8
 
@@ -23,8 +23,11 @@ struct NodeContainerView: View {
                 image: $selectedImage,
                 setTitle: setTitle
             )
+            .onChange(of: selectedItem) { _, newItem in
+                loadImage(photoPickerItem: newItem)
+            }
             .overlay{
-                if (true)
+                if (isHovering || isPickerPresenting)
                 {
                     let topLeft = CGPoint(x:-containerWidth / 2, y:-node.containerHeight / 2)
                     let symbolSize = 10.0
@@ -47,6 +50,28 @@ struct NodeContainerView: View {
                     .clipShape(Circle())
                     .offset(x:topLeft.x, y:topLeft.y)
                     
+                    Button(action: {
+                        isPickerPresenting.toggle()
+                    }) {
+                        Image(systemName: "photo.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: symbolSize, height: symbolSize)
+                            .clipped()
+                            .contentShape(Rectangle())
+                            .multilineTextAlignment(.center)
+                            .bold()
+                    }
+                    .tint(.green)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.mini)
+                    .clipShape(Circle())
+                    .offset(x:topLeft.x, y:topLeft.y + 30)
+                    .photosPicker(isPresented: $isPickerPresenting,
+                                  selection: $selectedItem,
+                                  matching: .images,
+                                  photoLibrary: .shared())
+
                     if hasImage {
                         Button(action: {
                             deleteImage()
@@ -61,45 +86,13 @@ struct NodeContainerView: View {
                                 .multilineTextAlignment(.center)
                                 .bold()
                         }
-                        .tint(.white)
+                        .tint(.orange)
                         .buttonStyle(.borderedProminent)
                         .controlSize(.mini)
                         .clipShape(Circle())
-                        .offset(x:-topLeft.x - 15, y:topLeft.y)
+                        .offset(x:topLeft.x, y:topLeft.y + 45)
                     }
                     
-                    Button(action: {
-                        isPickerPresented = true
-                    }) {
-                        Image(systemName: "photo.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: symbolSize, height: symbolSize)
-                            .clipped()
-                            .contentShape(Rectangle())
-                            .multilineTextAlignment(.center)
-                            .bold()
-                    }
-                    .tint(.white)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.mini)
-                    .clipShape(Circle())
-                    .offset(x:-topLeft.x, y:topLeft.y)
-                    .photosPicker(isPresented: $isPickerPresented,
-                                  selection: $selectedItem,
-                                  matching: .images,
-                                  photoLibrary: .shared())
-                    .onChange(of: selectedItem) { _, newItem in
-                        if let item = newItem {
-                            Task {
-                                if let data = try? await item.loadTransferable(type: Data.self) {
-                                    importImage(imageData: data)
-                                    hasImage = true
-                                }
-                            }
-                        }
-                    }
-
                     Button(action: {
                         createChildNode()
                     }) {
@@ -112,7 +105,7 @@ struct NodeContainerView: View {
                             .multilineTextAlignment(.center)
                             .bold()
                     }
-                    .tint(.white)
+                    .tint(.blue)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
@@ -223,15 +216,22 @@ struct NodeContainerView: View {
         hasImage = node.imageName != ""
     }
 
-    private func importImage(imageData: Data) {
-        if let nsImage = NSImage(data: imageData) {
-            let imageName = "image_\(UUID().uuidString).png"
-            selectedImage = nsImage
-            node.imageName = imageName
-            FileHelper.saveImageToFile(data: imageData, filename: imageName)
+    private func loadImage(photoPickerItem: PhotosPickerItem?) {
+        if let item = photoPickerItem {
+            Task {
+                if let imageData = try? await item.loadTransferable(type: Data.self) {
+                    if let nsImage = NSImage(data: imageData) {
+                        let imageName = "image_\(UUID().uuidString).png"
+                        selectedImage = nsImage
+                        node.imageName = imageName
+                        FileHelper.saveImageToFile(data: imageData, filename: imageName)
+                    }
+                    
+                    saveContext()
+                    hasImage = true
+                }
+            }
         }
-        
-        saveContext()
     }
     
     private func deleteImage() {
