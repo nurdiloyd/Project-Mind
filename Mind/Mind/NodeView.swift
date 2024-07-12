@@ -59,8 +59,5 @@ struct NodeView: View {
         .background(Color(NSColor.windowBackgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 11))
         .shadow(radius: 5)
-        .readSize { si in
-            print(si)
-        }
     }
 }

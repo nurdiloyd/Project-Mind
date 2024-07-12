@@ -23,7 +23,9 @@ struct NodeContainerView: View {
     private static let vStackSpace: CGFloat =
             (NodeContainerView.maxHeight - NodeContainerView.minHeight * CGFloat(NodeContainerView.countCorrespondsMaxHeight))
         / CGFloat(NodeContainerView.countCorrespondsMaxHeight - 1)
-
+    private static let snapX = NodeContainerView.width + NodeContainerView.hStackSpace
+    private static let snapY = NodeContainerView.minHeight + NodeContainerView.vStackSpace
+    
     var body: some View {
         ZStack {
             NodeView(
@@ -137,7 +139,7 @@ struct NodeContainerView: View {
             if node.parent != nil
             {
                 withAnimation {
-                    rearrangePositionY(node.parent ?? node)
+                    rearrangeChildrenPositionY(node.parent ?? node)
                     saveContext()
                 }
             }
@@ -147,22 +149,20 @@ struct NodeContainerView: View {
             DragGesture()
                 .onChanged { value in
                     let delta = value.translation
-                    withAnimation {
-                        moveNode(node, deltaX: delta.width, deltaY: delta.height)
-                    }
+                    moveNode(node, deltaX: delta.width, deltaY: delta.height)
                 }
                 .onEnded { value in
-                    if node.parent != nil
-                    {
-                        withAnimation {
+                    withAnimation {
+                        if node.parent != nil
+                        {
                             setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
                         }
-                    }
-                    else
-                    {
-                        snapToGrid(node)
-                        updateLastPosition(node)
-                        saveContext()
+                        else
+                        {
+                            snapToGrid(node)
+                            updateLastPosition(node)
+                            saveContext()
+                        }
                     }
                 }
         )
@@ -171,10 +171,8 @@ struct NodeContainerView: View {
     private func snapToGrid(_ node: NodeData) {
         var positionX = node.localPositionX
         var positionY = node.localPositionY
-        let snapX = NodeContainerView.width + NodeContainerView.hStackSpace
-        let snapY = NodeContainerView.minHeight + NodeContainerView.vStackSpace
-        positionX = (positionX / snapX).rounded() * snapX
-        positionY = (positionY / snapY).rounded() * snapY
+        positionX = (positionX / NodeContainerView.snapX).rounded() * NodeContainerView.snapX
+        positionY = (positionY / NodeContainerView.snapY).rounded() * NodeContainerView.snapY
 
         setPosition(node, positionX: positionX, positionY: positionY)
     }
@@ -191,7 +189,6 @@ struct NodeContainerView: View {
         let newY = node.lastPositionY + deltaY
 
         setPosition(node, positionX: newX, positionY: newY)
-        snapToGrid(node)
     }
 
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
@@ -272,7 +269,7 @@ struct NodeContainerView: View {
                 withAnimation {
                     if parent != nil
                     {
-                        rearrangePositionY(parent ?? node)
+                        rearrangeChildrenPositionY(parent ?? node)
                     }
                     
                     for child in children {
@@ -293,11 +290,11 @@ struct NodeContainerView: View {
         createNode("Title", node)
         
         withAnimation {
-            rearrangePositionY(node)
+            rearrangeChildrenPositionY(node)
         }
     }
     
-    private func rearrangePositionY(_ node: NodeData)
+    private func rearrangeChildrenPositionY(_ node: NodeData)
     {
         let sortedChildren = node.children.sorted(by: { $0.order > $1.order })
         
@@ -308,7 +305,7 @@ struct NodeContainerView: View {
         
         var currentY = totalHeight / 2
         for child in sortedChildren {
-            child.localPositionX = NodeContainerView.width + NodeContainerView.vStackSpace
+            child.localPositionX = NodeContainerView.snapX
             child.localPositionY = currentY - child.containerHeight / 2
             currentY -= child.containerHeight
             updateLastPosition(child)
