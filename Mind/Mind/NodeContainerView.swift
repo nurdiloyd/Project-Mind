@@ -17,7 +17,7 @@ struct NodeContainerView: View {
     private let stackSpace: CGFloat = 8
 
     var body: some View {
-        VStack(spacing: stackSpace) {
+        ZStack {
             NodeView(
                 node: node,
                 image: $selectedImage,

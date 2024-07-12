@@ -40,7 +40,7 @@ struct NodeView: View {
                     .frame(height: NodeView.titleHeight)
             }
             else {
-                Text("\(node.order) \(node.title)")
+                Text("\(node.title)")
                     .foregroundColor(Color(NSColor.windowFrameTextColor))
                     .font(.headline)
                     .frame(height: NodeView.titleHeight)
@@ -62,7 +62,7 @@ struct NodeView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color(NSColor.windowBackgroundColor))
-        .cornerRadius(11)
-        .shadow(radius: 8)
+        .clipShape(RoundedRectangle(cornerRadius: 11))
+        .shadow(radius: 5)
     }
 }
