@@ -17,8 +17,6 @@
 		CE7AD5922C36351E003EFDE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7AD5912C36351E003EFDE5 /* Assets.xcassets */; };
 		CE7AD5952C36351E003EFDE5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7AD5942C36351E003EFDE5 /* Preview Assets.xcassets */; };
 		CE7AD59F2C36357E003EFDE5 /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD59E2C36357E003EFDE5 /* FileHelper.swift */; };
-		CE7AD5A12C363599003EFDE5 /* NodeContainerBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A02C363599003EFDE5 /* NodeContainerBottomView.swift */; };
-		CE7AD5A32C3635B4003EFDE5 /* NodeContainerTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A22C3635B4003EFDE5 /* NodeContainerTopView.swift */; };
 		CE7AD5A52C3635C5003EFDE5 /* NodeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */; };
 		CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */; };
 		CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */; };
@@ -40,8 +38,6 @@
 		CE7AD5942C36351E003EFDE5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CE7AD5962C36351E003EFDE5 /* Mind.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mind.entitlements; sourceTree = "<group>"; };
 		CE7AD59E2C36357E003EFDE5 /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
-		CE7AD5A02C363599003EFDE5 /* NodeContainerBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainerBottomView.swift; sourceTree = "<group>"; };
-		CE7AD5A22C3635B4003EFDE5 /* NodeContainerTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainerTopView.swift; sourceTree = "<group>"; };
 		CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainerView.swift; sourceTree = "<group>"; };
 		CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
@@ -100,12 +96,10 @@
 				CE7AD58B2C36351D003EFDE5 /* MindApp.swift */,
 				CE7AD58D2C36351D003EFDE5 /* ContentView.swift */,
 				CE62E71A2C3CC52300129F2F /* EntranceView.swift */,
+				CE01242F2C3E264E0027AC1D /* BoardCardView.swift */,
 				CE62E71C2C3CC79E00129F2F /* BoardView.swift */,
 				CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */,
 				CE7AD5A42C3635C5003EFDE5 /* NodeContainerView.swift */,
-				CE01242F2C3E264E0027AC1D /* BoardCardView.swift */,
-				CE7AD5A22C3635B4003EFDE5 /* NodeContainerTopView.swift */,
-				CE7AD5A02C363599003EFDE5 /* NodeContainerBottomView.swift */,
 				CE7AD5A82C3635E3003EFDE5 /* NodeView.swift */,
 				CEA338742C3CD93000266B55 /* BoardData.swift */,
 				CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */,
@@ -200,7 +194,6 @@
 				CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */,
 				CE62E71D2C3CC79E00129F2F /* BoardView.swift in Sources */,
 				CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */,
-				CE7AD5A12C363599003EFDE5 /* NodeContainerBottomView.swift in Sources */,
 				CE0124302C3E264E0027AC1D /* BoardCardView.swift in Sources */,
 				CE7AD5A92C3635E3003EFDE5 /* NodeView.swift in Sources */,
 				CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */,
@@ -209,7 +202,6 @@
 				CE7AD59F2C36357E003EFDE5 /* FileHelper.swift in Sources */,
 				CE7AD5A52C3635C5003EFDE5 /* NodeContainerView.swift in Sources */,
 				CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */,
-				CE7AD5A32C3635B4003EFDE5 /* NodeContainerTopView.swift in Sources */,
 				CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

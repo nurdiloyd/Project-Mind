@@ -7,36 +7,117 @@ struct NodeContainerView: View {
     public var deleteNode: (NodeData) -> Void
     public var saveContext: () -> Void
     
+    @State private var selectedItem: PhotosPickerItem? = nil
     @State private var selectedImage: NSImage? = nil
     @State private var hasImage: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
+    @State private var isPickerPresented: Bool = false
     private let containerWidth: CGFloat = 150
     private let stackSpace: CGFloat = 8
 
     var body: some View {
         VStack(spacing: stackSpace) {
-            if (isHovering)
-            {
-                NodeContainerTopView(
-                    importImage: importImage,
-                    deleteImage: deleteImage,
-                    addChildNode: createChildNode,
-                    hasImage: $hasImage
-                )
-            }
-            
             NodeView(
                 node: node,
                 image: $selectedImage,
                 setTitle: setTitle
             )
-            
-            if (isHovering)
-            {
-                NodeContainerBottomView(
-                    buttonAction: deleteThisNode
-                )
+            .overlay{
+                if (true)
+                {
+                    let topLeft = CGPoint(x:-containerWidth / 2, y:-node.containerHeight / 2)
+                    let symbolSize = 10.0
+                    
+                    Button(action: {
+                        deleteThisNode()
+                    }) {
+                        Image(systemName: "minus")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: symbolSize, height: symbolSize)
+                            .clipped()
+                            .contentShape(Rectangle())
+                            .multilineTextAlignment(.center)
+                            .bold()
+                    }
+                    .tint(.red)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.mini)
+                    .clipShape(Circle())
+                    .offset(x:topLeft.x, y:topLeft.y)
+                    
+                    if hasImage {
+                        Button(action: {
+                            deleteImage()
+                            hasImage = false
+                        }) {
+                            Image(systemName: "photo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: symbolSize, height: symbolSize)
+                                .clipped()
+                                .contentShape(Rectangle())
+                                .multilineTextAlignment(.center)
+                                .bold()
+                        }
+                        .tint(.white)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.mini)
+                        .clipShape(Circle())
+                        .offset(x:-topLeft.x - 15, y:topLeft.y)
+                    }
+                    
+                    Button(action: {
+                        isPickerPresented = true
+                    }) {
+                        Image(systemName: "photo.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: symbolSize, height: symbolSize)
+                            .clipped()
+                            .contentShape(Rectangle())
+                            .multilineTextAlignment(.center)
+                            .bold()
+                    }
+                    .tint(.white)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.mini)
+                    .clipShape(Circle())
+                    .offset(x:-topLeft.x, y:topLeft.y)
+                    .photosPicker(isPresented: $isPickerPresented,
+                                  selection: $selectedItem,
+                                  matching: .images,
+                                  photoLibrary: .shared())
+                    .onChange(of: selectedItem) { _, newItem in
+                        if let item = newItem {
+                            Task {
+                                if let data = try? await item.loadTransferable(type: Data.self) {
+                                    importImage(imageData: data)
+                                    hasImage = true
+                                }
+                            }
+                        }
+                    }
+
+                    Button(action: {
+                        createChildNode()
+                    }) {
+                        Image(systemName: "plus")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: symbolSize, height: symbolSize)
+                            .clipped()
+                            .contentShape(Rectangle())
+                            .multilineTextAlignment(.center)
+                            .bold()
+                    }
+                    .tint(.white)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.mini)
+                    .clipShape(Circle())
+                    .offset(x:-topLeft.x, y:topLeft.y + 15)
+                }
             }
         }
         .onHover { hovering in
