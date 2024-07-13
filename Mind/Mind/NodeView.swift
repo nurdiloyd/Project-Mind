@@ -34,7 +34,7 @@ struct NodeView: View {
             VStack(spacing: 0) {
                 if isEditing {
                     TextField("Node Title", text: $inputText, onEditingChanged: { isStart in
-                        if !isStart {
+                        if !isStart && !node.newlyCreated {
                             isEditing = false
                             setTitle(title: inputText)
                         }
@@ -180,6 +180,13 @@ struct NodeView: View {
         .opacity(isDeleting ? 0.0 : 1.0)
         .animation(.spring(duration: 0.3), value: isDeleting)
         .onAppear {
+            if node.newlyCreated
+            {
+                inputText = node.title
+                isEditing = true
+                isFocus.toggle()
+            }
+            
             loadNode()
         }
         .readSize { newSize in
@@ -225,6 +232,8 @@ struct NodeView: View {
     }
     
     private func setTitle(title: String) {
+        node.newlyCreated = false
+
         if !title.isEmptyOrWithWhiteSpace {
             node.title = title
             saveContext()

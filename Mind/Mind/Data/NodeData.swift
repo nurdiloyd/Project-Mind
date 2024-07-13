@@ -6,7 +6,6 @@ import PhotosUI
 final class NodeData {
     @Attribute(.unique) var id: UUID
     var title: String = ""
-    
     var localPositionX: Double = 0
     var localPositionY: Double = 0
     var lastPositionX: Double = 0
@@ -28,6 +27,7 @@ final class NodeData {
                                             : height }
     @Transient var isExpandable: Bool {children.count > 0}
     @Transient var image: NSImage? = nil
+    var newlyCreated: Bool = true
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
