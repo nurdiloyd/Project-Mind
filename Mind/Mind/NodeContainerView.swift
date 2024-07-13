@@ -298,16 +298,16 @@ struct NodeContainerView: View {
     {
         let sortedChildren = node.children.sorted(by: { $0.order > $1.order })
         
-        var totalHeight = 0.0
+        var totalHeight = -NodeContainerView.vStackSpace
         for child in sortedChildren {
-            totalHeight += child.containerHeight
+            totalHeight += child.containerHeight + NodeContainerView.vStackSpace
         }
         
         var currentY = totalHeight / 2
         for child in sortedChildren {
             child.localPositionX = NodeContainerView.snapX
             child.localPositionY = currentY - child.containerHeight / 2
-            currentY -= child.containerHeight
+            currentY -= (child.containerHeight + NodeContainerView.vStackSpace)
             updateLastPosition(child)
         }
     }
