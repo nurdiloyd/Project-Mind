@@ -15,7 +15,7 @@ struct NodeView: View {
     @State private var isDeleting: Bool = false
     @State private var isPickerPresenting: Bool = false
     @FocusState private var isFocus: Bool
-    private var hasImage: Bool { return image != nil}
+    private var hasImage: Bool { return image != nil }
     
     private static let width: CGFloat = 150
     public static let minHeight: CGFloat = NodeView.titleHeight
@@ -24,35 +24,30 @@ struct NodeView: View {
     private static let imageHeight: CGFloat = NodeView.width
     private static let countCorrespondsMaxHeight: Int = 5
     private static let hStackSpace: CGFloat = 10
-    private static let vStackSpace: CGFloat =
-            (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight))
-        / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
+    private static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
     private static let snapX = NodeView.width + NodeView.hStackSpace
     private static let snapY = NodeView.minHeight + NodeView.vStackSpace
     
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                if isEditing
-                {
+                if isEditing {
                     TextField("Node Title", text: $inputText, onEditingChanged: { isStart in
-                            if !isStart
-                            {
-                                isEditing = false
-                                setTitle(title: inputText)
-                            }
-                        })
-                        .focused($isFocus)
-                        .onSubmit {
+                        if !isStart {
                             isEditing = false
                             setTitle(title: inputText)
                         }
-                        .foregroundColor(Color(NSColor.windowFrameTextColor))
-                        .multilineTextAlignment(.center)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .frame(height: NodeView.titleHeight)
-                }
-                else {
+                    })
+                    .focused($isFocus)
+                    .onSubmit {
+                        isEditing = false
+                        setTitle(title: inputText)
+                    }
+                    .foregroundColor(Color(NSColor.windowFrameTextColor))
+                    .multilineTextAlignment(.center)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .frame(height: NodeView.titleHeight)
+                } else {
                     Text("\(node.title)")
                         .foregroundColor(Color(NSColor.windowFrameTextColor))
                         .font(.headline)
@@ -80,10 +75,13 @@ struct NodeView: View {
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
             }
-            .overlay{
-                if (isHovering || isPickerPresenting)
-                {
-                    let topLeft = CGPoint(x:-NodeView.width / 2, y:-node.containerHeight / 2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 11)
+                    .stroke(Color.blue, lineWidth: hasImage ? 2 : 0)
+            )
+            .overlay {
+                if (isHovering || isPickerPresenting) {
+                    let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.containerHeight / 2)
                     let symbolSize = 10.0
                     
                     Button(action: {
@@ -102,7 +100,7 @@ struct NodeView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:topLeft.x, y:topLeft.y)
+                    .offset(x: topLeft.x, y: topLeft.y)
                     
                     Button(action: {
                         isPickerPresenting.toggle()
@@ -120,12 +118,9 @@ struct NodeView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:topLeft.x, y:topLeft.y + NodeView.minHeight)
-                    .photosPicker(isPresented: $isPickerPresenting,
-                                  selection: $selectedItem,
-                                  matching: .images,
-                                  photoLibrary: .shared())
-
+                    .offset(x: topLeft.x, y: topLeft.y + NodeView.minHeight)
+                    .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
+                    
                     if hasImage {
                         Button(action: {
                             deleteImage()
@@ -143,7 +138,7 @@ struct NodeView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.mini)
                         .clipShape(Circle())
-                        .offset(x:topLeft.x, y:topLeft.y + 3 * NodeView.minHeight / 2)
+                        .offset(x: topLeft.x, y: topLeft.y + 3 * NodeView.minHeight / 2)
                     }
                     
                     Button(action: {
@@ -162,7 +157,7 @@ struct NodeView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.mini)
                     .clipShape(Circle())
-                    .offset(x:-topLeft.x, y:topLeft.y + NodeView.minHeight / 2)
+                    .offset(x: -topLeft.x, y: topLeft.y + NodeView.minHeight / 2)
                 }
             }
         }
@@ -179,8 +174,7 @@ struct NodeView: View {
         }
         .readSize { newSize in
             node.containerHeight = newSize.height
-            if node.parent != nil
-            {
+            if node.parent != nil {
                 withAnimation {
                     rearrangeChildrenPositionY(node.parent ?? node)
                     saveContext()
@@ -196,12 +190,9 @@ struct NodeView: View {
                 }
                 .onEnded { value in
                     withAnimation {
-                        if node.parent != nil
-                        {
+                        if node.parent != nil {
                             setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
-                        }
-                        else
-                        {
+                        } else {
                             snapToGrid(node)
                             updateLastPosition(node)
                             saveContext()
@@ -216,7 +207,7 @@ struct NodeView: View {
         var positionY = node.localPositionY
         positionX = (positionX / NodeView.snapX).rounded() * NodeView.snapX
         positionY = (positionY / NodeView.snapY).rounded() * NodeView.snapY
-
+        
         setPosition(node, positionX: positionX, positionY: positionY)
     }
     
@@ -230,10 +221,10 @@ struct NodeView: View {
     private func moveNode(_ node: NodeData, deltaX: Double, deltaY: Double) {
         let newX = node.lastPositionX + deltaX
         let newY = node.lastPositionY + deltaY
-
+        
         setPosition(node, positionX: newX, positionY: newY)
     }
-
+    
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
         let minX = NodeView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeView.width / 2 + 10) : 0)
         let maxX = Double(BoardView.boardSize - NodeView.width / 2)
@@ -261,7 +252,7 @@ struct NodeView: View {
             }
         }
     }
-
+    
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
         if let item = photoPickerItem {
             Task {
@@ -291,7 +282,7 @@ struct NodeView: View {
         withAnimation {
             isDeleting = true
         }
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             let parent = node.parent
             let children = node.children
@@ -299,16 +290,14 @@ struct NodeView: View {
             let posY = node.globalPositionY
             let isDeleted = deleteNode(node)
             
-            if isDeleted
-            {
+            if isDeleted {
                 for child in children {
                     child.localPositionX = child.localPositionX + posX
                     child.localPositionY = child.localPositionY + posY
                 }
                 
                 withAnimation {
-                    if parent != nil
-                    {
+                    if parent != nil {
                         rearrangeChildrenPositionY(parent ?? node)
                     }
                     
@@ -319,8 +308,7 @@ struct NodeView: View {
                     
                     saveContext()
                 }
-            }
-            else {
+            } else {
                 isDeleting = false
             }
         }
@@ -334,8 +322,7 @@ struct NodeView: View {
         }
     }
     
-    private func rearrangeChildrenPositionY(_ node: NodeData)
-    {
+    private func rearrangeChildrenPositionY(_ node: NodeData) {
         let sortedChildren = node.children.sorted(by: { $0.order > $1.order })
         
         var totalHeight = -NodeView.vStackSpace
