@@ -15,7 +15,7 @@ final class NodeData {
     var order: Int = 0
     @Relationship var parent: NodeData? = nil
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
-    var containerHeight: Double = NodeContainerView.minHeight
+    var containerHeight: Double = NodeView.minHeight
     var isSelected: Bool = false
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
