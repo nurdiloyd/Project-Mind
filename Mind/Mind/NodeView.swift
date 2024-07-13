@@ -27,6 +27,7 @@ struct NodeView: View {
     private static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
     private static let snapX = NodeView.width + NodeView.hStackSpace
     private static let snapY = NodeView.minHeight + NodeView.vStackSpace
+    private let cornerRadius: CGFloat = 11
     
     var body: some View {
         ZStack {
@@ -70,16 +71,25 @@ struct NodeView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color(NSColor.windowBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: 11))
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .shadow(radius: 5)
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: 11)
-                    .stroke(Color.blue, lineWidth: hasImage ? 2 : 0)
-            )
             .overlay {
+                if node.isExpandable {
+                    let style = node.isExpanded
+                    ? isHovering
+                        ? StrokeStyle(lineWidth: 1)
+                        : StrokeStyle(lineWidth: 1, dash: [20, 1])
+                    : isHovering
+                        ? StrokeStyle(lineWidth: 1, dash: [20, 1])
+                        : StrokeStyle(lineWidth: 1)
+                    let color = node.isExpanded ? Color.gray : Color.blue
+                    
+                    RoundedRectangle(cornerRadius: cornerRadius).stroke(color, style: style)
+                }
+                
                 if (isHovering || isPickerPresenting) {
                     let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.containerHeight / 2)
                     let symbolSize = 10.0
@@ -182,6 +192,11 @@ struct NodeView: View {
             }
         }
         .position(CGPoint(x: CGFloat(node.globalPositionX), y: CGFloat(node.globalPositionY)))
+        .onTapGesture(count: 1) {
+            withAnimation {
+                node.isExpanded.toggle()
+            }
+        }
         .gesture(
             DragGesture()
                 .onChanged { value in
@@ -281,6 +296,7 @@ struct NodeView: View {
     private func deleteThisNode() {
         withAnimation {
             isDeleting = true
+            node.isExpanded = true
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {

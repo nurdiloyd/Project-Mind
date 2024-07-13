@@ -16,7 +16,8 @@ final class NodeData {
     @Relationship var parent: NodeData? = nil
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
     var containerHeight: Double = NodeView.minHeight
-    var isSelected: Bool = false
+    var isExpanded: Bool = false
+    var isExpandable: Bool {children.count > 0}
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
@@ -27,10 +28,14 @@ final class NodeData {
         self.lastPositionY = positionY
         self.parent = parent
         
-        parent?.addChild(node: self)
+        if let prnt = parent
+        {
+            prnt.addChild(node: self)
+        }
     }
 
     private func addChild(node: NodeData) {
+        isExpanded = true
         node.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
         children.append(node)
     }

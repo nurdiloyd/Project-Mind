@@ -13,11 +13,13 @@ struct NodeTreeView: View {
                  deleteNode: deleteNode,
                  saveContext: saveContext)
         
-        ForEach(node.children.sorted(by: { $0.order > $1.order })) { child in
-            NodeTreeView(node: child,
-                         createNode: createNode,
-                         deleteNode: deleteNode,
-                         saveContext: saveContext)
+        if node.isExpanded {
+            ForEach(node.children.sorted(by: { $0.order > $1.order })) { child in
+                NodeTreeView(node: child,
+                             createNode: createNode,
+                             deleteNode: deleteNode,
+                             saveContext: saveContext)
+            }
         }
     }
 }
