@@ -2,22 +2,26 @@ import SwiftUI
 import PhotosUI
 
 struct NodeContainerView: View {
-    let node: NodeData
+    public let node: NodeData
     public var createNode: (String, NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
     public var saveContext: () -> Void
     
+    @State private var inputText: String = ""
     @State private var selectedItem: PhotosPickerItem? = nil
-    @State private var selectedImage: NSImage? = nil
-    @State private var hasImage: Bool = false
+    @State private var image: NSImage? = nil
+    @State private var isEditing: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
     @State private var isPickerPresenting: Bool = false
-    public static let width: CGFloat = 150
-    public static let maxHeight: CGFloat = NodeContainerView.titleHeight + NodeContainerView.imageHeight
-    public static let minHeight: CGFloat = NodeContainerView.titleHeight
-    public static let titleHeight: CGFloat = 30
-    public static let imageHeight: CGFloat = NodeContainerView.width
+    @FocusState private var isFocus: Bool
+    private var hasImage: Bool { return image != nil}
+    
+    private static let width: CGFloat = 150
+    private static let maxHeight: CGFloat = NodeContainerView.titleHeight + NodeContainerView.imageHeight
+    private static let minHeight: CGFloat = NodeContainerView.titleHeight
+    private static let titleHeight: CGFloat = 30
+    private static let imageHeight: CGFloat = NodeContainerView.width
     private static let countCorrespondsMaxHeight: Int = 5
     private static let hStackSpace: CGFloat = 10
     private static let vStackSpace: CGFloat =
@@ -28,11 +32,51 @@ struct NodeContainerView: View {
     
     var body: some View {
         ZStack {
-            NodeView(
-                node: node,
-                image: $selectedImage,
-                setTitle: setTitle
-            )
+            VStack(spacing: 0) {
+                if isEditing
+                {
+                    TextField("Node Title", text: $inputText, onEditingChanged: { isStart in
+                            if !isStart
+                            {
+                                isEditing = false
+                                setTitle(title: inputText)
+                            }
+                        })
+                        .focused($isFocus)
+                        .onSubmit {
+                            isEditing = false
+                            setTitle(title: inputText)
+                        }
+                        .foregroundColor(Color(NSColor.windowFrameTextColor))
+                        .multilineTextAlignment(.center)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .frame(height: NodeContainerView.titleHeight)
+                }
+                else {
+                    Text("\(node.title)")
+                        .foregroundColor(Color(NSColor.windowFrameTextColor))
+                        .font(.headline)
+                        .frame(height: NodeContainerView.titleHeight)
+                        .onTapGesture(count: 1) {
+                            inputText = node.title
+                            isEditing = true
+                            isFocus.toggle()
+                        }
+                }
+                
+                if let customImage = image {
+                    Image(nsImage: customImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: NodeContainerView.imageHeight, height: NodeContainerView.imageHeight)
+                        .clipped()
+                        .contentShape(Rectangle())
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color(NSColor.windowBackgroundColor))
+            .clipShape(RoundedRectangle(cornerRadius: 11))
+            .shadow(radius: 5)
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
             }
@@ -85,7 +129,6 @@ struct NodeContainerView: View {
                     if hasImage {
                         Button(action: {
                             deleteImage()
-                            hasImage = false
                         }) {
                             Image(systemName: "photo")
                                 .resizable()
@@ -208,17 +251,15 @@ struct NodeContainerView: View {
     }
     
     private func loadNode() {
-        if node.imageName != nil && node.imageName != "" {
-            if let imageData = FileHelper.loadImageFromFile(filename: node.imageName ?? "") {
-                let nsImage = NSImage(data: imageData)
-                self.selectedImage = nsImage
-                print("Image loaded successfully")
-            } else {
-                print("No image found for filename: \(node.imageName ?? "")")
+        if let imageName = node.imageName {
+            if imageName.isEmptyOrWithWhiteSpace {
+                return
+            }
+            
+            if let imageData = FileHelper.loadImageFromFile(filename: imageName) {
+                image = NSImage(data: imageData)
             }
         }
-        
-        hasImage = node.imageName != ""
     }
 
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
@@ -227,13 +268,12 @@ struct NodeContainerView: View {
                 if let imageData = try? await item.loadTransferable(type: Data.self) {
                     if let nsImage = NSImage(data: imageData) {
                         let imageName = "image_\(UUID().uuidString).png"
-                        selectedImage = nsImage
+                        image = nsImage
                         node.imageName = imageName
                         FileHelper.saveImageToFile(data: imageData, filename: imageName)
                     }
                     
                     saveContext()
-                    hasImage = true
                 }
             }
         }
@@ -241,7 +281,7 @@ struct NodeContainerView: View {
     
     private func deleteImage() {
         FileHelper.deleteSavedImage(filename: node.imageName ?? "")
-        selectedImage = nil
+        image = nil
         node.imageName = ""
         
         saveContext()

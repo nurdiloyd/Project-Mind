@@ -70,6 +70,5 @@ struct BoardCardView: View {
             .controlSize(.large)
         }
         .padding(3)
-        
     }
 }

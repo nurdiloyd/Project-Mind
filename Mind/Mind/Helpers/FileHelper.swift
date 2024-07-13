@@ -7,9 +7,9 @@ struct FileHelper {
         createDocumentsDirectoryIfNeeded()  // Ensure the directory exists
         do {
             try data.write(to: fileURL)
-            print("Image saved successfully to \(fileURL.path)")
+            print("Image saved \(filename)")
         } catch {
-            print("Error saving image to file: \(error.localizedDescription)")
+            print("Image is not saved: \(error.localizedDescription)")
         }
     }
 
@@ -17,10 +17,10 @@ struct FileHelper {
         let fileURL = getDocumentsDirectory().appendingPathComponent(filename)
         do {
             let data = try Data(contentsOf: fileURL)
-            print("Image loaded successfully from \(fileURL.path)")
+            print("Image loaded \(filename)")
             return data
         } catch {
-            print("Error loading image from file: \(error.localizedDescription)")
+            print("Image is not loaded: \(error.localizedDescription)")
             return nil
         }
     }
@@ -29,36 +29,9 @@ struct FileHelper {
         let fileURL = getDocumentsDirectory().appendingPathComponent(filename)
         do {
             try FileManager.default.removeItem(at: fileURL)
-            print("Image deleted successfully from \(fileURL.path)")
+            print("Image deleted \(fileURL.path)")
         } catch {
-            print("Error deleting image from file: \(error.localizedDescription)")
-        }
-    }
-
-    static func saveData<T: Codable>(data: T, key: String) {
-        let userDefaults = UserDefaults.standard
-        do {
-            let encodedData = try JSONEncoder().encode(data)
-            userDefaults.set(encodedData, forKey: key)
-            print("Data saved successfully for key \(key)")
-        } catch {
-            print("Error saving data for key \(key): \(error.localizedDescription)")
-        }
-    }
-
-    static func loadData<T: Codable>(key: String) -> T? {
-        let userDefaults = UserDefaults.standard
-        guard let savedData = userDefaults.data(forKey: key) else {
-            print("No data found for key \(key)")
-            return nil
-        }
-        do {
-            let decodedData = try JSONDecoder().decode(T.self, from: savedData)
-            print("Data loaded successfully for key \(key)")
-            return decodedData
-        } catch {
-            print("Error loading data for key \(key): \(error.localizedDescription)")
-            return nil
+            print("Image is not deleted: \(error.localizedDescription)")
         }
     }
 
