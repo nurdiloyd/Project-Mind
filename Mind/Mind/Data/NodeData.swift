@@ -1,5 +1,6 @@
 import SwiftData
 import Foundation
+import PhotosUI
 
 @Model
 final class NodeData {
@@ -17,7 +18,8 @@ final class NodeData {
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
     var containerHeight: Double = NodeView.minHeight
     var isExpanded: Bool = false
-    var isExpandable: Bool {children.count > 0}
+    @Transient var isExpandable: Bool {children.count > 0}
+    @Transient var image: NSImage? = nil
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
