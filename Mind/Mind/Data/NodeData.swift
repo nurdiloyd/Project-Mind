@@ -6,8 +6,7 @@ import PhotosUI
 final class NodeData {
     @Attribute(.unique) var id: UUID
     var title: String = ""
-    var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
-    var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
+    
     var localPositionX: Double = 0
     var localPositionY: Double = 0
     var lastPositionX: Double = 0
@@ -16,8 +15,17 @@ final class NodeData {
     var order: Int = 0
     @Relationship var parent: NodeData? = nil
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
-    var containerHeight: Double = NodeView.minHeight
+    var height: Double = NodeView.minHeight
+    var contentHeight: Double = 0
     var isExpanded: Bool = false
+    
+    @Transient var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
+    @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
+    @Transient var globalHeight: Double { isExpandable
+                                            ? isExpanded
+                                                ? max(height, contentHeight)
+                                                : height
+                                            : height }
     @Transient var isExpandable: Bool {children.count > 0}
     @Transient var image: NSImage? = nil
     

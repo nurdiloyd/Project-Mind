@@ -91,7 +91,7 @@ struct NodeView: View {
                 }
                 
                 if (isHovering || isPickerPresenting) {
-                    let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.containerHeight / 2)
+                    let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.height / 2)
                     let symbolSize = 10.0
                     
                     Button(action: {
@@ -183,18 +183,16 @@ struct NodeView: View {
             loadNode()
         }
         .readSize { newSize in
-            node.containerHeight = newSize.height
-            if node.parent != nil {
-                withAnimation {
-                    rearrangeChildrenPositionY(node.parent ?? node)
-                    saveContext()
-                }
+            node.height = newSize.height
+            withAnimation {
+                rearrangeSiblingsPositionY(node)
             }
         }
         .position(CGPoint(x: CGFloat(node.globalPositionX), y: CGFloat(node.globalPositionY)))
         .onTapGesture(count: 1) {
             withAnimation {
                 node.isExpanded.toggle()
+                rearrangeSiblingsPositionY(node)
             }
         }
         .gesture(
@@ -244,8 +242,8 @@ struct NodeView: View {
         let minX = NodeView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeView.width / 2 + 10) : 0)
         let maxX = Double(BoardView.boardSize - NodeView.width / 2)
         
-        let minY = node.containerHeight / 2
-        let maxY = Double(BoardView.boardSize - node.containerHeight / 2)
+        //let minY = node.containerHeight / 2
+        //let maxY = Double(BoardView.boardSize - node.containerHeight / 2)
         
         node.localPositionX = positionX//.clamped(to: minX...maxX)
         node.localPositionY = positionY//.clamped(to: minY...maxY)
@@ -313,9 +311,7 @@ struct NodeView: View {
                 }
                 
                 withAnimation {
-                    if parent != nil {
-                        rearrangeChildrenPositionY(parent ?? node)
-                    }
+                    rearrangeSiblingsPositionY(node)
                     
                     for child in children {
                         snapToGrid(child)
@@ -335,6 +331,7 @@ struct NodeView: View {
         
         withAnimation {
             rearrangeChildrenPositionY(node)
+            rearrangeSiblingsPositionY(node)
         }
     }
     
@@ -343,15 +340,25 @@ struct NodeView: View {
         
         var totalHeight = -NodeView.vStackSpace
         for child in sortedChildren {
-            totalHeight += child.containerHeight + NodeView.vStackSpace
+            totalHeight += child.globalHeight + NodeView.vStackSpace
         }
+        
+        node.contentHeight = totalHeight
         
         var currentY = totalHeight / 2
         for child in sortedChildren {
             child.localPositionX = NodeView.snapX
-            child.localPositionY = currentY - child.containerHeight / 2
-            currentY -= (child.containerHeight + NodeView.vStackSpace)
+            child.localPositionY = currentY - child.globalHeight / 2
+            currentY -= (child.globalHeight + NodeView.vStackSpace)
             updateLastPosition(child)
+        }
+    }
+    
+    private func rearrangeSiblingsPositionY(_ node: NodeData)
+    {
+        if let parent = node.parent {
+            rearrangeChildrenPositionY(parent)
+            rearrangeSiblingsPositionY(parent)
         }
     }
 }
