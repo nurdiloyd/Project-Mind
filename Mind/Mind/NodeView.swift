@@ -311,7 +311,10 @@ struct NodeView: View {
                 }
                 
                 withAnimation {
-                    rearrangeSiblingsPositionY(node)
+                    if let prnt = parent {
+                        rearrangeChildrenPositionY(prnt)
+                        rearrangeSiblingsPositionY(prnt)
+                    }
                     
                     for child in children {
                         snapToGrid(child)
