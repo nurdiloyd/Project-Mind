@@ -18,8 +18,8 @@ struct NodeContainerView: View {
     private var hasImage: Bool { return image != nil}
     
     private static let width: CGFloat = 150
+    public static let minHeight: CGFloat = NodeContainerView.titleHeight
     private static let maxHeight: CGFloat = NodeContainerView.titleHeight + NodeContainerView.imageHeight
-    private static let minHeight: CGFloat = NodeContainerView.titleHeight
     private static let titleHeight: CGFloat = 30
     private static let imageHeight: CGFloat = NodeContainerView.width
     private static let countCorrespondsMaxHeight: Int = 5

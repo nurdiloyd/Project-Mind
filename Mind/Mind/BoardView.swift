@@ -94,7 +94,6 @@ struct BoardView: View {
         let newNode = NodeData(title: title,
                                positionX: Double(positionX),
                                positionY: Double(positionY),
-                               imageName: "",
                                parent: parent)
 
         board.nodes.append(newNode)
