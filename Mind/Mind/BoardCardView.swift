@@ -7,10 +7,11 @@ struct BoardCardView: View {
     public var deleteBoard: (BoardData) -> Void
     public var setTitle: (BoardData, String) -> Void
     
-    @State private var isEditing: Bool = false
     @FocusState private var isFocus: Bool
+    @State private var isEditing: Bool = false
     @State var inputText: String = ""
     @State private var isDeleting: Bool = false
+    @State private var onCreation: Bool = false
     
     var body: some View {
         HStack {            
@@ -20,11 +21,13 @@ struct BoardCardView: View {
                 if isEditing
                 {
                     TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
-                        if !isStart
+                        if !isStart && !onCreation
                         {
                             isEditing = false
                             setTitle(board, inputText)
                         }
+                        
+                        onCreation = false
                     })
                     .font(.title2)
                     .focused($isFocus)
@@ -70,5 +73,14 @@ struct BoardCardView: View {
             .controlSize(.large)
         }
         .padding(3)
+        .onAppear {
+            if !board.isInit {
+                board.isInit = true
+                onCreation = true
+                inputText = board.title
+                isEditing = true
+                isFocus.toggle()
+            }
+        }
     }
 }
