@@ -26,8 +26,8 @@ final class NodeData {
                                                 : height
                                             : height }
     @Transient var isExpandable: Bool {children.count > 0}
-    @Transient var image: NSImage? = nil
-    var newlyCreated: Bool = true
+    @Transient() var image: NSImage? = nil
+    @Attribute(.ephemeral) var newlyCreated: Bool = false
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
@@ -37,6 +37,7 @@ final class NodeData {
         self.lastPositionX = positionX
         self.lastPositionY = positionY
         self.parent = parent
+        self.newlyCreated = true
         
         if let prnt = parent
         {

@@ -38,6 +38,8 @@ struct NodeView: View {
                             isEditing = false
                             setTitle(title: inputText)
                         }
+                        
+                        node.newlyCreated = false
                     })
                     .focused($isFocus)
                     .onSubmit {
@@ -232,8 +234,6 @@ struct NodeView: View {
     }
     
     private func setTitle(title: String) {
-        node.newlyCreated = false
-
         if !title.isEmptyOrWithWhiteSpace {
             node.title = title
             saveContext()
