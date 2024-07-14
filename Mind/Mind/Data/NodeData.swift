@@ -17,6 +17,7 @@ final class NodeData {
     var height: Double = NodeView.minHeight
     var contentHeight: Double = 0
     var isExpanded: Bool = false
+    var isInit: Bool = false
     
     @Transient var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
@@ -27,7 +28,6 @@ final class NodeData {
                                             : height }
     @Transient var isExpandable: Bool {children.count > 0}
     @Transient() var image: NSImage? = nil
-    @Attribute(.ephemeral) var newlyCreated: Bool = false
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
@@ -37,7 +37,6 @@ final class NodeData {
         self.lastPositionX = positionX
         self.lastPositionY = positionY
         self.parent = parent
-        self.newlyCreated = true
         
         if let prnt = parent
         {

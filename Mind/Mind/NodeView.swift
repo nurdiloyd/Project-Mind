@@ -7,6 +7,7 @@ struct NodeView: View {
     public var deleteNode: (NodeData) -> Bool
     public var saveContext: () -> Void
     
+    @FocusState private var isFocus: Bool
     @State private var inputText: String = ""
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var isEditing: Bool = false
@@ -14,7 +15,7 @@ struct NodeView: View {
     @State private var isDeleting: Bool = false
     @State private var isPickerPresenting: Bool = false
     @State private var isAddingImage: Bool = false
-    @FocusState private var isFocus: Bool
+    @State private var onCreation: Bool = false
     private var hasImage: Bool { return node.image != nil }
     
     private static let width: CGFloat = 150
@@ -34,12 +35,12 @@ struct NodeView: View {
             VStack(spacing: 0) {
                 if isEditing {
                     TextField("Node Title", text: $inputText, onEditingChanged: { isStart in
-                        if !isStart && !node.newlyCreated {
+                        if !isStart && !onCreation {
                             isEditing = false
                             setTitle(title: inputText)
                         }
                         
-                        node.newlyCreated = false
+                        onCreation = false
                     })
                     .focused($isFocus)
                     .onSubmit {
@@ -182,8 +183,10 @@ struct NodeView: View {
         .opacity(isDeleting ? 0.0 : 1.0)
         .animation(.spring(duration: 0.3), value: isDeleting)
         .onAppear {
-            if node.newlyCreated
+            if !node.isInit
             {
+                node.isInit = true
+                onCreation = true
                 inputText = node.title
                 isEditing = true
                 isFocus.toggle()
