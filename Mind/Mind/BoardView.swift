@@ -9,37 +9,39 @@ struct BoardView: View {
     
     @State private var lastScaleValue: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
-    @State private var boxSize: CGFloat = 300
     @State private var currentSize: CGSize = .zero
+    private static var boxSize: CGFloat = NodeView.maxHeight
     public static let boardWidth: CGFloat = 100 * NodeView.snapX
     public static let boardHeight: CGFloat = 400 * NodeView.snapY
     
     var body: some View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
-            ZStack {
+            ZStack{
                 ZStack {
-                    Circle()
-                        .frame(width: 100, height: 100)
-                    
-                    ForEach(board.nodes.filter({ node in
-                        node.parent == nil
-                    }), id: \.id) { node in
-                        NodeTreeView(node: node,
-                                     createNode: {title, parent in
-                                            createNode(title: title, parent: parent)
-                                        },
-                                     deleteNode: deleteNode,
-                                     saveContext: saveContext)
+                    ZStack {
+                        Circle()
+                            .frame(width: 50, height: 50)
+                            .foregroundStyle(Color(NSColor.windowFrameTextColor))
+
+                        ForEach(board.nodes.filter({ node in
+                            node.parent == nil
+                        }), id: \.id) { node in
+                            NodeTreeView(node: node,
+                                         createNode: {title, parent in
+                                createNode(title: title, parent: parent)
+                            },
+                                         deleteNode: deleteNode,
+                                         saveContext: saveContext)
+                        }
                     }
+                    .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
+                    .scaleEffect(scale)
                 }
-                .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
-                .scaleEffect(self.scale)
+                .frame(width: BoardView.boardWidth * scale, height: BoardView.boardHeight * scale)
+                .background(Color(NSColor.windowBackgroundColor))
             }
-            .frame(width: BoardView.boardWidth * self.scale, height: BoardView.boardHeight * self.scale)
-            .background(Color(NSColor.windowBackgroundColor))
         }
         .defaultScrollAnchor(.center)
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .toolbar {
             ToolbarItemGroup(placement: .principal) {
                 Button(action: {
@@ -87,11 +89,21 @@ struct BoardView: View {
     }
 
     private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat {
+        var boardAspectRatio = BoardView.boardWidth / BoardView.boardHeight
+        var windowAspectRatio = geometrySize.width / geometrySize.height
         let minEdgeLength = min(geometrySize.width, geometrySize.height)
-        let minScale: CGFloat = minEdgeLength / BoardView.boardWidth
-        let maxScale: CGFloat = minEdgeLength / self.boxSize
-        let newScale = value.clamped(to: minScale...maxScale)
-        return newScale
+        let maxScale = minEdgeLength / BoardView.boxSize
+
+        if boardAspectRatio > windowAspectRatio {
+            let minScale = geometrySize.width / (BoardView.boardWidth*1)
+            let newScale = value.clamped(to: minScale...maxScale)
+            return newScale
+        }
+        else {
+            let minScale = geometrySize.height / (BoardView.boardHeight*1)
+            let newScale = value.clamped(to: minScale...maxScale)
+            return newScale
+        }
     }
 
     private func createNode(title: String, parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {

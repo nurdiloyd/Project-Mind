@@ -21,7 +21,7 @@ struct NodeView: View {
     
     private static let width: CGFloat = 150
     public static let minHeight: CGFloat = NodeView.titleHeight
-    private static let maxHeight: CGFloat = NodeView.titleHeight + NodeView.imageHeight
+    public static let maxHeight: CGFloat = NodeView.titleHeight + NodeView.imageHeight
     private static let titleHeight: CGFloat = 30
     private static let imageHeight: CGFloat = NodeView.width
     private static let countCorrespondsMaxHeight: Int = 5
