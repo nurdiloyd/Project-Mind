@@ -90,6 +90,7 @@ struct EntranceView: View {
     }
     
     public func deleteNodeData(_ node: NodeData) {
+        FileHelper.deleteSavedImage(filename: node.imageName ?? "")
         context.delete(node)
     }
     

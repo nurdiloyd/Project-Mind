@@ -274,19 +274,25 @@ struct NodeView: View {
         node.lastPositionX = node.localPositionX
         node.lastPositionY = node.localPositionY
     }
-        
+    
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
         if let item = photoPickerItem {
             Task {
                 if let imageData = try? await item.loadTransferable(type: Data.self) {
                     if let nsImage = NSImage(data: imageData) {
-                        let imageName = "image_\(UUID().uuidString).png"
-                        image = nsImage
-                        node.imageName = imageName
-                        FileHelper.saveImageToFile(data: imageData, filename: imageName)
+                        if let tiffData = nsImage.tiffRepresentation,
+                           let bitmapImageRep = NSBitmapImageRep(data: tiffData) {
+                            let jpegData = bitmapImageRep.representation(using: .jpeg, properties: [.compressionFactor: 0.1])
+                            if let jpegData = jpegData {
+                                let imageName = "image_\(UUID().uuidString).jpeg"
+                                image = nsImage
+                                node.imageName = imageName
+                                FileHelper.saveImageToFile(data: jpegData, filename: imageName)
+                            }
+                        }
+                        
+                        saveContext()
                     }
-                    
-                    saveContext()
                 }
             }
         }

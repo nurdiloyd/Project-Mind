@@ -17,6 +17,9 @@ struct BoardView: View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
             ZStack {
                 ZStack {
+                    Circle()
+                        .frame(width: 100, height: 100)
+                    
                     ForEach(board.nodes.filter({ node in
                         node.parent == nil
                     }), id: \.id) { node in
@@ -136,6 +139,7 @@ struct BoardView: View {
     }
 
     public func deleteNodeData(_ nodeData: NodeData) {
+        FileHelper.deleteSavedImage(filename: nodeData.imageName ?? "")
         context.delete(nodeData)
     }
     
