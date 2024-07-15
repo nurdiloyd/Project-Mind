@@ -273,19 +273,14 @@ struct NodeView: View {
         if let item = photoPickerItem {
             Task {
                 if let imageData = try? await item.loadTransferable(type: Data.self) {
-                    if let nsImage = NSImage(data: imageData) {
-                        if let tiffData = nsImage.tiffRepresentation,
-                           let bitmapImageRep = NSBitmapImageRep(data: tiffData) {
-                            let jpegData = bitmapImageRep.representation(using: .jpeg, properties: [.compressionFactor: 0.1])
-                            if let jpegData = jpegData {
-                                let imageName = "image_\(UUID().uuidString).jpeg"
-                                image = nsImage
-                                node.imageName = imageName
-                                FileHelper.saveImage(data: jpegData, filename: imageName)
-                            }
+                    if let resizedImage = NSImage(data: imageData)?.cropToSquare().resize(to: 400) {
+                        if let compressedImageData = resizedImage.compressToJPEG() {
+                            let imageName = "image_\(UUID().uuidString).jpeg"
+                            image = resizedImage
+                            node.imageName = imageName
+                            FileHelper.saveImage(data: compressedImageData, filename: imageName)
+                            saveContext()
                         }
-                        
-                        saveContext()
                     }
                 }
             }

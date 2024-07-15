@@ -1,7 +1,6 @@
 import Foundation
 
 struct FileHelper {
-
     static func saveImage(data: Data, filename: String) {
         let fileURL = getDocumentsDirectory().appendingPathComponent(filename)
         createDocumentsDirectoryIfNeeded()  // Ensure the directory exists
