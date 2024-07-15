@@ -27,8 +27,8 @@ struct NodeView: View {
     private static let countCorrespondsMaxHeight: Int = 5
     private static let hStackSpace: CGFloat = 10
     private static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
-    private static let snapX = NodeView.width + NodeView.hStackSpace
-    private static let snapY = NodeView.minHeight + NodeView.vStackSpace
+    public static let snapX = NodeView.width + NodeView.hStackSpace
+    public static let snapY = NodeView.minHeight + NodeView.vStackSpace
     private let cornerRadius: CGFloat = 11
     
     var body: some View {
@@ -254,8 +254,8 @@ struct NodeView: View {
     }
     
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
-        let minX = NodeView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeView.width / 2 + 10) : 0)
-        let maxX = Double(BoardView.boardSize - NodeView.width / 2)
+        //let minX = NodeView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeView.width / 2 + 10) : 0)
+        //let maxX = Double(BoardView.boardSize - NodeView.width / 2)
         
         //let minY = node.containerHeight / 2
         //let maxY = Double(BoardView.boardSize - node.containerHeight / 2)

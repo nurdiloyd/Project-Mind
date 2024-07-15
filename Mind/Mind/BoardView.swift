@@ -11,8 +11,9 @@ struct BoardView: View {
     @State private var scale: CGFloat = 1.0
     @State private var boxSize: CGFloat = 300
     @State private var currentSize: CGSize = .zero
-    static let boardSize: CGFloat = 10000
-
+    public static let boardWidth: CGFloat = 100 * NodeView.snapX
+    public static let boardHeight: CGFloat = 400 * NodeView.snapY
+    
     var body: some View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
             ZStack {
@@ -31,10 +32,10 @@ struct BoardView: View {
                                      saveContext: saveContext)
                     }
                 }
-                .frame(width: BoardView.boardSize, height: BoardView.boardSize)
+                .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
                 .scaleEffect(self.scale)
             }
-            .frame(width: BoardView.boardSize * self.scale, height: BoardView.boardSize * self.scale)
+            .frame(width: BoardView.boardWidth * self.scale, height: BoardView.boardHeight * self.scale)
             .background(Color(NSColor.windowBackgroundColor))
         }
         .defaultScrollAnchor(.center)
@@ -54,8 +55,8 @@ struct BoardView: View {
             ToolbarItemGroup(placement: .primaryAction) {
                 Spacer()
                 Button {
-                    let positionX = BoardView.boardSize / 2
-                    let positionY = BoardView.boardSize / 2
+                    let positionX = BoardView.boardWidth / 2
+                    let positionY = BoardView.boardHeight / 2
                     createNode(title: "Title", positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
@@ -87,7 +88,7 @@ struct BoardView: View {
 
     private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat {
         let minEdgeLength = min(geometrySize.width, geometrySize.height)
-        let minScale: CGFloat = minEdgeLength / BoardView.boardSize
+        let minScale: CGFloat = minEdgeLength / BoardView.boardWidth
         let maxScale: CGFloat = minEdgeLength / self.boxSize
         let newScale = value.clamped(to: minScale...maxScale)
         return newScale
