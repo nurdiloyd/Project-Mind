@@ -9,14 +9,15 @@ struct NodeView: View {
     
     @FocusState private var isFocus: Bool
     @State private var inputText: String = ""
-    @State private var selectedItem: PhotosPickerItem? = nil
     @State private var isEditing: Bool = false
     @State private var isHovering: Bool = false
     @State private var isDeleting: Bool = false
     @State private var isPickerPresenting: Bool = false
     @State private var isAddingImage: Bool = false
     @State private var onCreation: Bool = false
-    private var hasImage: Bool { return node.image != nil }
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var image: NSImage? = nil
+    private var hasImage: Bool { return image != nil }
     
     private static let width: CGFloat = 150
     public static let minHeight: CGFloat = NodeView.titleHeight
@@ -63,8 +64,8 @@ struct NodeView: View {
                         }
                 }
                 
-                if let image = node.image {
-                    Image(nsImage: image)
+                if let img = image {
+                    Image(nsImage: img)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: NodeView.imageHeight, height: NodeView.imageHeight)
@@ -75,7 +76,8 @@ struct NodeView: View {
             .frame(maxWidth: .infinity)
             .background(Color(NSColor.windowBackgroundColor))
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(radius: 5)
+            .shadow(radius: 5) 
+            .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
             }
@@ -132,7 +134,6 @@ struct NodeView: View {
                     .controlSize(.mini)
                     .clipShape(Circle())
                     .offset(x: topLeft.x, y: topLeft.y + NodeView.minHeight)
-                    .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
                     
                     if hasImage {
                         Button(action: {
@@ -191,8 +192,16 @@ struct NodeView: View {
                 isEditing = true
                 isFocus.toggle()
             }
-            
-            loadNode()
+
+            if let imageName = node.imageName {
+                if imageName.isEmptyOrWithWhiteSpace {
+                    return
+                }
+                
+                if let imageData = FileHelper.loadImageFromFile(filename: imageName) {
+                    image = NSImage(data: imageData)
+                }
+            }
         }
         .readSize { newSize in
             node.height = newSize.height
@@ -265,26 +274,14 @@ struct NodeView: View {
         node.lastPositionX = node.localPositionX
         node.lastPositionY = node.localPositionY
     }
-    
-    private func loadNode() {
-        if let imageName = node.imageName {
-            if imageName.isEmptyOrWithWhiteSpace {
-                return
-            }
-            
-            if let imageData = FileHelper.loadImageFromFile(filename: imageName) {
-                node.image = NSImage(data: imageData)
-            }
-        }
-    }
-    
+        
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
         if let item = photoPickerItem {
             Task {
                 if let imageData = try? await item.loadTransferable(type: Data.self) {
                     if let nsImage = NSImage(data: imageData) {
                         let imageName = "image_\(UUID().uuidString).png"
-                        node.image = nsImage
+                        image = nsImage
                         node.imageName = imageName
                         FileHelper.saveImageToFile(data: imageData, filename: imageName)
                     }
@@ -297,7 +294,7 @@ struct NodeView: View {
     
     private func deleteImage() {
         FileHelper.deleteSavedImage(filename: node.imageName ?? "")
-        node.image = nil
+        image = nil
         node.imageName = ""
         
         saveContext()
