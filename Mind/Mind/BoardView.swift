@@ -7,7 +7,7 @@ struct BoardView: View {
     let board: BoardData
     let onBack: () -> Void
     
-    @State private var lastScaleValue: CGFloat = 1.0
+    @State private var lastScale: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var currentSize: CGSize = .zero
     private static var boxSize: CGFloat = NodeView.maxHeight
@@ -38,7 +38,13 @@ struct BoardView: View {
                     .scaleEffect(scale)
                 }
                 .frame(width: BoardView.boardWidth * scale, height: BoardView.boardHeight * scale)
-                .background(Color(NSColor.windowBackgroundColor))
+            }
+            .background(Color(NSColor.windowBackgroundColor))
+            .onTapGesture(count: 2) {
+                withAnimation {
+                    scale = getNormalScale(for: currentSize)
+                    lastScale = scale
+                }
             }
         }
         .defaultScrollAnchor(.center)
@@ -75,32 +81,39 @@ struct BoardView: View {
         .gesture(
             MagnificationGesture()
                 .onChanged { value in
-                    self.scale = self.getScale(for: currentSize, value: self.lastScaleValue * value)
+                    scale = getScale(for: currentSize, value: lastScale * value)
                 }
                 .onEnded { value in
-                    self.lastScaleValue = self.scale
+                    lastScale = scale
                 }
         )
         .readSize { size in
             currentSize = size
-            self.scale = self.getScale(for: currentSize, value: self.scale)
-            self.lastScaleValue = self.scale
+            scale = getScale(for: currentSize, value: lastScale)
+            lastScale = scale
         }
     }
 
-    private func getScale(for geometrySize: CGSize, value: CGFloat) -> CGFloat {
-        var boardAspectRatio = BoardView.boardWidth / BoardView.boardHeight
-        var windowAspectRatio = geometrySize.width / geometrySize.height
-        let minEdgeLength = min(geometrySize.width, geometrySize.height)
+    private func getNormalScale(for size: CGSize) -> CGFloat
+    {
+        let minEdgeLength = min(size.width, size.height)
+        let normalScale = minEdgeLength / (BoardView.boxSize * 5)
+        return getScale(for: size, value: normalScale)
+    }
+    
+    private func getScale(for size: CGSize, value: CGFloat) -> CGFloat {
+        let boardAspectRatio = BoardView.boardWidth / BoardView.boardHeight
+        let windowAspectRatio = size.width / size.height
+        let minEdgeLength = min(size.width, size.height)
         let maxScale = minEdgeLength / BoardView.boxSize
 
         if boardAspectRatio > windowAspectRatio {
-            let minScale = geometrySize.width / (BoardView.boardWidth*1)
+            let minScale = size.width / (BoardView.boardWidth * 1.0)
             let newScale = value.clamped(to: minScale...maxScale)
             return newScale
         }
         else {
-            let minScale = geometrySize.height / (BoardView.boardHeight*1)
+            let minScale = size.height / (BoardView.boardHeight * 1.0)
             let newScale = value.clamped(to: minScale...maxScale)
             return newScale
         }
