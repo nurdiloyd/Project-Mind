@@ -193,14 +193,8 @@ struct NodeView: View {
                 isFocus.toggle()
             }
 
-            if let imageName = node.imageName {
-                if imageName.isEmptyOrWithWhiteSpace {
-                    return
-                }
-                
-                if let imageData = FileHelper.loadImageFromFile(filename: imageName) {
-                    image = NSImage(data: imageData)
-                }
+            if let imageData = FileHelper.loadImage(filename: node.imageName) {
+                image = NSImage(data: imageData)
             }
         }
         .readSize { newSize in
@@ -287,7 +281,7 @@ struct NodeView: View {
                                 let imageName = "image_\(UUID().uuidString).jpeg"
                                 image = nsImage
                                 node.imageName = imageName
-                                FileHelper.saveImageToFile(data: jpegData, filename: imageName)
+                                FileHelper.saveImage(data: jpegData, filename: imageName)
                             }
                         }
                         
@@ -299,7 +293,7 @@ struct NodeView: View {
     }
     
     private func deleteImage() {
-        FileHelper.deleteSavedImage(filename: node.imageName ?? "")
+        FileHelper.deleteImage(filename: node.imageName)
         image = nil
         node.imageName = ""
         

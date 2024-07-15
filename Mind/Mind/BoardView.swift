@@ -139,7 +139,7 @@ struct BoardView: View {
     }
 
     public func deleteNodeData(_ nodeData: NodeData) {
-        FileHelper.deleteSavedImage(filename: nodeData.imageName ?? "")
+        FileHelper.deleteImage(filename: nodeData.imageName)
         context.delete(nodeData)
     }
     
