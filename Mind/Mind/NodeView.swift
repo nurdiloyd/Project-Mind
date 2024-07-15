@@ -217,7 +217,7 @@ struct NodeView: View {
                     moveNode(node, deltaX: delta.width, deltaY: delta.height)
                 }
                 .onEnded { value in
-                    withAnimation {
+                    withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
                         if node.parent != nil {
                             setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
                         } else {
