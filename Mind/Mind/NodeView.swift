@@ -95,7 +95,10 @@ struct NodeView: View {
                     let lineWidth = isHovering ? 2.0 : 1.0
                     let lineColor = node.isExpanded ? Color.gray : Color.blue
                     
-                    RoundedRectangle(cornerRadius: NodeView.cornerRadius).stroke(lineColor, lineWidth: lineWidth)
+                    RoundedRectangle(cornerRadius: NodeView.cornerRadius)
+                        .stroke(lineColor, lineWidth: lineWidth)
+                        .blur(radius: isHovering ? 0.1 : 0.0)
+                        .brightness(isHovering ? 0.1 : 0.0)
                 }
                 
                 if (isHovering || isPickerPresenting) {
@@ -179,7 +182,7 @@ struct NodeView: View {
             }
         }
         .onHover { hovering in
-            withAnimation {
+            withAnimation(.spring(duration:0.5)) {
                 isHovering = hovering
             }
         }
