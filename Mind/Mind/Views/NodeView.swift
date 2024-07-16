@@ -220,7 +220,7 @@ struct NodeView: View {
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    withAnimation {
+                    withAnimation(.spring(duration: 0.1)) {
                         isDragging = true
                     }
                     
@@ -259,7 +259,6 @@ struct NodeView: View {
                         
                         if node.parent != nil {
                             rearrangeSiblingsPositionY(node)
-                            //setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
                         } else {
                             snapToGrid(node)
                             updateLastPosition(node)

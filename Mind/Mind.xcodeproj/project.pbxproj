@@ -101,12 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7AD58B2C36351D003EFDE5 /* MindApp.swift */,
-				CE7AD58D2C36351D003EFDE5 /* ContentView.swift */,
-				CE62E71A2C3CC52300129F2F /* EntranceView.swift */,
-				CE01242F2C3E264E0027AC1D /* BoardCardView.swift */,
-				CE62E71C2C3CC79E00129F2F /* BoardView.swift */,
-				CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */,
-				CE7AD5A42C3635C5003EFDE5 /* NodeView.swift */,
+				CE9D897B2C47288C0089F1C8 /* Views */,
 				CE7A688A2C421533007957F6 /* Data */,
 				CE5BBFED2C37A8960030217A /* Helpers */,
 				CE7AD5932C36351E003EFDE5 /* Preview Content */,
@@ -123,6 +118,19 @@
 				CE7AD5942C36351E003EFDE5 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		CE9D897B2C47288C0089F1C8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CE7AD58D2C36351D003EFDE5 /* ContentView.swift */,
+				CE62E71A2C3CC52300129F2F /* EntranceView.swift */,
+				CE01242F2C3E264E0027AC1D /* BoardCardView.swift */,
+				CE62E71C2C3CC79E00129F2F /* BoardView.swift */,
+				CE17257A2C3B685B0000EAB1 /* NodeTreeView.swift */,
+				CE7AD5A42C3635C5003EFDE5 /* NodeView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

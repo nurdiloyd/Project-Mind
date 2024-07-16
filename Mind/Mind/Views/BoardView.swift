@@ -20,7 +20,7 @@ struct BoardView: View {
                 ZStack {
                     ZStack {
                         Circle()
-                            .frame(width: 50, height: 50)
+                            .frame(width: 20, height: 20)
                             .foregroundStyle(Color(NSColor.windowFrameTextColor))
 
                         ForEach(board.nodes.filter({ node in
