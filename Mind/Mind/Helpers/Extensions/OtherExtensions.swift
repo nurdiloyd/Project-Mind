@@ -57,3 +57,9 @@ extension NSImage {
         return nil
     }
 }
+
+extension CGFloat {
+    func sign() -> CGFloat {
+        return (self < Self(0) ? -1 : 1)
+    }
+}

@@ -21,9 +21,9 @@ struct NodeTreeView: View {
                 if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY })
                 {
                     if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
-                        let fPosX = fNode.globalPositionX
+                        let fPosX = fNode.lastGlobalPositionX
                         let fPosY = fNode.globalPositionY
-                        let lPosX = lNode.globalPositionX
+                        let lPosX = lNode.lastGlobalPositionX
                         let lPosY = lNode.globalPositionY
                         
                         let posX = (fPosX + lPosX) / 2

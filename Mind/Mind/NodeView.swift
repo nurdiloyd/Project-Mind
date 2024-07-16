@@ -10,6 +10,7 @@ struct NodeView: View {
     @FocusState private var isFocus: Bool
     @State private var inputText: String = ""
     @State private var isEditing: Bool = false
+    @State private var isDragging: Bool = false
     @State private var isHovering: Bool = false
     @State private var isHoveringText: Bool = false
     @State private var isDeleting: Bool = false
@@ -101,7 +102,7 @@ struct NodeView: View {
                         .brightness(isHovering ? 0.1 : 0.0)
                 }
                 
-                if (isHovering || isPickerPresenting) {
+                if ((isHovering && !isDragging)) {
                     let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.height / 2)
                     let symbolSize = 10.0
                     
@@ -219,9 +220,13 @@ struct NodeView: View {
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    let deltaX = node.hasParent ? 0 : value.translation.width
+                    withAnimation {
+                        isDragging = true
+                    }
+                    
+                    let deltaX = value.translation.width
                     let deltaY = value.translation.height
-                    let newX = node.lastPositionX + deltaX
+                    let newX = node.lastPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
                     let newY = node.lastPositionY + deltaY
                     setPosition(node, positionX: newX, positionY: newY)
                     
@@ -237,10 +242,11 @@ struct NodeView: View {
                                 node.order = sibling.order
                                 sibling.order = tmpOrder
                                 
-                                withAnimation {
+                                withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
                                     rearrangeSiblingsPositionY(node)
                                 }
                                 
+                                setPosition(node, positionX: newX, positionY: newY)
                                 node.lastPositionX = lastPosX
                                 node.lastPositionY = lastPosY
                             }
@@ -249,6 +255,8 @@ struct NodeView: View {
                 }
                 .onEnded { value in
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
+                        isDragging = false
+                        
                         if node.parent != nil {
                             rearrangeSiblingsPositionY(node)
                             //setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
