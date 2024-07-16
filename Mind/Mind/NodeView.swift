@@ -219,17 +219,42 @@ struct NodeView: View {
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    let delta = value.translation
-                    moveNode(node, deltaX: delta.width, deltaY: delta.height)
+                    let deltaX = node.hasParent ? 0 : value.translation.width
+                    let deltaY = value.translation.height
+                    let newX = node.lastPositionX + deltaX
+                    let newY = node.lastPositionY + deltaY
+                    setPosition(node, positionX: newX, positionY: newY)
+                    
+                    if let parent = node.parent {
+                        let siblings = parent.children
+                        let lastPosX = node.lastPositionX
+                        let lastPosY = node.lastPositionY
+                        for sibling in siblings {
+                            if (node.globalPositionY > sibling.globalPositionY && node.order < sibling.order) ||
+                                (node.globalPositionY < sibling.globalPositionY && node.order > sibling.order)
+                            {
+                                let tmpOrder = node.order
+                                node.order = sibling.order
+                                sibling.order = tmpOrder
+                                
+                                withAnimation {
+                                    rearrangeSiblingsPositionY(node)
+                                }
+                                
+                                node.lastPositionX = lastPosX
+                                node.lastPositionY = lastPosY
+                            }
+                        }
+                    }
                 }
                 .onEnded { value in
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
                         if node.parent != nil {
-                            setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
+                            rearrangeSiblingsPositionY(node)
+                            //setPosition(node, positionX: node.lastPositionX, positionY: node.lastPositionY)
                         } else {
                             snapToGrid(node)
                             updateLastPosition(node)
-                            saveContext()
                         }
                     }
                 }
@@ -251,14 +276,6 @@ struct NodeView: View {
             saveContext()
         }
     }
-    
-    private func moveNode(_ node: NodeData, deltaX: Double, deltaY: Double) {
-        let newX = node.lastPositionX + deltaX
-        let newY = node.lastPositionY + deltaY
-        
-        setPosition(node, positionX: newX, positionY: newY)
-    }
-    
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
         //let minX = NodeView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeView.width / 2 + 10) : 0)
         //let maxX = Double(BoardView.boardSize - NodeView.width / 2)
