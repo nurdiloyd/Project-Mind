@@ -32,6 +32,7 @@ struct NodeTreeView: View {
                             + lNode.height / 2
                             + padding * 2
                         RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(Color(NSColor.windowBackgroundColor))
                             .frame(width: width, height: height)
                             .shadow(radius: NodeView.shadow * 2)
                             .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))

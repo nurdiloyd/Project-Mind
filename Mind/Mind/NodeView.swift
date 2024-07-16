@@ -11,6 +11,7 @@ struct NodeView: View {
     @State private var inputText: String = ""
     @State private var isEditing: Bool = false
     @State private var isHovering: Bool = false
+    @State private var isHoveringText: Bool = false
     @State private var isDeleting: Bool = false
     @State private var isPickerPresenting: Bool = false
     @State private var isAddingImage: Bool = false
@@ -44,6 +45,7 @@ struct NodeView: View {
                         
                         onCreation = false
                     })
+                    .font(.headline.weight(.light))
                     .focused($isFocus)
                     .onSubmit {
                         isEditing = false
@@ -58,6 +60,12 @@ struct NodeView: View {
                         .foregroundColor(Color(NSColor.windowFrameTextColor))
                         .font(.headline)
                         .frame(height: NodeView.titleHeight)
+                        .scaleEffect(isHoveringText ? 1.1 : 1.0)
+                        .onHover { hovering in
+                            withAnimation(.spring(duration: 0.1)) {
+                                isHoveringText = hovering
+                            }
+                        }
                         .onTapGesture(count: 1) {
                             inputText = node.title
                             isEditing = true
@@ -84,16 +92,10 @@ struct NodeView: View {
             }
             .overlay {
                 if node.isExpandable {
-                    let style = node.isExpanded
-                    ? isHovering
-                        ? StrokeStyle(lineWidth: 1)
-                        : StrokeStyle(lineWidth: 1, dash: [20, 1])
-                    : isHovering
-                        ? StrokeStyle(lineWidth: 1, dash: [20, 1])
-                        : StrokeStyle(lineWidth: 1)
-                    let color = node.isExpanded ? Color.gray : Color.blue
+                    let lineWidth = isHovering ? 2.0 : 1.0
+                    let lineColor = node.isExpanded ? Color.gray : Color.blue
                     
-                    RoundedRectangle(cornerRadius: NodeView.cornerRadius).stroke(color, style: style)
+                    RoundedRectangle(cornerRadius: NodeView.cornerRadius).stroke(lineColor, lineWidth: lineWidth)
                 }
                 
                 if (isHovering || isPickerPresenting) {
