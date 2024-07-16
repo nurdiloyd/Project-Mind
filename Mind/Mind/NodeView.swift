@@ -19,17 +19,18 @@ struct NodeView: View {
     @State private var image: NSImage? = nil
     private var hasImage: Bool { return image != nil }
     
-    private static let width: CGFloat = 150
+    public static let width: CGFloat = 150
     public static let minHeight: CGFloat = NodeView.titleHeight
     public static let maxHeight: CGFloat = NodeView.titleHeight + NodeView.imageHeight
     private static let titleHeight: CGFloat = 30
     private static let imageHeight: CGFloat = NodeView.width
     private static let countCorrespondsMaxHeight: Int = 5
-    private static let hStackSpace: CGFloat = 10
+    private static let hStackSpace: CGFloat = vStackSpace
     private static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
     public static let snapX = NodeView.width + NodeView.hStackSpace
     public static let snapY = NodeView.minHeight + NodeView.vStackSpace
-    private let cornerRadius: CGFloat = 11
+    public static let cornerRadius: CGFloat = 11
+    public static let shadow: CGFloat = 3
     
     var body: some View {
         ZStack {
@@ -75,8 +76,8 @@ struct NodeView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color(NSColor.windowBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(radius: 5) 
+            .clipShape(RoundedRectangle(cornerRadius: NodeView.cornerRadius))
+            .shadow(radius: NodeView.shadow)
             .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
@@ -92,7 +93,7 @@ struct NodeView: View {
                         : StrokeStyle(lineWidth: 1)
                     let color = node.isExpanded ? Color.gray : Color.blue
                     
-                    RoundedRectangle(cornerRadius: cornerRadius).stroke(color, style: style)
+                    RoundedRectangle(cornerRadius: NodeView.cornerRadius).stroke(color, style: style)
                 }
                 
                 if (isHovering || isPickerPresenting) {
