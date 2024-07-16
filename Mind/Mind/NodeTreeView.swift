@@ -21,21 +21,19 @@ struct NodeTreeView: View {
                 {
                     if let lNode = children.last
                     {
-                        let posX = (fNode.globalPositionX + lNode.globalPositionX) / 2
-                        let posY = (fNode.globalPositionY + lNode.globalPositionY) / 2
+                        let posX = (fNode.lastGlobalPositionX + lNode.lastGlobalPositionX) / 2
+                        let posY = (fNode.lastGlobalPositionY + fNode.height / 2
+                                    + lNode.lastGlobalPositionY - lNode.height / 2) / 2
                         let padding = 3.0
                         let cornerRadius = NodeView.cornerRadius + padding / 2
                         let width = NodeView.width + padding * 2
-                        let height = abs(fNode.globalPositionY - lNode.globalPositionY)
+                        let height = abs(fNode.lastGlobalPositionY - lNode.lastGlobalPositionY)
                             + fNode.height / 2
                             + lNode.height / 2
                             + padding * 2
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            
                             .frame(width: width, height: height)
-                            
                             .shadow(radius: NodeView.shadow * 2)
-                            
                             .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
                     }
                 }

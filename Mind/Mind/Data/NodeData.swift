@@ -21,6 +21,8 @@ final class NodeData {
     
     @Transient var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
+    @Transient var lastGlobalPositionX: Double { lastPositionX + (parent?.globalPositionX ?? 0) }
+    @Transient var lastGlobalPositionY: Double { lastPositionY + (parent?.globalPositionY ?? 0) }
     @Transient var globalHeight: Double { isExpandable
                                             ? isExpanded
                                                 ? max(height, contentHeight)
