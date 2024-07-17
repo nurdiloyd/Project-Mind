@@ -30,7 +30,7 @@
 		CE62E71A2C3CC52300129F2F /* EntranceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceView.swift; sourceTree = "<group>"; };
 		CE62E71C2C3CC79E00129F2F /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		CE62E71E2C3CD1AF00129F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CE7AD5882C36351D003EFDE5 /* Mind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mind.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE7AD5882C36351D003EFDE5 /* Cactus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cactus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7AD58B2C36351D003EFDE5 /* MindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindApp.swift; sourceTree = "<group>"; };
 		CE7AD58D2C36351D003EFDE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CE7AD5912C36351E003EFDE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 		CE7AD5892C36351D003EFDE5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CE7AD5882C36351D003EFDE5 /* Mind.app */,
+				CE7AD5882C36351D003EFDE5 /* Cactus.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,9 +136,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CE7AD5872C36351D003EFDE5 /* Mind */ = {
+		CE7AD5872C36351D003EFDE5 /* Cactus */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CE7AD5992C36351E003EFDE5 /* Build configuration list for PBXNativeTarget "Mind" */;
+			buildConfigurationList = CE7AD5992C36351E003EFDE5 /* Build configuration list for PBXNativeTarget "Cactus" */;
 			buildPhases = (
 				CE7AD5842C36351D003EFDE5 /* Sources */,
 				CE7AD5852C36351D003EFDE5 /* Frameworks */,
@@ -148,9 +148,9 @@
 			);
 			dependencies = (
 			);
-			name = Mind;
+			name = Cactus;
 			productName = Mind;
-			productReference = CE7AD5882C36351D003EFDE5 /* Mind.app */;
+			productReference = CE7AD5882C36351D003EFDE5 /* Cactus.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -181,7 +181,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CE7AD5872C36351D003EFDE5 /* Mind */,
+				CE7AD5872C36351D003EFDE5 /* Cactus */,
 			);
 		};
 /* End PBXProject section */
@@ -415,7 +415,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CE7AD5992C36351E003EFDE5 /* Build configuration list for PBXNativeTarget "Mind" */ = {
+		CE7AD5992C36351E003EFDE5 /* Build configuration list for PBXNativeTarget "Cactus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE7AD59A2C36351E003EFDE5 /* Debug */,
