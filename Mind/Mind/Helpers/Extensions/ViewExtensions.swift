@@ -55,7 +55,7 @@ extension View {
         let lightColor: Color = EntranceView.lightColor
         let darkColor: Color = EntranceView.darkColor
         let shadowColor: Color = isInner ? lightColor : darkColor
-        let textColor: Color = Color(.displayP3, red: 88/255, green: 105/255, blue: 110/255)
+        let textColor: Color = Color(.displayP3, red: 55/255, green: 55/255, blue: 55/255)
         
         return self.foregroundColor(textColor)
             .background(

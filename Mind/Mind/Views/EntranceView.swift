@@ -36,7 +36,7 @@ struct EntranceView: View {
                     } else {
                         Text("Create a board")
                             .frame(width: 215, height: 40)
-                            .nkButton(isInner: true, smooth: 2, radius: 14)
+                            .nkButton(isInner: true, smooth: 1, radius: 14)
                     }
                 }
                 .padding(22.5)
@@ -45,7 +45,7 @@ struct EntranceView: View {
             .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
             //.padding(1)
-            .nkButton(isInner: false, smooth: 3, radius: 28.25)
+            .nkButton(isInner: false, smooth: 1, radius: 28.25)
             
             Spacer(minLength: 20)
         }

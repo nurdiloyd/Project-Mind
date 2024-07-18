@@ -40,8 +40,8 @@ struct BoardCardView: View {
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
                     .padding(8)
-                    .frame(height: 40)
                     .frame(maxWidth: .infinity)
+                    .frame(height: 40)
                     .nkButton(smooth: 5, radius: 14)
                     .onSubmit {
                         setIsEditing(false)
@@ -51,16 +51,16 @@ struct BoardCardView: View {
                 else {
                     Text("\(board.title)")
                         .font(.title)
-                        .scaleEffect(isInner ? 1.0 : 1.01)
+                        .scaleEffect(isInner ? 1.0 : 1.08)
                         .padding(8)
-                        .frame(height: 40)
                         .frame(maxWidth: .infinity)
-                        .nkButton(isInner: isInner, smooth: 2, radius: 14)
+                        .frame(height: 40)
+                        .nkButton(isInner: isInner, smooth: isInner ? 1 : 5, radius: 14)
                 }
             }
             .buttonStyle(.plain)
             .onHover(perform: { hover in
-                withAnimation(.interpolatingSpring(stiffness: 160, damping: 15)) {
+                withAnimation(.interpolatingSpring(stiffness: 200, damping: 20)) {
                     isInner = !hover
                 }
             })
@@ -71,7 +71,7 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 2, radius: 14)
+                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 1, radius: 14)
             }
             .buttonStyle(.plain)
             
@@ -81,7 +81,7 @@ struct BoardCardView: View {
                 }
             }) {
                 Image(systemName: "minus")
-                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 2, radius: 14)
+                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 1, radius: 14)
             }
             .buttonStyle(.plain)
         }
@@ -91,7 +91,7 @@ struct BoardCardView: View {
                 board.isInit = true
                 onCreation = true
                 inputText = board.title
-                setIsEditing(true)
+                isEditing = true
                 isFocus.toggle()
             }
         }
