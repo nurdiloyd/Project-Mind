@@ -14,7 +14,7 @@ struct BoardCardView: View {
     @State private var onCreation: Bool = false
     
     var body: some View {
-        HStack {
+        HStack (spacing: 5) {
             Button(action: {
                 openBoard(board)
             }) {
@@ -33,8 +33,10 @@ struct BoardCardView: View {
                     .focused($isFocus)
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
-                    .frame(width: 119, height: 40)
-                    .nkButton(smooth: 5, radius: 20)
+                    .padding(8)
+                    
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .nkButton(smooth: 5, radius: 14)
                     .onSubmit {
                         isEditing = false
                         setTitle(board, inputText)
@@ -43,7 +45,8 @@ struct BoardCardView: View {
                 else {
                     Text("\(board.title)")
                         .font(.title)
-                        .frame(width: 119, height: 40)
+                        .padding(8)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .nkButton(smooth: 5, radius: 14)
                 }
             }
@@ -55,7 +58,7 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .nkMiniButton(width: 40, height: 40, padding: 13, smooth: 5, radius: 14)
+                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 5, radius: 14)
             }
             .buttonStyle(.plain)
             
@@ -67,10 +70,11 @@ struct BoardCardView: View {
                 deleteBoard(board)
             }) {
                 Image(systemName: "minus")
-                    .nkMiniButton(width: 40, height: 40, padding: 13, smooth: 5, radius: 14)
+                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 5, radius: 14)
             }
             .buttonStyle(.plain)
         }
+        .frame(width: 215, height: 40)
         .onAppear {
             if !board.isInit {
                 board.isInit = true

@@ -51,11 +51,11 @@ extension View {
         let shadowRadius: CGFloat = isInner ? smooth / 1.5 : smooth / 1.5 + 1
         let cornerRadius: CGFloat = radius
         
-        let baseColor: Color = Color(red: 250/255, green: 250/255, blue: 250/255)
-        let lightColor: Color = Color(red: 255/255, green: 255/255, blue: 255/255)
-        let darkColor: Color = Color(red: 224/255, green: 242/255, blue: 247/255)
+        let baseColor: Color = Color(.displayP3, red: 250/255, green: 250/255, blue: 250/255)
+        let lightColor: Color = Color(.displayP3, red: 255/255, green: 255/255, blue: 255/255)
+        let darkColor: Color = Color(.displayP3, red: 224/255, green: 242/255, blue: 247/255)
         let shadowColor: Color = isInner ? lightColor : darkColor
-        let textColor: Color = Color(red: 44/255, green: 62/255, blue: 67/255)
+        let textColor: Color = Color(.displayP3, red: 88/255, green: 105/255, blue: 110/255)
         
         return self.foregroundColor(textColor)
             .background(

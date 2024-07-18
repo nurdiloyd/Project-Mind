@@ -28,14 +28,9 @@ struct EntranceView: View {
                                           setTitle: setTitle)
                         }
                     } else {
-                        Button(action: {
-                            createNewBoard()
-                        }){
-                            Text("Create a board")
-                                .frame(width: 215, height: 40)
-                                .nkButton(smooth: 5, radius: 14)
-                        }
-                        .buttonStyle(.plain)
+                        Text("Create a board")
+                            .frame(width: 215, height: 40)
+                            .nkButton(isInner: true, smooth: 2, radius: 14)
                     }
                 }
                 .padding(22.5)
