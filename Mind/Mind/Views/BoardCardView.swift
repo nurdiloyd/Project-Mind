@@ -10,20 +10,26 @@ struct BoardCardView: View {
     @FocusState private var isFocus: Bool
     @State private var isEditing: Bool = false
     @State var inputText: String = ""
-    @State private var isDeleting: Bool = false
     @State private var onCreation: Bool = false
+    @State private var isInner: Bool = true
     
     var body: some View {
         HStack (spacing: 5) {
             Button(action: {
-                openBoard(board)
+                withAnimation(.interpolatingSpring(stiffness: 1000, damping: 30)) {
+                    isInner = true
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    openBoard(board)
+                }
             }) {
                 if isEditing
                 {
                     TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
                         if !isStart && !onCreation
                         {
-                            isEditing = false
+                            setIsEditing(false)
                             setTitle(board, inputText)
                         }
                         
@@ -34,26 +40,34 @@ struct BoardCardView: View {
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
                     .padding(8)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(height: 40)
+                    .frame(maxWidth: .infinity)
                     .nkButton(smooth: 5, radius: 14)
                     .onSubmit {
-                        isEditing = false
+                        setIsEditing(false)
                         setTitle(board, inputText)
                     }
                 }
                 else {
                     Text("\(board.title)")
                         .font(.title)
+                        .scaleEffect(isInner ? 1.0 : 1.04)
                         .padding(8)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .nkButton(smooth: 2, radius: 14)
+                        .frame(height: 40)
+                        .frame(maxWidth: .infinity)
+                        .nkButton(isInner: isInner, smooth: 2, radius: 14)
                 }
             }
             .buttonStyle(.plain)
+            .onHover(perform: { hover in
+                withAnimation(.interpolatingSpring(stiffness: 160, damping: 15)) {
+                    isInner = !hover
+                }
+            })
             
             Button(action: {
                 inputText = board.title
-                isEditing = true
+                setIsEditing(true)
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
@@ -62,11 +76,9 @@ struct BoardCardView: View {
             .buttonStyle(.plain)
             
             Button(action: {
-                withAnimation {
-                    isDeleting = true
+                withAnimation(.interpolatingSpring(stiffness: 500, damping: 30)) {
+                    deleteBoard(board)
                 }
-                
-                deleteBoard(board)
             }) {
                 Image(systemName: "minus")
                     .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 2, radius: 14)
@@ -79,9 +91,16 @@ struct BoardCardView: View {
                 board.isInit = true
                 onCreation = true
                 inputText = board.title
-                isEditing = true
+                setIsEditing(true)
                 isFocus.toggle()
             }
+        }
+    }
+    
+    private func setIsEditing(_ editing: Bool)
+    {
+        withAnimation(.interpolatingSpring(stiffness: 100, damping: 5)) {
+            isEditing = editing
         }
     }
 }
