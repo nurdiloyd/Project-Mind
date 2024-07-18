@@ -8,15 +8,18 @@ struct EntranceView: View {
     var openBoard: (BoardData) -> Void
     
     var body: some View {
-        VStack {
-            Spacer(minLength: 100)
+        VStack(spacing: 40) {
+            Spacer(minLength: 20)
 
+            let smooth: CGFloat = 5
+            let offset: CGFloat = smooth
+            let shadowRadius: CGFloat = smooth
+            
             Image("Image")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .shadow(color: Color(red: 204/255, green: 222/255, blue: 227/255), radius: 20, y: 5)
-            
-            Spacer(minLength: 80)
+                .shadow(color: Color(.displayP3, red: 255/255, green: 255/255, blue: 255/255), radius: shadowRadius, x: -offset, y: -offset)
+                .shadow(color: Color(.displayP3, red: 204/255, green: 222/255, blue: 227/255), radius: shadowRadius, x: offset, y: offset)
             
             ScrollView([.vertical], showsIndicators: false) {
                 VStack{
@@ -36,15 +39,15 @@ struct EntranceView: View {
                 .padding(22.5)
                 .frame(minWidth: 300, minHeight: 40)
             }
-            .frame(minHeight: 40, maxHeight: 280)
+            .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
             //.padding(1)
             .nkButton(isInner: false, smooth: 3, radius: 28.25)
             
-            Spacer(minLength: 100)
+            Spacer(minLength: 20)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 250/255, green: 250/255, blue: 250/255))
+        .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.displayP3, red: 250/255, green: 250/255, blue: 250/255))
         .toolbar {
             ToolbarItem {
                 Button {
