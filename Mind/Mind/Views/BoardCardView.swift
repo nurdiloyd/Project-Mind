@@ -14,7 +14,7 @@ struct BoardCardView: View {
     @State private var onCreation: Bool = false
     
     var body: some View {
-        HStack {            
+        HStack {
             Button(action: {
                 openBoard(board)
             }) {
@@ -31,20 +31,23 @@ struct BoardCardView: View {
                     })
                     .font(.title2)
                     .focused($isFocus)
+                    .multilineTextAlignment(.center)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .frame(width: 119, height: 40)
+                    .nkButton(smooth: 5, radius: 20)
                     .onSubmit {
                         isEditing = false
                         setTitle(board, inputText)
                     }
-                    .multilineTextAlignment(.center)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .frame(width: 120, height: 40)
                 }
                 else {
                     Text("\(board.title)")
                         .font(.title)
-                        .frame(width: 120, height: 40)
+                        .frame(width: 119, height: 40)
+                        .nkButton(smooth: 5, radius: 14)
                 }
             }
+            .buttonStyle(.plain)
             
             Button(action: {
                 inputText = board.title
@@ -52,11 +55,9 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .bold()
+                    .nkMiniButton(width: 40, height: 40, padding: 13, smooth: 5, radius: 14)
             }
-            .tint(Color.white)
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .buttonStyle(.plain)
             
             Button(action: {
                 withAnimation {
@@ -66,13 +67,10 @@ struct BoardCardView: View {
                 deleteBoard(board)
             }) {
                 Image(systemName: "minus")
-                    .bold()
+                    .nkMiniButton(width: 40, height: 40, padding: 13, smooth: 5, radius: 14)
             }
-            .tint(Color.red)
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .buttonStyle(.plain)
         }
-        .padding(3)
         .onAppear {
             if !board.isInit {
                 board.isInit = true

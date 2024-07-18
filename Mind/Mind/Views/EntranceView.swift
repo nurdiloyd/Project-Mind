@@ -8,12 +8,17 @@ struct EntranceView: View {
     var openBoard: (BoardData) -> Void
     
     var body: some View {
-        ScrollView([.horizontal, .vertical], showsIndicators: false) {
-            VStack {
-                Image(systemName: "sun.max")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                
+        VStack {
+            Spacer(minLength: 100)
+
+            Image("Image")
+                .resizable()
+                .frame(width: 100, height: 100)
+                .shadow(color: Color(red: 204/255, green: 222/255, blue: 227/255), radius: 20, y: 5)
+            
+            Spacer(minLength: 80)
+            
+            ScrollView([.vertical], showsIndicators: false) {
                 VStack{
                     if boards.count > 0 {
                         ForEach(boards, id: \.id) { board in
@@ -23,22 +28,28 @@ struct EntranceView: View {
                                           setTitle: setTitle)
                         }
                     } else {
-                        Text("Please create a board.")
-                            .font(.title3)
-                            .padding()
-                            .background(RoundedRectangle(cornerRadius: 8)
-                                .fill(Color(NSColor.darkGray))
-                                .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/))
-                        
+                        Button(action: {
+                            createNewBoard()
+                        }){
+                            Text("Create a board")
+                                .frame(width: 215, height: 40)
+                                .nkButton(smooth: 5, radius: 14)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
-                .frame(minHeight: 200)
+                .padding(22.5)
+                .frame(minWidth: 300, minHeight: 40)
             }
-            .ignoresSafeArea()
+            .frame(minHeight: 40, maxHeight: 280)
+            .frame(width: 260)
+            //.padding(1)
+            .nkButton(isInner: false, smooth: 3, radius: 28.25)
+            
+            Spacer(minLength: 100)
         }
-        .defaultScrollAnchor(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(NSColor.windowBackgroundColor))
+        .background(Color(red: 250/255, green: 250/255, blue: 250/255))
         .toolbar {
             ToolbarItem {
                 Button {

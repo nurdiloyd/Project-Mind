@@ -43,3 +43,39 @@ extension View {
         }
     }
 }
+
+extension View {
+    func nkButton(isInner: Bool = false, smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
+        let offset: CGFloat = isInner ? -smooth : smooth
+        
+        let shadowRadius: CGFloat = isInner ? smooth / 1.5 : smooth / 1.5 + 1
+        let cornerRadius: CGFloat = radius
+        
+        let baseColor: Color = Color(red: 250/255, green: 250/255, blue: 250/255)
+        let lightColor: Color = Color(red: 255/255, green: 255/255, blue: 255/255)
+        let darkColor: Color = Color(red: 224/255, green: 242/255, blue: 247/255)
+        let shadowColor: Color = isInner ? lightColor : darkColor
+        let textColor: Color = Color(red: 44/255, green: 62/255, blue: 67/255)
+        
+        return self.foregroundColor(textColor)
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius , style: .continuous)
+                    .fill(baseColor
+                        .shadow(.inner(color: darkColor, radius: smooth / 1, x: -offset, y: -offset))
+                        .shadow(.inner(color: lightColor, radius: smooth / 1, x: offset, y: offset))
+                    )
+                    .shadow(color: shadowColor, radius: shadowRadius)
+            )
+    }
+}
+
+extension Image {
+    func nkMiniButton(width: CGFloat, height: CGFloat, padding: CGFloat = 2, smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
+        self.resizable()
+            .aspectRatio(contentMode: .fit)
+            .bold()
+            .frame(width: width - padding * 2, height: height - padding * 2)
+            .padding(padding)
+            .nkButton(smooth: smooth, radius: radius)
+    }
+}

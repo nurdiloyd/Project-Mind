@@ -104,42 +104,24 @@ struct NodeView: View {
                 
                 if ((isHovering && !isDragging)) {
                     let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.height / 2)
-                    let symbolSize = 10.0
+                    let symbolSize = 11.0
                     
                     Button(action: {
                         deleteThisNode()
                     }) {
                         Image(systemName: "minus")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: symbolSize, height: symbolSize)
-                            .clipped()
-                            .contentShape(Rectangle())
-                            .multilineTextAlignment(.center)
-                            .bold()
+                            .nkMiniButton(width: symbolSize, height: symbolSize)
                     }
-                    .tint(.red)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.mini)
-                    .clipShape(Circle())
+                    .buttonStyle(.plain)
                     .offset(x: topLeft.x, y: topLeft.y)
                     
                     Button(action: {
                         isPickerPresenting.toggle()
                     }) {
                         Image(systemName: "photo.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: symbolSize, height: symbolSize)
-                            .clipped()
-                            .contentShape(Rectangle())
-                            .multilineTextAlignment(.center)
-                            .bold()
+                            .nkMiniButton(width: symbolSize, height: symbolSize)
                     }
-                    .tint(.green)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.mini)
-                    .clipShape(Circle())
+                    .buttonStyle(.plain)
                     .offset(x: topLeft.x, y: topLeft.y + NodeView.minHeight)
                     
                     if hasImage {
@@ -147,18 +129,9 @@ struct NodeView: View {
                             deleteImage()
                         }) {
                             Image(systemName: "photo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: symbolSize, height: symbolSize)
-                                .clipped()
-                                .contentShape(Rectangle())
-                                .multilineTextAlignment(.center)
-                                .bold()
+                                .nkMiniButton(width: symbolSize, height: symbolSize)
                         }
-                        .tint(.orange)
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.mini)
-                        .clipShape(Circle())
+                        .buttonStyle(.plain)
                         .offset(x: topLeft.x, y: topLeft.y + 3 * NodeView.minHeight / 2)
                     }
                     
@@ -166,18 +139,9 @@ struct NodeView: View {
                         createChildNode()
                     }) {
                         Image(systemName: "plus")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: symbolSize, height: symbolSize)
-                            .clipped()
-                            .contentShape(Rectangle())
-                            .multilineTextAlignment(.center)
-                            .bold()
+                            .nkMiniButton(width: symbolSize, height: symbolSize)
                     }
-                    .tint(.blue)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.mini)
-                    .clipShape(Circle())
+                    .buttonStyle(.plain)
                     .offset(x: -topLeft.x, y: topLeft.y + NodeView.minHeight / 2)
                 }
             }
