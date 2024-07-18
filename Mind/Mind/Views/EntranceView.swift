@@ -6,6 +6,9 @@ struct EntranceView: View {
     @Query private var boards: [BoardData]
     
     var openBoard: (BoardData) -> Void
+    public static let baseColor: Color = Color(.displayP3, red: 236/255, green: 236/255, blue: 236/255)
+    public static let lightColor: Color = Color(.displayP3, red: 243/255, green: 243/255, blue: 243/255)
+    public static let darkColor: Color = Color(.displayP3, red: 225/255, green: 225/255, blue: 225/255)
     
     var body: some View {
         VStack(spacing: 40) {
@@ -18,8 +21,8 @@ struct EntranceView: View {
             Image("Image")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .shadow(color: Color(.displayP3, red: 255/255, green: 255/255, blue: 255/255), radius: shadowRadius, x: -offset, y: -offset)
-                .shadow(color: Color(.displayP3, red: 204/255, green: 222/255, blue: 227/255), radius: shadowRadius, x: offset, y: offset)
+                .shadow(color: EntranceView.lightColor, radius: shadowRadius, x: -offset, y: -offset)
+                .shadow(color: EntranceView.darkColor, radius: shadowRadius, x: offset, y: offset)
             
             ScrollView([.vertical], showsIndicators: false) {
                 VStack{
@@ -47,7 +50,7 @@ struct EntranceView: View {
             Spacer(minLength: 20)
         }
         .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.displayP3, red: 250/255, green: 250/255, blue: 250/255))
+        .background(EntranceView.baseColor)
         .toolbar {
             ToolbarItem {
                 Button {

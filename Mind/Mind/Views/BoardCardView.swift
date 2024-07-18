@@ -34,7 +34,6 @@ struct BoardCardView: View {
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
                     .padding(8)
-                    
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .nkButton(smooth: 5, radius: 14)
                     .onSubmit {
@@ -47,7 +46,7 @@ struct BoardCardView: View {
                         .font(.title)
                         .padding(8)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .nkButton(smooth: 5, radius: 14)
+                        .nkButton(smooth: 2, radius: 14)
                 }
             }
             .buttonStyle(.plain)
@@ -58,7 +57,7 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 5, radius: 14)
+                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 2, radius: 14)
             }
             .buttonStyle(.plain)
             
@@ -70,7 +69,7 @@ struct BoardCardView: View {
                 deleteBoard(board)
             }) {
                 Image(systemName: "minus")
-                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 5, radius: 14)
+                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 2, radius: 14)
             }
             .buttonStyle(.plain)
         }

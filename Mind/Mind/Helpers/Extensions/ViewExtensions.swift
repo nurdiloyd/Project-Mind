@@ -48,12 +48,12 @@ extension View {
     func nkButton(isInner: Bool = false, smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
         let offset: CGFloat = isInner ? -smooth : smooth
         
-        let shadowRadius: CGFloat = isInner ? smooth / 1.5 : smooth / 1.5 + 1
+        let shadowRadius: CGFloat = isInner ? smooth / 1.5 : smooth / 2 + 1
         let cornerRadius: CGFloat = radius
         
-        let baseColor: Color = Color(.displayP3, red: 250/255, green: 250/255, blue: 250/255)
-        let lightColor: Color = Color(.displayP3, red: 255/255, green: 255/255, blue: 255/255)
-        let darkColor: Color = Color(.displayP3, red: 224/255, green: 242/255, blue: 247/255)
+        let baseColor: Color = EntranceView.baseColor
+        let lightColor: Color = EntranceView.lightColor
+        let darkColor: Color = EntranceView.darkColor
         let shadowColor: Color = isInner ? lightColor : darkColor
         let textColor: Color = Color(.displayP3, red: 88/255, green: 105/255, blue: 110/255)
         
