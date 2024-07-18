@@ -51,7 +51,7 @@ struct BoardCardView: View {
                 else {
                     Text("\(board.title)")
                         .font(.title)
-                        .scaleEffect(isInner ? 1.0 : 1.04)
+                        .scaleEffect(isInner ? 1.0 : 1.01)
                         .padding(8)
                         .frame(height: 40)
                         .frame(maxWidth: .infinity)
