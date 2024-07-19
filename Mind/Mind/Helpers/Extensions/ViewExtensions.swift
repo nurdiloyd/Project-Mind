@@ -72,10 +72,10 @@ extension Image {
 extension View {
     func LCContainer(smooth: CGFloat = 4, radius: CGFloat = 11) -> some View {
         let shadowRadius: CGFloat = smooth
-        let baseColor: Color = EntranceView.baseColor
-        let darkColor: Color = EntranceView.darkColor
+        let baseColor: Color = LCColor.baseColor
+        let darkColor: Color = LCColor.darkColor
         let shadowColor: Color = darkColor
-        let textColor: Color = EntranceView.textColor
+        let textColor: Color = LCColor.textColor
         
         return self
             .foregroundColor(textColor)
