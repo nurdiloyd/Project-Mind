@@ -110,7 +110,7 @@ struct NodeView: View {
                         deleteThisNode()
                     }) {
                         Image(systemName: "minus")
-                            .nkMiniButton(width: symbolSize, height: symbolSize)
+                            .LCButtonMini(width: symbolSize, height: symbolSize)
                     }
                     .buttonStyle(.plain)
                     .offset(x: topLeft.x, y: topLeft.y)
@@ -119,7 +119,7 @@ struct NodeView: View {
                         isPickerPresenting.toggle()
                     }) {
                         Image(systemName: "photo.fill")
-                            .nkMiniButton(width: symbolSize, height: symbolSize)
+                            .LCButtonMini(width: symbolSize, height: symbolSize)
                     }
                     .buttonStyle(.plain)
                     .offset(x: topLeft.x, y: topLeft.y + NodeView.minHeight)
@@ -129,7 +129,7 @@ struct NodeView: View {
                             deleteImage()
                         }) {
                             Image(systemName: "photo")
-                                .nkMiniButton(width: symbolSize, height: symbolSize)
+                                .LCButtonMini(width: symbolSize, height: symbolSize)
                         }
                         .buttonStyle(.plain)
                         .offset(x: topLeft.x, y: topLeft.y + 3 * NodeView.minHeight / 2)
@@ -139,7 +139,7 @@ struct NodeView: View {
                         createChildNode()
                     }) {
                         Image(systemName: "plus")
-                            .nkMiniButton(width: symbolSize, height: symbolSize)
+                            .LCButtonMini(width: symbolSize, height: symbolSize)
                     }
                     .buttonStyle(.plain)
                     .offset(x: -topLeft.x, y: topLeft.y + NodeView.minHeight / 2)

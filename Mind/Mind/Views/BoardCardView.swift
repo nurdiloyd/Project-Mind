@@ -42,7 +42,7 @@ struct BoardCardView: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
                     .frame(height: 40)
-                    .nkButton(smooth: 5, radius: 14)
+                    .LCContainer()
                     .onSubmit {
                         setIsEditing(false)
                         setTitle(board, inputText)
@@ -51,11 +51,10 @@ struct BoardCardView: View {
                 else {
                     Text("\(board.title)")
                         .font(.title)
-                        .scaleEffect(isInner ? 1.0 : 1.08)
                         .padding(8)
                         .frame(maxWidth: .infinity)
                         .frame(height: 40)
-                        .nkButton(isInner: isInner, smooth: isInner ? 1 : 5, radius: 14)
+                        .LCContainer()
                 }
             }
             .buttonStyle(.plain)
@@ -71,7 +70,7 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 1, radius: 14)
+                    .LCButton(width: 30, height: 30, padding: 8)
             }
             .buttonStyle(.plain)
             
@@ -81,7 +80,7 @@ struct BoardCardView: View {
                 }
             }) {
                 Image(systemName: "minus")
-                    .nkMiniButton(width: 30, height: 30, padding: 8, smooth: 1, radius: 14)
+                    .LCButton(width: 30, height: 30, padding: 8)
             }
             .buttonStyle(.plain)
         }

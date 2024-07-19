@@ -6,9 +6,10 @@ struct EntranceView: View {
     @Query private var boards: [BoardData]
     
     var openBoard: (BoardData) -> Void
-    public static let baseColor: Color = Color(.displayP3, red: 236/255, green: 236/255, blue: 236/255)
-    public static let lightColor: Color = Color(.displayP3, red: 243/255, green: 243/255, blue: 243/255)
-    public static let darkColor: Color = Color(.displayP3, red: 225/255, green: 225/255, blue: 225/255)
+    public static let baseColor: Color = Color(.displayP3, red: 36/255, green: 36/255, blue: 36/255)
+    public static let textColor: Color = Color(.displayP3, red: 226/255, green: 226/255, blue: 226/255)
+    public static let lightColor: Color = Color(.displayP3, red: 43/255, green: 43/255, blue: 43/255)
+    public static let darkColor: Color = Color(.displayP3, red: 25/255, green: 25/255, blue: 25/255)
     
     var body: some View {
         VStack(spacing: 40) {
@@ -36,7 +37,7 @@ struct EntranceView: View {
                     } else {
                         Text("Create a board")
                             .frame(width: 215, height: 40)
-                            .nkButton(isInner: true, smooth: 1, radius: 14)
+                            .LCContainer()
                     }
                 }
                 .padding(22.5)
@@ -44,8 +45,7 @@ struct EntranceView: View {
             }
             .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
-            //.padding(1)
-            .nkButton(isInner: false, smooth: 1, radius: 28.25)
+            .LCContainer()
             
             Spacer(minLength: 20)
         }

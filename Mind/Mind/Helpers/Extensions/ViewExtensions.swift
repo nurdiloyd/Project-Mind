@@ -44,38 +44,45 @@ extension View {
     }
 }
 
-extension View {
-    func nkButton(isInner: Bool = false, smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
-        let offset: CGFloat = isInner ? -smooth : smooth
-        
-        let shadowRadius: CGFloat = isInner ? smooth / 1.5 : smooth / 2 + 1
-        let cornerRadius: CGFloat = radius
-        
-        let baseColor: Color = EntranceView.baseColor
-        let lightColor: Color = EntranceView.lightColor
-        let darkColor: Color = EntranceView.darkColor
-        let shadowColor: Color = isInner ? lightColor : darkColor
-        let textColor: Color = Color(.displayP3, red: 55/255, green: 55/255, blue: 55/255)
-        
-        return self.foregroundColor(textColor)
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius , style: .continuous)
-                    .fill(baseColor
-                        .shadow(.inner(color: darkColor, radius: smooth / 1, x: -offset, y: -offset))
-                        .shadow(.inner(color: lightColor, radius: smooth / 1, x: offset, y: offset))
-                    )
-                    .shadow(color: shadowColor, radius: shadowRadius)
-            )
+extension Image {
+    func LCButtonMini(width: CGFloat,
+                      height: CGFloat,
+                      padding: CGFloat = 2,
+                      smooth: CGFloat = 2,
+                      radius: CGFloat = 8) -> some View {
+        self.LCButton(width: width, height: height, padding: padding, smooth: smooth, radius: radius)
     }
 }
 
 extension Image {
-    func nkMiniButton(width: CGFloat, height: CGFloat, padding: CGFloat = 2, smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
+    func LCButton(width: CGFloat,
+                      height: CGFloat,
+                      padding: CGFloat = 8,
+                      smooth: CGFloat = 2,
+                      radius: CGFloat = 8) -> some View {
         self.resizable()
             .aspectRatio(contentMode: .fit)
             .bold()
             .frame(width: width - padding * 2, height: height - padding * 2)
             .padding(padding)
-            .nkButton(smooth: smooth, radius: radius)
+            .LCContainer(smooth: smooth, radius: radius)
+    }
+}
+
+extension View {
+    func LCContainer(smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
+        let shadowRadius: CGFloat = smooth
+        let baseColor: Color = EntranceView.baseColor
+        let darkColor: Color = EntranceView.darkColor
+        let shadowColor: Color = darkColor
+        let textColor: Color = EntranceView.textColor
+        
+        return self
+            .foregroundColor(textColor)
+            .background(
+                RoundedRectangle(cornerRadius: radius , style: .continuous)
+                    .fill(baseColor)
+                    .shadow(color: shadowColor, radius: shadowRadius)
+            )
     }
 }
