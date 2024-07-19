@@ -48,10 +48,6 @@ struct NodeView: View {
                     })
                     .font(.headline.weight(.light))
                     .focused($isFocus)
-                    .onSubmit {
-                        isEditing = false
-                        setTitle(title: inputText)
-                    }
                     .foregroundColor(LCConstants.textColor)
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
