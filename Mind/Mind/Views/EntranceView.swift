@@ -45,7 +45,7 @@ struct EntranceView: View {
             }
             .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
-            .LCContainer()
+            .LCContainer(radius: 15)
             
             Spacer(minLength: 20)
         }

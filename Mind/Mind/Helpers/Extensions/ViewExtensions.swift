@@ -58,8 +58,8 @@ extension Image {
     func LCButton(width: CGFloat,
                       height: CGFloat,
                       padding: CGFloat = 8,
-                      smooth: CGFloat = 2,
-                      radius: CGFloat = 8) -> some View {
+                      smooth: CGFloat = 4,
+                      radius: CGFloat = 11) -> some View {
         self.resizable()
             .aspectRatio(contentMode: .fit)
             .bold()
@@ -70,7 +70,7 @@ extension Image {
 }
 
 extension View {
-    func LCContainer(smooth: CGFloat = 2, radius: CGFloat = 8) -> some View {
+    func LCContainer(smooth: CGFloat = 4, radius: CGFloat = 11) -> some View {
         let shadowRadius: CGFloat = smooth
         let baseColor: Color = EntranceView.baseColor
         let darkColor: Color = EntranceView.darkColor
