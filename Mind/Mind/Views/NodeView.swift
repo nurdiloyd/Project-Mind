@@ -51,13 +51,13 @@ struct NodeView: View {
                         isEditing = false
                         setTitle(title: inputText)
                     }
-                    .foregroundColor(Color(NSColor.windowFrameTextColor))
+                    .foregroundColor(LCConstants.textColor)
                     .multilineTextAlignment(.center)
                     .textFieldStyle(PlainTextFieldStyle())
                     .frame(height: NodeView.titleHeight)
                 } else {
                     Text("\(node.title)")
-                        .foregroundColor(Color(NSColor.windowFrameTextColor))
+                        .foregroundColor(LCConstants.textColor)
                         .font(.headline)
                         .frame(height: NodeView.titleHeight)
                         .scaleEffect(isHoveringText ? 1.1 : 1.0)
