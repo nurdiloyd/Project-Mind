@@ -72,17 +72,29 @@ extension Image {
 extension View {
     func LCContainer(smooth: CGFloat = 4, radius: CGFloat = 11) -> some View {
         let shadowRadius: CGFloat = smooth
-        let baseColor: Color = LCColor.baseColor
-        let darkColor: Color = LCColor.darkColor
+        let darkColor: Color = LCConstants.darkColor
         let shadowColor: Color = darkColor
-        let textColor: Color = LCColor.textColor
+        let textColor: Color = LCConstants.textColor
         
         return self
             .foregroundColor(textColor)
-            .background(
-                RoundedRectangle(cornerRadius: radius , style: .continuous)
-                    .fill(baseColor)
-                    .shadow(color: shadowColor, radius: shadowRadius)
-            )
+            .background(LCConstants.baseColor)
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .shadow(color: shadowColor, radius: shadowRadius)
+            
+    }
+}
+
+extension View {
+    @ViewBuilder func LCContaine(width: CGFloat,
+                                 height: CGFloat,
+                                 posX: CGFloat,
+                                 posY: CGFloat) -> some View {
+        Rectangle()
+            .fill(LCConstants.baseColor)
+            
+            .frame(width: width, height: height)
+            .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
+            .LCContainer()
     }
 }

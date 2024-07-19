@@ -18,8 +18,8 @@ struct EntranceView: View {
             Image("Image")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .shadow(color: LCColor.lightColor, radius: shadowRadius, x: -offset, y: -offset)
-                .shadow(color: LCColor.darkColor, radius: shadowRadius, x: offset, y: offset)
+                .shadow(color: LCConstants.lightColor, radius: shadowRadius, x: -offset, y: -offset)
+                .shadow(color: LCConstants.darkColor, radius: shadowRadius, x: offset, y: offset)
             
             ScrollView([.vertical], showsIndicators: false) {
                 VStack{
@@ -46,7 +46,7 @@ struct EntranceView: View {
             Spacer(minLength: 20)
         }
         .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
-        .background(LCColor.baseColor)
+        .background(LCConstants.baseColor)
         .toolbar {
             ToolbarItem {
                 Button {

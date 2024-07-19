@@ -29,13 +29,14 @@ struct NodeTreeView: View {
                         let posX = (fPosX + lPosX) / 2
                         let posY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
                         let padding = 3.0
-                        let cornerRadius = NodeView.cornerRadius + padding / 2
+                        let cornerRadius = LCConstants.cornerRadius + padding / 2
                         let width = NodeView.width + padding * 2
                         let height = abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .fill(Color(NSColor.windowBackgroundColor))
+                        
+                        Rectangle()
+                            .fill(LCConstants.baseColor)
                             .frame(width: width, height: height)
-                            .shadow(radius: NodeView.shadow * 2)
+                            .LCContainer(radius: cornerRadius)
                             .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
                     }
                 }

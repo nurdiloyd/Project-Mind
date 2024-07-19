@@ -31,7 +31,6 @@ struct NodeView: View {
     private static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
     public static let snapX = NodeView.width + NodeView.hStackSpace
     public static let snapY = NodeView.minHeight + NodeView.vStackSpace
-    public static let cornerRadius: CGFloat = 11
     public static let shadow: CGFloat = 3
     
     var body: some View {
@@ -84,9 +83,7 @@ struct NodeView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .background(Color(NSColor.windowBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: NodeView.cornerRadius))
-            .shadow(radius: NodeView.shadow)
+            .LCContainer()
             .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
@@ -96,7 +93,7 @@ struct NodeView: View {
                     let lineWidth = isHovering ? 2.0 : 1.0
                     let lineColor = node.isExpanded ? Color.gray : Color.blue
                     
-                    RoundedRectangle(cornerRadius: NodeView.cornerRadius)
+                    RoundedRectangle(cornerRadius: LCConstants.cornerRadius)
                         .stroke(lineColor, lineWidth: lineWidth)
                         .blur(radius: isHovering ? 0.1 : 0.0)
                         .brightness(isHovering ? 0.1 : 0.0)
