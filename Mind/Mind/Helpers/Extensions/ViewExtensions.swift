@@ -56,21 +56,19 @@ extension Image {
     func LCButton(width: CGFloat,
                   height: CGFloat,
                   padding: CGFloat = 8,
-                  smooth: CGFloat = 4,
-                  radius: CGFloat = 11,
                   level: Int = 1) -> some View {
         self.resizable()
             .aspectRatio(contentMode: .fit)
             .bold()
             .frame(width: width - padding * 2, height: height - padding * 2)
             .padding(padding)
-            .LCContainer(smooth: smooth, radius: radius, level: level)
+            .LCContainer(level: level)
     }
 }
 
 extension View {
     func LCContainer(smooth: CGFloat = 4, 
-                     radius: CGFloat = 11,
+                     radius: CGFloat = LCConstants.cornerRadius,
                      level: Int = 1) -> some View {
         
         let color: Color = LCConstants.getColor(level)

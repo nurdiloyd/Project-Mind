@@ -91,7 +91,7 @@ struct NodeView: View {
             .overlay {
                 if node.isExpandable {
                     let lineWidth = isHovering ? 2.0 : 1.0
-                    let lineColor = node.isExpanded ? Color.gray : Color.blue
+                    let lineColor = LCConstants.getColor(node.isExpanded ? 3 : 4)
                     
                     RoundedRectangle(cornerRadius: LCConstants.cornerRadius)
                         .stroke(lineColor, lineWidth: lineWidth)
@@ -102,12 +102,13 @@ struct NodeView: View {
                 if ((isHovering && !isDragging)) {
                     let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.height / 2)
                     let symbolSize = 11.0
+                    let level = 4
                     
                     Button(action: {
                         deleteThisNode()
                     }) {
                         Image(systemName: "minus")
-                            .LCButtonMini(width: symbolSize, height: symbolSize)
+                            .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                     }
                     .buttonStyle(.plain)
                     .offset(x: topLeft.x, y: topLeft.y)
@@ -116,7 +117,7 @@ struct NodeView: View {
                         isPickerPresenting.toggle()
                     }) {
                         Image(systemName: "photo.fill")
-                            .LCButtonMini(width: symbolSize, height: symbolSize)
+                            .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                     }
                     .buttonStyle(.plain)
                     .offset(x: topLeft.x, y: topLeft.y + NodeView.minHeight)
@@ -126,7 +127,7 @@ struct NodeView: View {
                             deleteImage()
                         }) {
                             Image(systemName: "photo")
-                                .LCButtonMini(width: symbolSize, height: symbolSize)
+                                .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                         }
                         .buttonStyle(.plain)
                         .offset(x: topLeft.x, y: topLeft.y + 3 * NodeView.minHeight / 2)
@@ -136,7 +137,7 @@ struct NodeView: View {
                         createChildNode()
                     }) {
                         Image(systemName: "plus")
-                            .LCButtonMini(width: symbolSize, height: symbolSize)
+                            .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                     }
                     .buttonStyle(.plain)
                     .offset(x: -topLeft.x, y: topLeft.y + NodeView.minHeight / 2)
