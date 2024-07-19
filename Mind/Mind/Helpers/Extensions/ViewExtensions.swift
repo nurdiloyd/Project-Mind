@@ -72,9 +72,10 @@ extension View {
                      level: Int = 1) -> some View {
         
         let color: Color = LCConstants.getColor(level)
+        let textColor: Color = LCConstants.getTextColor(level)
         
         return self
-            .foregroundColor(LCConstants.textColor)
+            .foregroundColor(textColor)
             .background(color)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .shadow(color: LCConstants.shadowColor, radius: smooth)

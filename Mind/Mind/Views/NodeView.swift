@@ -102,7 +102,7 @@ struct NodeView: View {
                 if ((isHovering && !isDragging)) {
                     let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.height / 2)
                     let symbolSize = 11.0
-                    let level = 4
+                    let level = 101
                     
                     Button(action: {
                         deleteThisNode()
