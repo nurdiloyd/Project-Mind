@@ -54,7 +54,7 @@ struct BoardCardView: View {
                         .padding(8)
                         .frame(maxWidth: .infinity)
                         .frame(height: 40)
-                        .LCContainer(level: 2)
+                        .LCContainer(smooth: isInner ? 4 : 8, radius: LCConstants.cornerRadius * (isInner ? 1 : 1.1) , level: 2)
                 }
             }
             .buttonStyle(.plain)
