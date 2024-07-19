@@ -19,7 +19,7 @@ struct EntranceView: View {
                 .resizable()
                 .frame(width: 100, height: 100)
                 .shadow(color: LCConstants.lightColor, radius: shadowRadius, x: -offset, y: -offset)
-                .shadow(color: LCConstants.darkColor, radius: shadowRadius, x: offset, y: offset)
+                .shadow(color: LCConstants.shadowColor, radius: shadowRadius, x: offset, y: offset)
             
             ScrollView([.vertical], showsIndicators: false) {
                 VStack{
@@ -33,7 +33,7 @@ struct EntranceView: View {
                     } else {
                         Text("Create a board")
                             .frame(width: 215, height: 40)
-                            .LCContainer()
+                            .LCContainer(level: 2)
                     }
                 }
                 .padding(22.5)
@@ -41,12 +41,12 @@ struct EntranceView: View {
             }
             .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
-            .LCContainer(radius: 15)
+            .LCContainer(radius: 15, level: 1)
             
             Spacer(minLength: 20)
         }
         .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
-        .background(LCConstants.baseColor)
+        .background(LCConstants.getColor(0))
         .toolbar {
             ToolbarItem {
                 Button {

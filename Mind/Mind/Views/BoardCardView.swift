@@ -42,7 +42,7 @@ struct BoardCardView: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
                     .frame(height: 40)
-                    .LCContainer()
+                    .LCContainer(level: 2)
                     .onSubmit {
                         setIsEditing(false)
                         setTitle(board, inputText)
@@ -54,7 +54,7 @@ struct BoardCardView: View {
                         .padding(8)
                         .frame(maxWidth: .infinity)
                         .frame(height: 40)
-                        .LCContainer()
+                        .LCContainer(level: 2)
                 }
             }
             .buttonStyle(.plain)
@@ -70,7 +70,7 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .LCButton(width: 30, height: 30, padding: 8)
+                    .LCButton(width: 30, height: 30, padding: 8, level: 2)
             }
             .buttonStyle(.plain)
             
@@ -80,7 +80,7 @@ struct BoardCardView: View {
                 }
             }) {
                 Image(systemName: "minus")
-                    .LCButton(width: 30, height: 30, padding: 8)
+                    .LCButton(width: 30, height: 30, padding: 8, level: 2)
             }
             .buttonStyle(.plain)
         }

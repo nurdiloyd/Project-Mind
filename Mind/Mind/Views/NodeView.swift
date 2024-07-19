@@ -83,7 +83,7 @@ struct NodeView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .LCContainer()
+            .LCContainer(level: 2)
             .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)

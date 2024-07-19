@@ -34,7 +34,7 @@ struct NodeTreeView: View {
                         let height = abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2
                         
                         Rectangle()
-                            .fill(LCConstants.baseColor)
+                            .fill(LCConstants.getColor(1))
                             .frame(width: width, height: height)
                             .LCContainer(radius: cornerRadius)
                             .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))

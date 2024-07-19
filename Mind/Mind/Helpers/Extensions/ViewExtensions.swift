@@ -47,54 +47,39 @@ extension View {
 extension Image {
     func LCButtonMini(width: CGFloat,
                       height: CGFloat,
-                      padding: CGFloat = 2,
-                      smooth: CGFloat = 2,
-                      radius: CGFloat = 8) -> some View {
-        self.LCButton(width: width, height: height, padding: padding, smooth: smooth, radius: radius)
+                      level: Int = 1) -> some View {
+        self.LCButton(width: width, height: height, padding: 2, level: level)
     }
 }
 
 extension Image {
     func LCButton(width: CGFloat,
-                      height: CGFloat,
-                      padding: CGFloat = 8,
-                      smooth: CGFloat = 4,
-                      radius: CGFloat = 11) -> some View {
+                  height: CGFloat,
+                  padding: CGFloat = 8,
+                  smooth: CGFloat = 4,
+                  radius: CGFloat = 11,
+                  level: Int = 1) -> some View {
         self.resizable()
             .aspectRatio(contentMode: .fit)
             .bold()
             .frame(width: width - padding * 2, height: height - padding * 2)
             .padding(padding)
-            .LCContainer(smooth: smooth, radius: radius)
+            .LCContainer(smooth: smooth, radius: radius, level: level)
     }
 }
 
 extension View {
-    func LCContainer(smooth: CGFloat = 4, radius: CGFloat = 11) -> some View {
-        let shadowRadius: CGFloat = smooth
-        let darkColor: Color = LCConstants.darkColor
-        let shadowColor: Color = darkColor
-        let textColor: Color = LCConstants.textColor
+    func LCContainer(smooth: CGFloat = 4, 
+                     radius: CGFloat = 11,
+                     level: Int = 1) -> some View {
+        
+        let color: Color = LCConstants.getColor(level)
         
         return self
-            .foregroundColor(textColor)
-            .background(LCConstants.baseColor)
+            .foregroundColor(LCConstants.textColor)
+            .background(color)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .shadow(color: shadowColor, radius: shadowRadius)
+            .shadow(color: LCConstants.shadowColor, radius: smooth)
             
-    }
-}
-
-extension View {
-    @ViewBuilder func LCContaine(width: CGFloat,
-                                 height: CGFloat,
-                                 posX: CGFloat,
-                                 posY: CGFloat) -> some View {
-        Rectangle()
-            .fill(LCConstants.baseColor)
-            
-            .frame(width: width, height: height)
-            .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
-            .LCContainer()
     }
 }

@@ -39,7 +39,7 @@ struct BoardView: View {
                 }
                 .frame(width: BoardView.boardWidth * scale, height: BoardView.boardHeight * scale)
             }
-            .background(LCConstants.baseColor)
+            .background(LCConstants.groundColor)
             .onTapGesture(count: 2) {
                 withAnimation {
                     scale = getNormalScale(for: currentSize)
