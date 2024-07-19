@@ -70,7 +70,7 @@ struct BoardCardView: View {
                 isFocus.toggle()
             }) {
                 Image(systemName: "square.and.pencil")
-                    .LCButton(width: 30, height: 30, padding: 8, level: 2)
+                    .LCButton(width: 30, height: 30, level: 2)
             }
             .buttonStyle(.plain)
             
@@ -80,7 +80,7 @@ struct BoardCardView: View {
                 }
             }) {
                 Image(systemName: "minus")
-                    .LCButton(width: 30, height: 30, padding: 8, level: 2)
+                    .LCButton(width: 30, height: 30, level: 2)
             }
             .buttonStyle(.plain)
         }

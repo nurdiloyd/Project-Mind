@@ -6,20 +6,18 @@ struct EntranceView: View {
     @Query private var boards: [BoardData]
     
     var openBoard: (BoardData) -> Void
+    private let padding: CGFloat = 22.5
     
     var body: some View {
         VStack(spacing: 40) {
             Spacer(minLength: 20)
-
-            let smooth: CGFloat = 5
-            let offset: CGFloat = smooth
-            let shadowRadius: CGFloat = smooth
+            
+            let radius = LCConstants.cornerRadius + padding / 2
             
             Image("Image")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .shadow(color: LCConstants.lightColor, radius: shadowRadius, x: -offset, y: -offset)
-                .shadow(color: LCConstants.shadowColor, radius: shadowRadius, x: offset, y: offset)
+                .LCContainer(smooth: 7, radius: radius)
             
             ScrollView([.vertical], showsIndicators: false) {
                 VStack{
@@ -36,12 +34,12 @@ struct EntranceView: View {
                             .LCContainer(level: 2)
                     }
                 }
-                .padding(22.5)
+                .padding(padding)
                 .frame(minWidth: 300, minHeight: 40)
             }
             .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
-            .LCContainer(radius: 15, level: 1)
+            .LCContainer(smooth: 7, radius: radius, level: 1)
             
             Spacer(minLength: 20)
         }

@@ -78,6 +78,5 @@ extension View {
             .background(color)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .shadow(color: LCConstants.shadowColor, radius: smooth)
-            
     }
 }
