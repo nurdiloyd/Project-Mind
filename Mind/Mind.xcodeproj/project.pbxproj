@@ -12,6 +12,8 @@
 		CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */; };
 		CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62E71A2C3CC52300129F2F /* EntranceView.swift */; };
 		CE62E71D2C3CC79E00129F2F /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62E71C2C3CC79E00129F2F /* BoardView.swift */; };
+		CE6FC7872C4A131F003DB3C7 /* GPTServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6FC7862C4A131F003DB3C7 /* GPTServices.swift */; };
+		CE6FC7892C4A1364003DB3C7 /* GPTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6FC7882C4A1364003DB3C7 /* GPTTest.swift */; };
 		CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58B2C36351D003EFDE5 /* MindApp.swift */; };
 		CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD58D2C36351D003EFDE5 /* ContentView.swift */; };
 		CE7AD5922C36351E003EFDE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7AD5912C36351E003EFDE5 /* Assets.xcassets */; };
@@ -31,6 +33,9 @@
 		CE62E71A2C3CC52300129F2F /* EntranceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceView.swift; sourceTree = "<group>"; };
 		CE62E71C2C3CC79E00129F2F /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		CE62E71E2C3CD1AF00129F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CE6FC7862C4A131F003DB3C7 /* GPTServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTServices.swift; sourceTree = "<group>"; };
+		CE6FC7882C4A1364003DB3C7 /* GPTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPTTest.swift; sourceTree = "<group>"; };
+		CE6FC78A2C4A1542003DB3C7 /* CactusDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CactusDebug.entitlements; sourceTree = "<group>"; };
 		CE7AD5882C36351D003EFDE5 /* Cactus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cactus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7AD58B2C36351D003EFDE5 /* MindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindApp.swift; sourceTree = "<group>"; };
 		CE7AD58D2C36351D003EFDE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -56,6 +61,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE01CE0E2C4A50010096F178 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				CE6FC7862C4A131F003DB3C7 /* GPTServices.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		CE5BBFED2C37A8960030217A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +100,7 @@
 		CE7AD57F2C36351D003EFDE5 = {
 			isa = PBXGroup;
 			children = (
+				CE6FC78A2C4A1542003DB3C7 /* CactusDebug.entitlements */,
 				CE7AD58A2C36351D003EFDE5 /* Mind */,
 				CE7AD5892C36351D003EFDE5 /* Products */,
 			);
@@ -104,9 +118,11 @@
 			isa = PBXGroup;
 			children = (
 				CE7AD58B2C36351D003EFDE5 /* MindApp.swift */,
+				CE6FC7882C4A1364003DB3C7 /* GPTTest.swift */,
 				CE9D897B2C47288C0089F1C8 /* Views */,
 				CE7A688A2C421533007957F6 /* Data */,
 				CE5BBFED2C37A8960030217A /* Helpers */,
+				CE01CE0E2C4A50010096F178 /* Services */,
 				CE7AD5932C36351E003EFDE5 /* Preview Content */,
 				CE7AD5962C36351E003EFDE5 /* Mind.entitlements */,
 				CE62E71E2C3CD1AF00129F2F /* Info.plist */,
@@ -213,9 +229,11 @@
 				CE0124302C3E264E0027AC1D /* BoardCardView.swift in Sources */,
 				CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */,
 				CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */,
+				CE6FC7872C4A131F003DB3C7 /* GPTServices.swift in Sources */,
 				CEA338752C3CD93000266B55 /* BoardData.swift in Sources */,
 				CE90DF0E2C49F1BE00AF07B8 /* LCConstants.swift in Sources */,
 				CE7AD59F2C36357E003EFDE5 /* FileHelper.swift in Sources */,
+				CE6FC7892C4A1364003DB3C7 /* GPTTest.swift in Sources */,
 				CE7AD5A52C3635C5003EFDE5 /* NodeView.swift in Sources */,
 				CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */,
 				CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */,
@@ -349,7 +367,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = Mind/Mind.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CactusDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;

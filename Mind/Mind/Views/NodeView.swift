@@ -7,6 +7,7 @@ struct NodeView: View {
     public var deleteNode: (NodeData) -> Bool
     public var saveContext: () -> Void
     
+    @State private var gptService = GPTService()
     @FocusState private var isFocus: Bool
     @State private var inputText: String = ""
     @State private var isEditing: Bool = false
@@ -242,6 +243,7 @@ struct NodeView: View {
     private func setTitle(title: String) {
         if !title.isEmptyOrWithWhiteSpace {
             node.title = title
+            fetchMeaning(word: title)
             saveContext()
         }
     }
@@ -358,6 +360,17 @@ struct NodeView: View {
         if let parent = node.parent {
             rearrangeChildrenPositionY(parent)
             rearrangeSiblingsPositionY(parent)
+        }
+    }
+    
+    private func fetchMeaning(word: String) {
+        self.isEditing = false
+        gptService.fetchMeaning(for: word) { meaning in
+            if let meaning = meaning {
+                DispatchQueue.main.async {
+                    node.title = meaning
+                }
+            }
         }
     }
 }
