@@ -46,19 +46,21 @@ struct EntranceView: View {
         .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
         .background(LCConstants.getColor(0))
         .toolbar {
-            ToolbarItem {
-                Button {
-                    createNewBoard()
-                } label: {
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button(action: createNewBoard) {
                     Image(systemName: "plus.circle")
                 }
-            }
-            
-            ToolbarItem {
-                Button {
-                    deleteAllBoards()
-                } label: {
+                
+                Button(action: deleteAllBoards) {
                     Image(systemName: "trash")
+                }
+                
+                Button(action: exportDatabase) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                
+                Button(action: importDatabase) {
+                    Image(systemName: "square.and.arrow.down")
                 }
             }
         }
@@ -116,5 +118,51 @@ struct EntranceView: View {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    private func exportDatabase() {
+        /*
+        let fileManager = FileManager.default
+        let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let exportURL = documentDirectory.appendingPathComponent("ExportedDatabase.json")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(boards[1])
+            try jsonData.write(to: exportURL)
+            print("Database exported to \(exportURL.path)")
+        } catch {
+            print("Failed to export database: \(error.localizedDescription)")
+        }
+         */
+    }
+    
+    private func importDatabase() {
+        /*
+        let panel = NSOpenPanel()
+        panel.allowedFileTypes = ["json"]
+        panel.begin { response in
+            if response == .OK, let url = panel.url {
+                do {
+                    let jsonData = try Data(contentsOf: url)
+                    let importedBoard = try JSONDecoder().decode(BoardData.self, from: jsonData)
+                    let newBoard = BoardData(boardData: importedBoard)
+                    print("aaa")
+                    insertBoardData(newBoard)
+                    print("bbb")
+                    let nodes = newBoard.nodes
+                    print("ccc")
+                    let nodeDictionary = Dictionary(uniqueKeysWithValues: nodes.map { ($0.id, $0) })
+                    for node in nodes {
+                        if let parentID = node.parentID, let parentNode = nodeDictionary[parentID] {
+                            node.parent = parentNode
+                        }
+                    }
+                    print("Database imported successfully")
+                } catch {
+                    print("Failed to import database: \(error.localizedDescription)")
+                }
+            }
+        }
+        */
     }
 }
