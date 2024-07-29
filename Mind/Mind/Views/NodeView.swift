@@ -5,7 +5,6 @@ struct NodeView: View {
     public let node: NodeData
     public var createNode: (String, NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
-    public var saveContext: () -> Void
     
     @State private var gptService = GPTService()
     @FocusState private var isFocus: Bool
@@ -240,7 +239,6 @@ struct NodeView: View {
         if !title.isEmptyOrWithWhiteSpace {
             node.title = title
             fetchMeaning(word: title)
-            saveContext()
         }
     }
     private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
@@ -269,7 +267,6 @@ struct NodeView: View {
                             image = resizedImage
                             node.imageName = imageName
                             FileHelper.saveImage(data: compressedImageData, filename: imageName)
-                            saveContext()
                         }
                     }
                 }
@@ -281,8 +278,6 @@ struct NodeView: View {
         FileHelper.deleteImage(filename: node.imageName)
         image = nil
         node.imageName = ""
-        
-        saveContext()
     }
     
     private func deleteThisNode() {
@@ -314,8 +309,6 @@ struct NodeView: View {
                         snapToGrid(child)
                         updateLastPosition(child)
                     }
-                    
-                    saveContext()
                 }
             } else {
                 isDeleting = false

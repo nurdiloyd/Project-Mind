@@ -30,8 +30,7 @@ struct BoardView: View {
                                          createNode: {title, parent in
                                 createNode(title: title, parent: parent)
                             },
-                                         deleteNode: deleteNode,
-                                         saveContext: saveContext)
+                                         deleteNode: deleteNode)
                         }
                     }
                     .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
@@ -127,7 +126,6 @@ struct BoardView: View {
 
         board.nodes.append(newNode)
         insertNodeData(newNode)
-        saveContext()
     }
 
     private func deleteNode(_ nodeData: NodeData) -> Bool
@@ -143,7 +141,6 @@ struct BoardView: View {
             
             deleteNodeData(nodeData)
             board.nodes.remove(at: index)
-            saveContext()
             
             return true
         }
@@ -157,7 +154,6 @@ struct BoardView: View {
         }
         
         board.nodes.removeAll()
-        saveContext()
     }
     
     public func insertNodeData(_ nodeData: NodeData) {

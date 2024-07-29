@@ -5,13 +5,11 @@ struct NodeTreeView: View {
     let node: NodeData
     public var createNode: (String, NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
-    public var saveContext: () -> Void
     
     var body: some View {
         NodeView(node: node,
                  createNode: createNode,
-                 deleteNode: deleteNode,
-                 saveContext: saveContext)
+                 deleteNode: deleteNode)
         
         if node.isExpanded {
             if node.children.count > 0
@@ -44,8 +42,7 @@ struct NodeTreeView: View {
                 ForEach(children) { child in
                     NodeTreeView(node: child,
                                  createNode: createNode,
-                                 deleteNode: deleteNode,
-                                 saveContext: saveContext)
+                                 deleteNode: deleteNode)
                 }
             }
         }

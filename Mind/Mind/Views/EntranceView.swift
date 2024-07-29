@@ -69,14 +69,12 @@ struct EntranceView: View {
     private func setTitle(_ board: BoardData, title: String) {
         if !title.isEmptyOrWithWhiteSpace {
             board.title = title
-            saveContext()
         }
     }
     
     private func createNewBoard() {
         let newBoard = BoardData(title: "New Board")
         insertBoardData(newBoard)
-        saveContext()
     }
     
     private func deleteAllBoards() {
@@ -93,8 +91,6 @@ struct EntranceView: View {
         board.nodes.removeAll()
         
         deleteBoardData(board)
-        
-        saveContext()
     }
     
     public func deleteNodeData(_ node: NodeData) {
@@ -108,16 +104,6 @@ struct EntranceView: View {
 
     public func deleteBoardData(_ boardData: BoardData) {
         context.delete(boardData)
-    }
-    
-    public func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
     }
     
     private func exportDatabase() {
