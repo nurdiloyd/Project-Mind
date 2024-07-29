@@ -28,8 +28,8 @@ struct BoardView: View {
                         }), id: \.id) { node in
                             NodeTreeView(node: node,
                                          createNode: {title, parent in
-                                createNode(title: title, parent: parent)
-                            },
+                                                createNode(title: title, parent: parent)
+                                         },
                                          deleteNode: deleteNode)
                         }
                     }
@@ -132,13 +132,7 @@ struct BoardView: View {
     {
         if let index = board.nodes.firstIndex(of: nodeData)
         {
-            if let parent = nodeData.parent {
-                if let parentIndex = parent.children.firstIndex(of: nodeData)
-                {
-                    parent.children.remove(at: parentIndex)
-                }
-            }
-            
+            nodeData.removeParent()
             deleteNodeData(nodeData)
             board.nodes.remove(at: index)
             

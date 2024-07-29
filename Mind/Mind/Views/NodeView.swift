@@ -40,7 +40,7 @@ struct NodeView: View {
                     TextField("Node Title", text: $inputText, onEditingChanged: { isStart in
                         if !isStart && !onCreation {
                             isEditing = false
-                            setTitle(title: inputText)
+                            node.setTitle(title: inputText)
                         }
                         
                         onCreation = false
@@ -184,14 +184,14 @@ struct NodeView: View {
                     
                     let deltaX = value.translation.width
                     let deltaY = value.translation.height
-                    let newX = node.lastPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
-                    let newY = node.lastPositionY + deltaY
-                    setPosition(node, positionX: newX, positionY: newY)
+                    let newX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
+                    let newY = node.lastLocalPositionY + deltaY
+                    node.setLocalPosition(positionX: newX, positionY: newY)
                     
                     if let parent = node.parent {
                         let siblings = parent.children
-                        let lastPosX = node.lastPositionX
-                        let lastPosY = node.lastPositionY
+                        let lastPosX = node.lastLocalPositionX
+                        let lastPosY = node.lastLocalPositionY
                         for sibling in siblings {
                             if (node.globalPositionY > sibling.globalPositionY && node.order < sibling.order) ||
                                 (node.globalPositionY < sibling.globalPositionY && node.order > sibling.order)
@@ -219,7 +219,7 @@ struct NodeView: View {
                             rearrangeSiblingsPositionY(node)
                         } else {
                             snapToGrid(node)
-                            updateLastPosition(node)
+                            node.resetLastLocalPosition()
                         }
                     }
                 }
@@ -307,7 +307,7 @@ struct NodeView: View {
                     
                     for child in children {
                         snapToGrid(child)
-                        updateLastPosition(child)
+                        child.resetLastLocalPosition()
                     }
                 }
             } else {
@@ -340,7 +340,7 @@ struct NodeView: View {
             child.localPositionX = NodeView.snapX
             child.localPositionY = currentY - child.globalHeight / 2
             currentY -= (child.globalHeight + NodeView.vStackSpace)
-            updateLastPosition(child)
+            child.resetLastLocalPosition()
         }
     }
     
@@ -353,6 +353,7 @@ struct NodeView: View {
     }
     
     private func fetchMeaning(word: String) {
+        /*
         self.isEditing = false
         gptService.fetchMeaning(for: word) { meaning in
             if let meaning = meaning {
@@ -361,5 +362,6 @@ struct NodeView: View {
                 }
             }
         }
+         */
     }
 }
