@@ -204,9 +204,8 @@ struct NodeView: View {
                                     rearrangeSiblingsPositionY(node)
                                 }
                                 
-                                setPosition(node, positionX: newX, positionY: newY)
-                                node.lastPositionX = lastPosX
-                                node.lastPositionY = lastPosY
+                                node.setLocalPosition(positionX: newX, positionY: newY)
+                                node.setLastLocalPosition(positionX: lastPosX, positionY: lastPosY)
                             }
                         }
                     }
@@ -227,36 +226,12 @@ struct NodeView: View {
     }
     
     private func snapToGrid(_ node: NodeData) {
-        var positionX = node.localPositionX
-        var positionY = node.localPositionY
-        positionX = (positionX / NodeView.snapX).rounded() * NodeView.snapX
-        positionY = (positionY / NodeView.snapY).rounded() * NodeView.snapY
+        let positionX = (node.localPositionX / NodeView.snapX).rounded() * NodeView.snapX
+        let positionY = (node.localPositionY / NodeView.snapY).rounded() * NodeView.snapY
         
-        setPosition(node, positionX: positionX, positionY: positionY)
+        node.setLocalPosition(positionX: positionX, positionY: positionY)
     }
-    
-    private func setTitle(title: String) {
-        if !title.isEmptyOrWithWhiteSpace {
-            node.title = title
-            fetchMeaning(word: title)
-        }
-    }
-    private func setPosition(_ node: NodeData, positionX: Double, positionY: Double) {
-        //let minX = NodeView.width / 2 + (node.parent != nil ? (node.parent!.localPositionX + NodeView.width / 2 + 10) : 0)
-        //let maxX = Double(BoardView.boardSize - NodeView.width / 2)
-        
-        //let minY = node.containerHeight / 2
-        //let maxY = Double(BoardView.boardSize - node.containerHeight / 2)
-        
-        node.localPositionX = positionX//.clamped(to: minX...maxX)
-        node.localPositionY = positionY//.clamped(to: minY...maxY)
-    }
-    
-    private func updateLastPosition(_ node: NodeData) {
-        node.lastPositionX = node.localPositionX
-        node.lastPositionY = node.localPositionY
-    }
-    
+
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
         if let item = photoPickerItem {
             Task {
