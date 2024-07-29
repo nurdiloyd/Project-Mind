@@ -175,54 +175,81 @@ struct NodeView: View {
                 rearrangeSiblingsPositionY(node)
             }
         }
-        .gesture(
-            DragGesture()
-                .onChanged { value in
-                    withAnimation(.spring(duration: 0.1)) {
-                        isDragging = true
-                    }
-                    
-                    let deltaX = value.translation.width
-                    let deltaY = value.translation.height
-                    let newX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
-                    let newY = node.lastLocalPositionY + deltaY
-                    node.setLocalPosition(positionX: newX, positionY: newY)
-                    
-                    if let parent = node.parent {
-                        let siblings = parent.children
-                        let lastPosX = node.lastLocalPositionX
-                        let lastPosY = node.lastLocalPositionY
-                        for sibling in siblings {
-                            if (node.globalPositionY > sibling.globalPositionY && node.order < sibling.order) ||
-                                (node.globalPositionY < sibling.globalPositionY && node.order > sibling.order)
-                            {
-                                let tmpOrder = node.order
-                                node.order = sibling.order
-                                sibling.order = tmpOrder
-                                
-                                withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
-                                    rearrangeSiblingsPositionY(node)
-                                }
-                                
-                                node.setLocalPosition(positionX: newX, positionY: newY)
-                                node.setLastLocalPosition(positionX: lastPosX, positionY: lastPosY)
-                            }
-                        }
-                    }
-                }
-                .onEnded { value in
-                    withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
-                        isDragging = false
-                        
-                        if node.parent != nil {
-                            rearrangeSiblingsPositionY(node)
-                        } else {
-                            snapToGrid(node)
-                            node.resetLastLocalPosition()
-                        }
-                    }
-                }
+        .gesture(DragGesture()
+            .onChanged(onDrag)
+            .onEnded(onDragEnd)
         )
+    }
+    
+    private func onDrag(value: DragGesture.Value) {
+        withAnimation(.spring(duration: 0.1)) {
+            isDragging = true
+        }
+        
+        let distance = value.translation
+        let deltaX = distance.width
+        let deltaY = distance.height
+        let newX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
+        let newY = node.lastLocalPositionY + deltaY
+        node.setLocalPosition(positionX: newX, positionY: newY)
+        
+        if let parent = node.parent {
+            let siblings = parent.children
+            let lastPosX = node.lastLocalPositionX
+            let lastPosY = node.lastLocalPositionY
+            for sibling in siblings {
+                if (node.globalPositionY > sibling.globalPositionY && node.order < sibling.order) ||
+                    (node.globalPositionY < sibling.globalPositionY && node.order > sibling.order)
+                {
+                    let tmpOrder = node.order
+                    node.order = sibling.order
+                    sibling.order = tmpOrder
+                    
+                    withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
+                        rearrangeSiblingsPositionY(node)
+                    }
+                    
+                    node.setLocalPosition(positionX: newX, positionY: newY)
+                    node.setLastLocalPosition(positionX: lastPosX, positionY: lastPosY)
+                }
+            }
+        }
+        /*
+        print("remove \(deltaX)")
+        if abs(deltaX) > 135
+        {
+            print("remove")
+            
+            let parent = node.parent
+            let posX = node.globalPositionX
+            let posY = node.globalPositionY
+            let aposX = node.lastGlobalPositionX
+            let aposY = node.lastGlobalPositionY
+            node.removeParent()
+            node.setLocalPosition(positionX: posX, positionY: posY)
+            node.setLastLocalPosition(positionX: aposX, positionY: aposY)
+            
+            withAnimation {
+                if let prnt = parent {
+                    rearrangeChildrenPositionY(prnt)
+                    rearrangeSiblingsPositionY(prnt)
+                }
+            }
+        }
+         */
+    }
+    
+    private func onDragEnd(value: DragGesture.Value) {
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
+            isDragging = false
+            
+            if node.parent != nil {
+                rearrangeSiblingsPositionY(node)
+            } else {
+                snapToGrid(node)
+                node.resetLastLocalPosition()
+            }
+        }
     }
     
     private func snapToGrid(_ node: NodeData) {
