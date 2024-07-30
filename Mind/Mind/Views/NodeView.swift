@@ -26,9 +26,9 @@ struct NodeView: View {
     public static let maxHeight: CGFloat = NodeView.titleHeight + NodeView.imageHeight
     private static let titleHeight: CGFloat = 30
     private static let imageHeight: CGFloat = NodeView.width
-    private static let countCorrespondsMaxHeight: Int = 5
+    private static let countCorrespondsMaxHeight: CGFloat = 5
     private static let hStackSpace: CGFloat = vStackSpace
-    public static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
+    public static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * NodeView.countCorrespondsMaxHeight) / (NodeView.countCorrespondsMaxHeight - 1)
     public static let snapX = NodeView.width + NodeView.hStackSpace
     public static let snapY = NodeView.minHeight + NodeView.vStackSpace
     public static let shadow: CGFloat = 3
@@ -153,7 +153,7 @@ struct NodeView: View {
             {
                 node.isInit = true
                 onCreation = true
-                inputText = node.title
+                inputText = "Title"
                 isEditing = true
                 isFocus.toggle()
             }
@@ -181,8 +181,7 @@ struct NodeView: View {
         )
         
         if node.canShowChildren {
-            if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY })
-            {
+            if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY }) {
                 if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
                     let padding: Double = 3.0
                     let cornerRadius = LCConstants.cornerRadius + padding / 2
@@ -193,22 +192,33 @@ struct NodeView: View {
                     let lPosX = lNode.lastGlobalPositionX
                     let lPosY = lNode.globalPositionY
                     
+                    let childrenTitles = node.children.map { $0.title }.joined(separator: " ")
+                    let lineCount = (CGFloat(childrenTitles.count) / 24.3).rounded()
+                    let textPadding = 10.0
+                    let lineHeight = 7.4
+                    let lineSpace = 5.8
+                    let totalLineHeight = (lineHeight * lineCount + lineSpace * (lineCount - 1)).clamped(to: NodeView.minHeight...NodeView.maxHeight)
+                    
                     let posX = (fPosX + lPosX) / 2
                     let posY = node.isExpanded
                         ? (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
                         : node.globalPositionY
                     let height = node.isExpanded
                         ? (!isDeleting ? abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2 : 0)
-                        : (!isDeleting ? NodeView.maxHeight + padding * 2 : 0)
+                        : (!isDeleting ? totalLineHeight + padding * 2 : 0)
 
+                    let _ = print(CGFloat(childrenTitles.count))
+                    let _ = print(lineCount)
+                    
                     Rectangle()
                         .opacity(0)
-                        .if(!node.isExpanded)
-                        {
+                        .if(!node.isExpanded) {
                             $0.overlay {
-                                Text("sum of children")
+                                Text(childrenTitles)
                                     .foregroundColor(LCConstants.textColor)
                                     .font(.caption)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(EdgeInsets(top: 0, leading: textPadding, bottom: 0, trailing: textPadding))
                             }
                             .onHover { hovering in
                                 withAnimation(.spring(duration:0.5)) {
@@ -336,7 +346,7 @@ struct NodeView: View {
     
     private func createChildNode() {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-            createNode("Title", node)
+            createNode("tite", node)
             node.rearrangeChildrenPositionY()
             node.rearrangeSiblingsPositionY()
         }
