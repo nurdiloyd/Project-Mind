@@ -25,9 +25,12 @@ struct BoardView: View {
                         
                         let nodes = sortedNodes(board.nodes)
                         ForEach(nodes, id: \.id) { node in
-                            NodeView(node: node,
-                                     createNode: {title, parent in createNode(title: title, parent: parent)},
-                                     deleteNode: deleteNode)
+                            if node.shouldShowSelf
+                            {
+                                NodeView(node: node,
+                                         createNode: {title, parent in createNode(title: title, parent: parent)},
+                                         deleteNode: deleteNode)
+                            }
                         }
                     }
                     .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
@@ -158,6 +161,7 @@ struct BoardView: View {
             nodeData.removeParent()
             deleteNodeData(nodeData)
             board.nodes.remove(at: index)
+            saveContext()
             
             return true
         }

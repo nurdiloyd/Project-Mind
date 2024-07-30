@@ -31,6 +31,8 @@ final class NodeData {
                                                 ? max(height, contentHeight)
                                                 : height
                                             : height }
+    @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
+    @Transient var shouldShowChildren: Bool { isExpanded && children.count > 0 && shouldShowSelf }
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
@@ -64,13 +66,29 @@ final class NodeData {
     public func removeParent()
     {
         if let prnt = parent {
-            localPositionX = globalPositionX
-            localPositionY = globalPositionY
-            lastLocalPositionX = lastGlobalPositionX
-            lastLocalPositionY = lastGlobalPositionY
+            setLocalPosition(positionX: globalPositionX, positionY: globalPositionY)
+            setLastLocalPosition(positionX: snapX(lastGlobalPositionX), positionY: snapY(lastGlobalPositionY))
             
             prnt.removeChild(self)
         }
+    }
+    
+    public func snapToGrid() {
+        let positionX = snapX(localPositionX)
+        let positionY = snapY(localPositionY)
+        
+        setLocalPosition(positionX: positionX, positionY: positionY)
+        resetLastLocalPosition()
+    }
+    
+    public func snapX(_ positionX: Double) -> Double
+    {
+        return (positionX / NodeView.snapX).rounded() * NodeView.snapX
+    }
+    
+    public func snapY(_ positionY: Double) -> Double
+    {
+        return (positionY / NodeView.snapY).rounded() * NodeView.snapY
     }
     
     public func setLocalPosition(positionX: Double, positionY: Double) {
@@ -84,14 +102,41 @@ final class NodeData {
     }
     
     public func resetLastLocalPosition() {
-        lastLocalPositionX = localPositionX
-        lastLocalPositionY = localPositionY
+        setLastLocalPosition(positionX: localPositionX, positionY: localPositionY)
     }
     
     public func setTitle(title: String) {
         let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedTitle.isEmptyOrWithWhiteSpace {
             self.title = trimmedTitle
+        }
+    }
+    
+    public func rearrangeChildrenPositionY() {
+        let sortedChildren = children.sorted(by: { $0.order > $1.order })
+        
+        var totalHeight = -NodeView.vStackSpace
+        for child in sortedChildren {
+            totalHeight += child.globalHeight + NodeView.vStackSpace
+        }
+        
+        contentHeight = totalHeight
+        
+        var currentY = totalHeight / 2
+        for child in sortedChildren {
+            let positionX = NodeView.snapX
+            let positionY = currentY - child.globalHeight / 2
+            child.setLocalPosition(positionX: positionX, positionY: positionY)
+            child.resetLastLocalPosition()
+            currentY -= (child.globalHeight + NodeView.vStackSpace)
+        }
+    }
+    
+    public func rearrangeSiblingsPositionY()
+    {
+        if let prnt = parent {
+            prnt.rearrangeChildrenPositionY()
+            prnt.rearrangeSiblingsPositionY()
         }
     }
 }

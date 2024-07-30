@@ -28,7 +28,7 @@ struct NodeView: View {
     private static let imageHeight: CGFloat = NodeView.width
     private static let countCorrespondsMaxHeight: Int = 5
     private static let hStackSpace: CGFloat = vStackSpace
-    private static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
+    public static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * CGFloat(NodeView.countCorrespondsMaxHeight)) / CGFloat(NodeView.countCorrespondsMaxHeight - 1)
     public static let snapX = NodeView.width + NodeView.hStackSpace
     public static let snapY = NodeView.minHeight + NodeView.vStackSpace
     public static let shadow: CGFloat = 3
@@ -165,14 +165,14 @@ struct NodeView: View {
         .readSize { newSize in
             node.height = newSize.height
             withAnimation {
-                rearrangeSiblingsPositionY(node)
+                node.rearrangeSiblingsPositionY()
             }
         }
         .position(CGPoint(x: CGFloat(node.globalPositionX), y: CGFloat(node.globalPositionY)))
         .onTapGesture(count: 1) {
             withAnimation {
                 node.isExpanded.toggle()
-                rearrangeSiblingsPositionY(node)
+                node.rearrangeSiblingsPositionY()
             }
         }
         .gesture(DragGesture()
@@ -180,47 +180,44 @@ struct NodeView: View {
             .onEnded(onDragEnd)
         )
         
-        if node.isExpanded {
-            if node.children.count > 0
+        if node.shouldShowChildren {
+            if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY })
             {
-                if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY })
-                {
-                    if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
-                        let padding: Double = 3.0
-                        let cornerRadius = LCConstants.cornerRadius + padding / 2
-                        let width = NodeView.width + padding * 2
-                        
-                        let fPosX = fNode.lastGlobalPositionX
-                        let fPosY = fNode.globalPositionY
-                        let lPosX = lNode.lastGlobalPositionX
-                        let lPosY = lNode.globalPositionY
-                        
-                        let posX = (fPosX + lPosX) / 2
-                        let posY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
-                        let height = abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2
-                        
-                        Rectangle()
-                            .opacity(0)
-                            .frame(width: width, height: height)
-                            .LCContainer(radius: cornerRadius, level: 2)
-                            .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
-                    }
+                if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
+                    let padding: Double = 3.0
+                    let cornerRadius = LCConstants.cornerRadius + padding / 2
+                    let width = NodeView.width + padding * 2
+                    
+                    let fPosX = fNode.lastGlobalPositionX
+                    let fPosY = fNode.globalPositionY
+                    let lPosX = lNode.lastGlobalPositionX
+                    let lPosY = lNode.globalPositionY
+                    
+                    let posX = (fPosX + lPosX) / 2
+                    let posY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
+                    let height = !isDeleting ? abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2 : 0
+                    
+                    Rectangle()
+                        .opacity(0)
+                        .frame(width: width, height: height)
+                        .LCContainer(radius: cornerRadius, level: 4)
+                        .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
                 }
             }
         }
     }
     
     private func onDrag(value: DragGesture.Value) {
-        withAnimation(.spring(duration: 0.1)) {
-            isDragging = true
-        }
-        
         let currentPos = value.location
-        let deltaX = currentPos.x - node.lastGlobalPositionX//distance.width
-        let deltaY = currentPos.y - node.lastGlobalPositionY//distance.height
+        let deltaX = currentPos.x - node.lastGlobalPositionX
+        let deltaY = currentPos.y - node.lastGlobalPositionY
         let localPositionX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
         let localPositionY = node.lastLocalPositionY + deltaY
-        node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
+        
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
+            isDragging = true
+            node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
+        }
         
         if let parent = node.parent {
             for sibling in parent.children {
@@ -232,30 +229,17 @@ struct NodeView: View {
                     sibling.order = tmpOrder
                     
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
-                        rearrangeSiblingsPositionY(node)
+                        node.rearrangeSiblingsPositionY()
                     }
                 }
             }
             
-            print("remove \(deltaX)")
             if abs(deltaX) > 135
             {
-                print("remove")
-                
-                let parent = node.parent
-                let posX = node.globalPositionX
-                let posY = node.globalPositionY
-                let aposX = node.lastGlobalPositionX
-                let aposY = node.lastGlobalPositionY
-                node.removeParent()
-                //node.setLocalPosition(positionX: posX, positionY: posY)
-                //node.setLastLocalPosition(positionX: aposX, positionY: aposY)
-                
-                withAnimation {
-                    if let prnt = parent {
-                        rearrangeChildrenPositionY(prnt)
-                        rearrangeSiblingsPositionY(prnt)
-                    }
+                withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
+                    node.removeParent()
+                    parent.rearrangeChildrenPositionY()
+                    parent.rearrangeSiblingsPositionY()
                 }
             }
         }
@@ -266,21 +250,13 @@ struct NodeView: View {
             isDragging = false
             
             if node.parent != nil {
-                rearrangeSiblingsPositionY(node)
+                node.rearrangeSiblingsPositionY()
             } else {
-                snapToGrid(node)
-                node.resetLastLocalPosition()
+                node.snapToGrid()
             }
         }
     }
     
-    private func snapToGrid(_ node: NodeData) {
-        let positionX = (node.localPositionX / NodeView.snapX).rounded() * NodeView.snapX
-        let positionY = (node.localPositionY / NodeView.snapY).rounded() * NodeView.snapY
-        
-        node.setLocalPosition(positionX: positionX, positionY: positionY)
-    }
-
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
         if let item = photoPickerItem {
             Task {
@@ -305,34 +281,29 @@ struct NodeView: View {
     }
     
     private func deleteThisNode() {
-        withAnimation {
+        withAnimation(.spring(duration: 0.3)) {
             isDeleting = true
             node.isExpanded = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            
             let parent = node.parent
             let children = node.children
             let posX = node.globalPositionX
             let posY = node.globalPositionY
-            let isDeleted = deleteNode(node)
             
+            let isDeleted = deleteNode(node)
             if isDeleted {
                 for child in children {
                     child.localPositionX = child.localPositionX + posX
                     child.localPositionY = child.localPositionY + posY
                 }
                 
-                withAnimation {
-                    if let prnt = parent {
-                        rearrangeChildrenPositionY(prnt)
-                        rearrangeSiblingsPositionY(prnt)
-                    }
-                    
-                    for child in children {
-                        snapToGrid(child)
-                        child.resetLastLocalPosition()
-                    }
+                if let prnt = parent {
+                    prnt.rearrangeChildrenPositionY()
+                    prnt.rearrangeSiblingsPositionY()
+                }
+                
+                for child in children {
+                    child.snapToGrid()
                 }
             } else {
                 isDeleting = false
@@ -344,38 +315,11 @@ struct NodeView: View {
         createNode("Title", node)
         
         withAnimation {
-            rearrangeChildrenPositionY(node)
-            rearrangeSiblingsPositionY(node)
+            node.rearrangeChildrenPositionY()
+            node.rearrangeSiblingsPositionY()
         }
     }
-    
-    private func rearrangeChildrenPositionY(_ node: NodeData) {
-        let sortedChildren = node.children.sorted(by: { $0.order > $1.order })
         
-        var totalHeight = -NodeView.vStackSpace
-        for child in sortedChildren {
-            totalHeight += child.globalHeight + NodeView.vStackSpace
-        }
-        
-        node.contentHeight = totalHeight
-        
-        var currentY = totalHeight / 2
-        for child in sortedChildren {
-            child.localPositionX = NodeView.snapX
-            child.localPositionY = currentY - child.globalHeight / 2
-            currentY -= (child.globalHeight + NodeView.vStackSpace)
-            child.resetLastLocalPosition()
-        }
-    }
-    
-    private func rearrangeSiblingsPositionY(_ node: NodeData)
-    {
-        if let parent = node.parent {
-            rearrangeChildrenPositionY(parent)
-            rearrangeSiblingsPositionY(parent)
-        }
-    }
-    
     private func fetchMeaning(word: String) {
         /*
         self.isEditing = false
