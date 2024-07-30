@@ -179,6 +179,35 @@ struct NodeView: View {
             .onChanged(onDrag)
             .onEnded(onDragEnd)
         )
+        
+        if node.isExpanded {
+            if node.children.count > 0
+            {
+                if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY })
+                {
+                    if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
+                        let padding: Double = 3.0
+                        let cornerRadius = LCConstants.cornerRadius + padding / 2
+                        let width = NodeView.width + padding * 2
+                        
+                        let fPosX = fNode.lastGlobalPositionX
+                        let fPosY = fNode.globalPositionY
+                        let lPosX = lNode.lastGlobalPositionX
+                        let lPosY = lNode.globalPositionY
+                        
+                        let posX = (fPosX + lPosX) / 2
+                        let posY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
+                        let height = abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2
+                        
+                        Rectangle()
+                            .opacity(0)
+                            .frame(width: width, height: height)
+                            .LCContainer(radius: cornerRadius, level: 2)
+                            .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
+                    }
+                }
+            }
+        }
     }
     
     private func onDrag(value: DragGesture.Value) {
@@ -207,30 +236,29 @@ struct NodeView: View {
                     }
                 }
             }
-        }
-        /*
-        print("remove \(deltaX)")
-        if abs(deltaX) > 135
-        {
-            print("remove")
             
-            let parent = node.parent
-            let posX = node.globalPositionX
-            let posY = node.globalPositionY
-            let aposX = node.lastGlobalPositionX
-            let aposY = node.lastGlobalPositionY
-            node.removeParent()
-            node.setLocalPosition(positionX: posX, positionY: posY)
-            node.setLastLocalPosition(positionX: aposX, positionY: aposY)
-            
-            withAnimation {
-                if let prnt = parent {
-                    rearrangeChildrenPositionY(prnt)
-                    rearrangeSiblingsPositionY(prnt)
+            print("remove \(deltaX)")
+            if abs(deltaX) > 135
+            {
+                print("remove")
+                
+                let parent = node.parent
+                let posX = node.globalPositionX
+                let posY = node.globalPositionY
+                let aposX = node.lastGlobalPositionX
+                let aposY = node.lastGlobalPositionY
+                node.removeParent()
+                //node.setLocalPosition(positionX: posX, positionY: posY)
+                //node.setLastLocalPosition(positionX: aposX, positionY: aposY)
+                
+                withAnimation {
+                    if let prnt = parent {
+                        rearrangeChildrenPositionY(prnt)
+                        rearrangeSiblingsPositionY(prnt)
+                    }
                 }
             }
         }
-         */
     }
     
     private func onDragEnd(value: DragGesture.Value) {

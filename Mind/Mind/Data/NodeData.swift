@@ -1,6 +1,7 @@
 import SwiftData
 import Foundation
 import PhotosUI
+import SwiftUI
 
 @Model
 final class NodeData {
@@ -63,6 +64,11 @@ final class NodeData {
     public func removeParent()
     {
         if let prnt = parent {
+            localPositionX = globalPositionX
+            localPositionY = globalPositionY
+            lastLocalPositionX = lastGlobalPositionX
+            lastLocalPositionY = lastGlobalPositionY
+            
             prnt.removeChild(self)
         }
     }

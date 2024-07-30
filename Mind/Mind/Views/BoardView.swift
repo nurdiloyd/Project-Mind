@@ -22,15 +22,12 @@ struct BoardView: View {
                         Circle()
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color(NSColor.windowFrameTextColor))
-
-                        ForEach(board.nodes.filter({ node in
-                            node.parent == nil
-                        }), id: \.id) { node in
-                            NodeTreeView(node: node,
-                                         createNode: {title, parent in
-                                                createNode(title: title, parent: parent)
-                                         },
-                                         deleteNode: deleteNode)
+                        
+                        let nodes = sortedNodes(board.nodes)
+                        ForEach(nodes, id: \.id) { node in
+                            NodeView(node: node,
+                                     createNode: {title, parent in createNode(title: title, parent: parent)},
+                                     deleteNode: deleteNode)
                         }
                     }
                     .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
@@ -92,7 +89,33 @@ struct BoardView: View {
             lastScale = scale
         }
     }
-
+    
+    private func sortedNodes(_ nodes: [NodeData]) -> [NodeData] {
+        var sorted = [NodeData]()
+        var queue = nodes.filter { $0.parent == nil }
+        var queueNested = [NodeData]()
+        
+        while !queue.isEmpty || !queueNested.isEmpty {
+            if (queueNested.isEmpty)
+            {
+                let node = queue.removeFirst()
+                sorted.append(node)
+                
+                let children = node.children
+                queueNested.append(contentsOf: children)
+            }
+            else {
+                let node = queueNested.removeFirst()
+                sorted.append(node)
+                
+                let children = nodes.filter { $0.parent == node }
+                queueNested.append(contentsOf: children)
+            }
+        }
+        
+        return sorted
+    }
+    
     private func getNormalScale(for size: CGSize) -> CGFloat
     {
         let minEdgeLength = min(size.width, size.height)
