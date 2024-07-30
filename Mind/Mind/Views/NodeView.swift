@@ -186,18 +186,15 @@ struct NodeView: View {
             isDragging = true
         }
         
-        let distance = value.translation
-        let deltaX = distance.width
-        let deltaY = distance.height
-        let newX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
-        let newY = node.lastLocalPositionY + deltaY
-        node.setLocalPosition(positionX: newX, positionY: newY)
+        let currentPos = value.location
+        let deltaX = currentPos.x - node.lastGlobalPositionX//distance.width
+        let deltaY = currentPos.y - node.lastGlobalPositionY//distance.height
+        let localPositionX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
+        let localPositionY = node.lastLocalPositionY + deltaY
+        node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
         
         if let parent = node.parent {
-            let siblings = parent.children
-            let lastPosX = node.lastLocalPositionX
-            let lastPosY = node.lastLocalPositionY
-            for sibling in siblings {
+            for sibling in parent.children {
                 if (node.globalPositionY > sibling.globalPositionY && node.order < sibling.order) ||
                     (node.globalPositionY < sibling.globalPositionY && node.order > sibling.order)
                 {
@@ -208,9 +205,6 @@ struct NodeView: View {
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
                         rearrangeSiblingsPositionY(node)
                     }
-                    
-                    node.setLocalPosition(positionX: newX, positionY: newY)
-                    node.setLastLocalPosition(positionX: lastPosX, positionY: lastPosY)
                 }
             }
         }

@@ -23,13 +23,13 @@ final class NodeData {
     @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
     @Transient var lastGlobalPositionX: Double { lastLocalPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var lastGlobalPositionY: Double { lastLocalPositionY + (parent?.globalPositionY ?? 0) }
+    @Transient var isExpandable: Bool {children.count > 0}
+    @Transient var hasParent: Bool { return parent != nil }
     @Transient var globalHeight: Double { isExpandable
                                             ? isExpanded
                                                 ? max(height, contentHeight)
                                                 : height
                                             : height }
-    @Transient var isExpandable: Bool {children.count > 0}
-    @Transient var hasParent: Bool { return parent != nil }
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()

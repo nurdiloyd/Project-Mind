@@ -63,3 +63,9 @@ extension CGFloat {
         return (self < Self(0) ? -1 : 1)
     }
 }
+
+extension Double {
+    func sign() -> Double {
+        return (self < Self(0) ? -1 : 1)
+    }
+}
