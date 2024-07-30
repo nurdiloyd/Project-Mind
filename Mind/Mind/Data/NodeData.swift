@@ -11,6 +11,8 @@ final class NodeData {
     var localPositionY: Double = 0
     var lastLocalPositionX: Double = 0
     var lastLocalPositionY: Double = 0
+    var contentLocalPositionX: Double = 0
+    var contentLocalPositionY: Double = 0
     var imageName: String? = nil
     var order: Int = 0
     @Relationship var parent: NodeData? = nil
@@ -26,14 +28,13 @@ final class NodeData {
     @Transient var lastGlobalPositionY: Double { lastLocalPositionY + (parent?.globalPositionY ?? 0) }
     @Transient var isExpandable: Bool {children.count > 0}
     @Transient var hasParent: Bool { return parent != nil }
-    @Transient var globalHeight: Double { isExpandable
-                                            ? isExpanded
-                                                ? max(height, contentHeight)
-                                                : height
-                                            : height }
+    @Transient var globalHeight: Double { max(height, contentHeight) }
     @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
     @Transient var canShowChildren: Bool { children.count > 0 && shouldShowSelf }
     @Transient var shouldShowChildren: Bool { isExpanded && canShowChildren }
+    @Transient var contentInfo: String { children.map { $0.title }.joined(separator: " ") }
+    @Transient var contentGlobalPositionX: Double { contentLocalPositionX + globalPositionX }
+    @Transient var contentGlobalPositionY: Double { contentLocalPositionY + globalPositionY }
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
@@ -121,8 +122,6 @@ final class NodeData {
             totalHeight += child.globalHeight + NodeView.vStackSpace
         }
         
-        contentHeight = totalHeight
-        
         var currentY = totalHeight / 2
         for child in sortedChildren {
             let positionX = NodeView.snapX
@@ -131,6 +130,8 @@ final class NodeData {
             child.resetLastLocalPosition()
             currentY -= (child.globalHeight + NodeView.vStackSpace)
         }
+        
+        rearrangeContent()
     }
     
     public func rearrangeSiblingsPositionY()
@@ -138,6 +139,45 @@ final class NodeData {
         if let prnt = parent {
             prnt.rearrangeChildrenPositionY()
             prnt.rearrangeSiblingsPositionY()
+        }
+    }
+    
+    public func toggleExpand()
+    {
+        isExpanded.toggle()
+        
+        rearrangeContent()
+        rearrangeSiblingsPositionY()
+    }
+    
+    private func rearrangeContent()
+    {
+        if let fNode = children.max(by: { $0.globalPositionY < $1.globalPositionY }) {
+            if let lNode = children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
+                let fPosX = fNode.lastLocalPositionX
+                let lPosX = lNode.lastLocalPositionX
+                
+                if isExpanded {
+                    let fPosY = fNode.localPositionY
+                    let lPosY = lNode.localPositionY
+                    
+                    contentLocalPositionX = (fPosX + lPosX) / 2
+                    contentLocalPositionY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
+                    contentHeight = abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2
+                }
+                else {
+                    let lineCount = (CGFloat(contentInfo.count) / 24.3).rounded()
+                    let lineHeight = 7.4
+                    let lineSpace = 5.8
+                    let totalLineHeight = (lineHeight * lineCount + lineSpace * (lineCount - 1)).clamped(to: NodeView.minHeight...NodeView.maxHeight)
+                    let rowHeight = NodeView.minHeight + NodeView.vStackSpace
+                    let nodeCount = ((totalLineHeight + NodeView.vStackSpace) / rowHeight).rounded(.up)
+                    
+                    contentLocalPositionX = (fPosX + lPosX) / 2
+                    contentLocalPositionY = 0
+                    contentHeight = rowHeight * nodeCount - NodeView.vStackSpace
+                }
+            }
         }
     }
 }

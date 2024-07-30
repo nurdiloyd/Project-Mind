@@ -171,8 +171,7 @@ struct NodeView: View {
         .position(CGPoint(x: CGFloat(node.globalPositionX), y: CGFloat(node.globalPositionY)))
         .onTapGesture(count: 1) {
             withAnimation {
-                node.isExpanded.toggle()
-                node.rearrangeSiblingsPositionY()
+                node.toggleExpand()
             }
         }
         .gesture(DragGesture()
@@ -181,62 +180,34 @@ struct NodeView: View {
         )
         
         if node.canShowChildren {
-            if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY }) {
-                if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
-                    let padding: Double = 3.0
-                    let cornerRadius = LCConstants.cornerRadius + padding / 2
-                    let width = NodeView.width + padding * 2
-                    
-                    let fPosX = fNode.lastGlobalPositionX
-                    let fPosY = fNode.globalPositionY
-                    let lPosX = lNode.lastGlobalPositionX
-                    let lPosY = lNode.globalPositionY
-                    
-                    let childrenTitles = node.children.map { $0.title }.joined(separator: " ")
-                    let lineCount = (CGFloat(childrenTitles.count) / 24.3).rounded()
-                    let textPadding = 10.0
-                    let lineHeight = 7.4
-                    let lineSpace = 5.8
-                    let totalLineHeight = (lineHeight * lineCount + lineSpace * (lineCount - 1)).clamped(to: NodeView.minHeight...NodeView.maxHeight)
-                    
-                    let posX = (fPosX + lPosX) / 2
-                    let posY = node.isExpanded
-                        ? (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
-                        : node.globalPositionY
-                    let height = node.isExpanded
-                        ? (!isDeleting ? abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2 : 0)
-                        : (!isDeleting ? totalLineHeight + padding * 2 : 0)
-
-                    let _ = print(CGFloat(childrenTitles.count))
-                    let _ = print(lineCount)
-                    
-                    Rectangle()
-                        .opacity(0)
-                        .if(!node.isExpanded) {
-                            $0.overlay {
-                                Text(childrenTitles)
-                                    .foregroundColor(LCConstants.textColor)
-                                    .font(.caption)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(EdgeInsets(top: 0, leading: textPadding, bottom: 0, trailing: textPadding))
-                            }
-                            .onHover { hovering in
-                                withAnimation(.spring(duration:0.5)) {
-                                    isHovering = hovering
-                                }
-                            }
-                            .onTapGesture(count: 1) {
-                                withAnimation {
-                                    node.isExpanded.toggle()
-                                    node.rearrangeSiblingsPositionY()
-                                }
-                            }
+            let padding: Double = 3.0
+            let textPadding = 10.0
+            let cornerRadius = LCConstants.cornerRadius + padding / 2
+            
+            Rectangle()
+                .opacity(0)
+                .if(!node.isExpanded) {
+                    $0.overlay {
+                        Text(node.contentInfo)
+                            .foregroundColor(LCConstants.textColor)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(EdgeInsets(top: 0, leading: textPadding, bottom: 0, trailing: textPadding))
+                    }
+                    .onHover { hovering in
+                        withAnimation(.spring(duration:0.5)) {
+                            isHovering = hovering
                         }
-                        .frame(width: width, height: height)
-                        .LCContainer(radius: cornerRadius, level: 1, noShadow: true)
-                        .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
+                    }
+                    .onTapGesture(count: 1) {
+                        withAnimation {
+                            node.toggleExpand()
+                        }
+                    }
                 }
-            }
+                .frame(width: NodeView.width + padding * 2, height: node.contentHeight + padding * 2)
+                .LCContainer(radius: cornerRadius, level: 1, noShadow: true)
+                .position(CGPoint(x: CGFloat(node.contentGlobalPositionX), y: CGFloat(node.contentGlobalPositionY)))
         }
     }
     
@@ -351,7 +322,7 @@ struct NodeView: View {
             node.rearrangeSiblingsPositionY()
         }
     }
-        
+    
     private func fetchMeaning(word: String) {
         /*
         self.isEditing = false
