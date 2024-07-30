@@ -32,7 +32,8 @@ final class NodeData {
                                                 : height
                                             : height }
     @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
-    @Transient var shouldShowChildren: Bool { isExpanded && children.count > 0 && shouldShowSelf }
+    @Transient var canShowChildren: Bool { children.count > 0 && shouldShowSelf }
+    @Transient var shouldShowChildren: Bool { isExpanded && canShowChildren }
     
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()

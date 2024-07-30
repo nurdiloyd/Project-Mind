@@ -180,7 +180,7 @@ struct NodeView: View {
             .onEnded(onDragEnd)
         )
         
-        if node.shouldShowChildren {
+        if node.canShowChildren {
             if let fNode = node.children.max(by: { $0.globalPositionY < $1.globalPositionY })
             {
                 if let lNode = node.children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
@@ -194,11 +194,34 @@ struct NodeView: View {
                     let lPosY = lNode.globalPositionY
                     
                     let posX = (fPosX + lPosX) / 2
-                    let posY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
-                    let height = !isDeleting ? abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2 : 0
-                    
+                    let posY = node.isExpanded
+                        ? (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
+                        : node.globalPositionY
+                    let height = node.isExpanded
+                        ? (!isDeleting ? abs(fPosY - lPosY) + fNode.height / 2 + lNode.height / 2 + padding * 2 : 0)
+                        : (!isDeleting ? NodeView.maxHeight + padding * 2 : 0)
+
                     Rectangle()
                         .opacity(0)
+                        .if(!node.isExpanded)
+                        {
+                            $0.overlay {
+                                Text("sum of children")
+                                    .foregroundColor(LCConstants.textColor)
+                                    .font(.caption)
+                            }
+                            .onHover { hovering in
+                                withAnimation(.spring(duration:0.5)) {
+                                    isHovering = hovering
+                                }
+                            }
+                            .onTapGesture(count: 1) {
+                                withAnimation {
+                                    node.isExpanded.toggle()
+                                    node.rearrangeSiblingsPositionY()
+                                }
+                            }
+                        }
                         .frame(width: width, height: height)
                         .LCContainer(radius: cornerRadius, level: 1, noShadow: true)
                         .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
