@@ -21,6 +21,7 @@ final class NodeData {
     var contentHeight: Double = 0
     var isExpanded: Bool = false
     var isInit: Bool = false
+    var contentInfo: String = ""
     
     @Transient var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
@@ -32,7 +33,7 @@ final class NodeData {
     @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
     @Transient var canShowChildren: Bool { children.count > 0 && shouldShowSelf }
     @Transient var shouldShowChildren: Bool { isExpanded && canShowChildren }
-    @Transient var contentInfo: String { children.map { $0.title }.joined(separator: " ") }
+    
     @Transient var contentGlobalPositionX: Double { contentLocalPositionX + globalPositionX }
     @Transient var contentGlobalPositionY: Double { contentLocalPositionY + globalPositionY }
     
@@ -55,6 +56,8 @@ final class NodeData {
         isExpanded = true
         nodeData.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
         children.append(nodeData)
+        
+        resetContentInfoText()
     }
     
     public func removeChild(_ nodeData: NodeData) {
@@ -63,6 +66,15 @@ final class NodeData {
         {
             children.remove(at: parentIndex)
         }
+        
+        resetContentInfoText()
+    }
+    
+    public func resetContentInfoText()
+    {
+        contentInfo = children.sorted(by: { $0.order < $1.order })
+                .map { "\($0.title)" }
+                .joined(separator: " ")
     }
     
     public func removeParent()
@@ -111,6 +123,10 @@ final class NodeData {
         let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedTitle.isEmptyOrWithWhiteSpace {
             self.title = trimmedTitle
+        }
+        
+        if let prnt = parent {
+            prnt.resetContentInfoText()
         }
     }
     
