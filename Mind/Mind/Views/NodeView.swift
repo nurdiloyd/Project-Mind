@@ -79,7 +79,7 @@ struct NodeView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .LCContainer(level: 2, noShadow: true)
+            .LCContainer(level: 3, noShadow: true)
             .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
@@ -186,6 +186,12 @@ struct NodeView: View {
             
             Rectangle()
                 .opacity(0)
+                .frame(width: padding * 2, height: node.height - cornerRadius)
+                .LCContainer(smooth: 2, radius: padding, level: 2, noShadow: false)
+                .position(CGPoint(x: CGFloat((node.contentGlobalPositionX + node.globalPositionX) / 2), y: CGFloat(node.globalPositionY)))
+            
+            Rectangle()
+                .opacity(0)
                 .if(!node.isExpanded) {
                     $0.overlay {
                         Text(node.contentInfo)
@@ -206,7 +212,7 @@ struct NodeView: View {
                     }
                 }
                 .frame(width: NodeView.width + padding * 2, height: node.contentHeight + padding * 2)
-                .LCContainer(radius: cornerRadius, level: 1, noShadow: true)
+                .LCContainer(radius: cornerRadius, level: 2, noShadow: true)
                 .position(CGPoint(x: CGFloat(node.contentGlobalPositionX), y: CGFloat(node.contentGlobalPositionY)))
         }
     }
