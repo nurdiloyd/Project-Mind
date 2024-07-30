@@ -79,7 +79,7 @@ struct NodeView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .LCContainer(level: 2)
+            .LCContainer(level: 2, noShadow: true)
             .photosPicker(isPresented: $isPickerPresenting, selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .onChange(of: selectedItem) { _, newItem in
                 loadImage(photoPickerItem: newItem)
@@ -200,7 +200,7 @@ struct NodeView: View {
                     Rectangle()
                         .opacity(0)
                         .frame(width: width, height: height)
-                        .LCContainer(radius: cornerRadius, level: 4)
+                        .LCContainer(radius: cornerRadius, level: 1, noShadow: true)
                         .position(CGPoint(x: CGFloat(posX), y: CGFloat(posY)))
                 }
             }
@@ -281,7 +281,7 @@ struct NodeView: View {
     }
     
     private func deleteThisNode() {
-        withAnimation(.spring(duration: 0.3)) {
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
             isDeleting = true
             node.isExpanded = true
             
@@ -312,9 +312,8 @@ struct NodeView: View {
     }
     
     private func createChildNode() {
-        createNode("Title", node)
-        
-        withAnimation {
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
+            createNode("Title", node)
             node.rearrangeChildrenPositionY()
             node.rearrangeSiblingsPositionY()
         }

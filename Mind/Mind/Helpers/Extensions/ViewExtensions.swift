@@ -69,7 +69,8 @@ extension Image {
 extension View {
     func LCContainer(smooth: CGFloat = 4, 
                      radius: CGFloat = LCConstants.cornerRadius,
-                     level: Int = 1) -> some View {
+                     level: Int = 1,
+                     noShadow: Bool = false) -> some View {
         
         let color: Color = LCConstants.getColor(level)
         let textColor: Color = LCConstants.getTextColor(level)
@@ -78,6 +79,9 @@ extension View {
             .foregroundColor(textColor)
             .background(color)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .shadow(color: LCConstants.shadowColor, radius: smooth)
+            .if(!noShadow)
+            {
+                $0.shadow(color: LCConstants.shadowColor, radius: smooth)
+            }
     }
 }
