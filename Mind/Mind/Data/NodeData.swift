@@ -19,6 +19,7 @@ final class NodeData {
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
     var height: Double = NodeView.minHeight
     var contentHeight: Double = 0
+    var expandedContentHeight: Double = 0
     var isExpanded: Bool = false
     var isInit: Bool = false
     var contentInfo: String = ""
@@ -29,7 +30,7 @@ final class NodeData {
     @Transient var lastGlobalPositionY: Double { lastLocalPositionY + (parent?.globalPositionY ?? 0) }
     @Transient var isExpandable: Bool {children.count > 0}
     @Transient var hasParent: Bool { parent != nil }
-    @Transient var globalHeight: Double { max(height, contentHeight) }
+    @Transient var globalHeight: Double { max(height, isExpanded ? expandedContentHeight : contentHeight) }
     @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
     @Transient var canShowChildren: Bool { children.count > 0 && shouldShowSelf }
     @Transient var shouldShowChildren: Bool { isExpanded && canShowChildren }
@@ -155,6 +156,8 @@ final class NodeData {
             currentY -= (child.globalHeight + NodeView.vStackSpace)
         }
         
+        expandedContentHeight = totalHeight
+        
         rearrangeContent()
     }
     
@@ -176,8 +179,8 @@ final class NodeData {
     
     private func rearrangeContent()
     {
-        if let fNode = children.max(by: { $0.globalPositionY < $1.globalPositionY }) {
-            if let lNode = children.min(by: { $0.globalPositionY < $1.globalPositionY }) {
+        if let fNode = children.max(by: { $0.order < $1.order }) {
+            if let lNode = children.min(by: { $0.order < $1.order }) {
                 let fPosX = fNode.lastLocalPositionX
                 let lPosX = lNode.lastLocalPositionX
                 
