@@ -37,14 +37,7 @@ struct NodeView: View {
         ZStack {
             VStack(spacing: 0) {
                 if isEditing {
-                    TextField("Node Title", text: $inputText, onEditingChanged: { isStart in
-                        if !isStart && !onCreation {
-                            isEditing = false
-                            node.setTitle(title: inputText)
-                        }
-                        
-                        onCreation = false
-                    })
+                    TextField("Node Title", text: $inputText, onEditingChanged: onEditTextField)
                     .font(.headline.weight(.light))
                     .focused($isFocus)
                     .foregroundColor(LCConstants.textColor)
@@ -217,6 +210,20 @@ struct NodeView: View {
         }
     }
     
+    private func onEditTextField(isStart: Bool) {
+        if !isStart && !onCreation {
+            isEditing = false
+            node.setTitle(title: inputText)
+            
+            if node.title.isEmptyOrWithWhiteSpace
+            {
+                deleteThisNode()
+            }
+        }
+        
+        onCreation = false
+    }
+    
     private func onDrag(value: DragGesture.Value) {
         let currentPos = value.location
         let deltaX = currentPos.x - node.lastGlobalPositionX
@@ -323,7 +330,7 @@ struct NodeView: View {
     
     private func createChildNode() {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-            createNode("tite", node)
+            createNode("", node)
             node.rearrangeChildrenPositionY()
             node.rearrangeSiblingsPositionY()
         }

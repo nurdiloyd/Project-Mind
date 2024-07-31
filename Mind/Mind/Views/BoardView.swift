@@ -64,7 +64,7 @@ struct BoardView: View {
                 Button {
                     let positionX = BoardView.boardWidth / 2
                     let positionY = BoardView.boardHeight / 2
-                    createNode(title: "tit", positionX: positionX, positionY: positionY)
+                    createNode(title: "", positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
                 }
