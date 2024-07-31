@@ -28,7 +28,7 @@ struct BoardView: View {
                             if node.shouldShowSelf
                             {
                                 NodeView(node: node,
-                                         createNode: {title, parent in createNode(title: title, parent: parent)},
+                                         createNode: {parent in createNode(parent: parent)},
                                          deleteNode: deleteNode)
                             }
                         }
@@ -64,7 +64,7 @@ struct BoardView: View {
                 Button {
                     let positionX = BoardView.boardWidth / 2
                     let positionY = BoardView.boardHeight / 2
-                    createNode(title: "", positionX: positionX, positionY: positionY)
+                    createNode(positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
                 }
@@ -144,8 +144,8 @@ struct BoardView: View {
         }
     }
 
-    private func createNode(title: String, parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {
-        let newNode = NodeData(title: title,
+    private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {
+        let newNode = NodeData(title: "",
                                positionX: Double(positionX),
                                positionY: Double(positionY),
                                parent: parent)

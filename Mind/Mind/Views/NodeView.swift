@@ -3,7 +3,7 @@ import PhotosUI
 
 struct NodeView: View {
     public let node: NodeData
-    public var createNode: (String, NodeData) -> Void
+    public var createNode: (NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
     
     @State private var gptService = GPTService()
@@ -37,7 +37,7 @@ struct NodeView: View {
         ZStack {
             VStack(spacing: 0) {
                 if isEditing {
-                    TextField("Node Title", text: $inputText, onEditingChanged: onEditTextField)
+                    TextField("Node Title", text: $inputText, onCommit: onEditTextFieldEnd)
                     .font(.headline.weight(.light))
                     .focused($isFocus)
                     .foregroundColor(LCConstants.textColor)
@@ -141,20 +141,7 @@ struct NodeView: View {
         .frame(width: NodeView.width)
         .opacity(isDeleting ? 0.0 : 1.0)
         .animation(.spring(duration: 0.3), value: isDeleting)
-        .onAppear {
-            if !node.isInit
-            {
-                node.isInit = true
-                onCreation = true
-                inputText = "Title"
-                isEditing = true
-                isFocus.toggle()
-            }
-
-            if let imageData = FileHelper.loadImage(filename: node.imageName) {
-                image = NSImage(data: imageData)
-            }
-        }
+        .onAppear { loadNode() }
         .readSize { newSize in
             node.height = newSize.height
             withAnimation {
@@ -210,8 +197,28 @@ struct NodeView: View {
         }
     }
     
-    private func onEditTextField(isStart: Bool) {
-        if !isStart && !onCreation {
+    private func loadNode()
+    {
+        if !node.isInit
+        {
+            node.isInit = true
+            onCreation = true
+            isEditing = true
+            isFocus.toggle()
+        }
+        
+        if node.title.isEmptyOrWithWhiteSpace
+        {
+            isEditing = true
+        }
+        
+        if let imageData = FileHelper.loadImage(filename: node.imageName) {
+            image = NSImage(data: imageData)
+        }
+    }
+    
+    private func onEditTextFieldEnd() {
+        if isFocus {
             isEditing = false
             node.setTitle(title: inputText)
             
@@ -219,9 +226,17 @@ struct NodeView: View {
             {
                 deleteThisNode()
             }
+            else
+            {
+                if onCreation
+                {
+                    isFocus = false
+                    createSiblingNode()
+                }
+            }
         }
         
-        onCreation = false
+        //onCreation = false
     }
     
     private func onDrag(value: DragGesture.Value) {
@@ -247,6 +262,7 @@ struct NodeView: View {
                     
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
                         node.rearrangeSiblingsPositionY()
+                        node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
                     }
                 }
             }
@@ -328,9 +344,17 @@ struct NodeView: View {
         }
     }
     
+    private func createSiblingNode() {
+        if let parent = node.parent {
+            withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
+                createNode(parent)
+            }
+        }
+    }
+    
     private func createChildNode() {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-            createNode("", node)
+            createNode(node)
             node.rearrangeChildrenPositionY()
             node.rearrangeSiblingsPositionY()
         }
