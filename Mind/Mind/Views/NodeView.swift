@@ -228,15 +228,14 @@ struct NodeView: View {
             }
             else
             {
-                if onCreation
+                if onCreation && node.isLastChild
                 {
+                    onCreation = false
                     isFocus = false
                     createSiblingNode()
                 }
             }
         }
-        
-        //onCreation = false
     }
     
     private func onDrag(value: DragGesture.Value) {

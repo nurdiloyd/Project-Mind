@@ -28,15 +28,21 @@ final class NodeData {
     @Transient var lastGlobalPositionX: Double { lastLocalPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var lastGlobalPositionY: Double { lastLocalPositionY + (parent?.globalPositionY ?? 0) }
     @Transient var isExpandable: Bool {children.count > 0}
-    @Transient var hasParent: Bool { return parent != nil }
+    @Transient var hasParent: Bool { parent != nil }
     @Transient var globalHeight: Double { max(height, contentHeight) }
     @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
     @Transient var canShowChildren: Bool { children.count > 0 && shouldShowSelf }
     @Transient var shouldShowChildren: Bool { isExpanded && canShowChildren }
-    
     @Transient var contentGlobalPositionX: Double { contentLocalPositionX + globalPositionX }
     @Transient var contentGlobalPositionY: Double { contentLocalPositionY + globalPositionY }
-    
+    @Transient var isLastChild: Bool {
+        if let prnt = parent {
+            return prnt.children.min(by: { $0.order > $1.order })?.id == self.id
+        }
+        
+        return true
+    }
+
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
         self.id = UUID()
         self.title = "\(title)"
