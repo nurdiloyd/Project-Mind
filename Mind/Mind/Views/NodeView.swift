@@ -97,7 +97,7 @@ struct NodeView: View {
                 
                 if ((isHovering && !isDragging)) {
                     let topLeft = CGPoint(x: -NodeView.width / 2, y: -node.height / 2)
-                    let symbolSize = 11.0
+                    let symbolSize = LCConstants.cornerRadius
                     let level = 101
                     
                     Button(action: {
@@ -107,7 +107,7 @@ struct NodeView: View {
                             .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                     }
                     .buttonStyle(.plain)
-                    .offset(x: topLeft.x, y: topLeft.y)
+                    .offset(x: topLeft.x + symbolSize / 2, y: topLeft.y + symbolSize / 2)
                     
                     Button(action: {
                         isPickerPresenting.toggle()
@@ -116,7 +116,7 @@ struct NodeView: View {
                             .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                     }
                     .buttonStyle(.plain)
-                    .offset(x: topLeft.x, y: topLeft.y + NodeView.minHeight)
+                    .offset(x: topLeft.x + symbolSize / 2, y: topLeft.y + NodeView.minHeight - symbolSize / 2)
                     
                     if hasImage {
                         Button(action: {
@@ -126,7 +126,7 @@ struct NodeView: View {
                                 .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                         }
                         .buttonStyle(.plain)
-                        .offset(x: topLeft.x, y: topLeft.y + 3 * NodeView.minHeight / 2)
+                        .offset(x: topLeft.x + symbolSize / 2, y: topLeft.y + NodeView.minHeight + symbolSize / 2)
                     }
                     
                     Button(action: {
@@ -136,7 +136,7 @@ struct NodeView: View {
                             .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
                     }
                     .buttonStyle(.plain)
-                    .offset(x: -topLeft.x, y: topLeft.y + NodeView.minHeight / 2)
+                    .offset(x: -topLeft.x - symbolSize / 2, y: topLeft.y + NodeView.minHeight / 2)
                 }
             }
         }
@@ -186,7 +186,7 @@ struct NodeView: View {
             
             Rectangle()
                 .opacity(0)
-                .frame(width: padding * 2, height: node.height - cornerRadius)
+                .frame(width: padding * 2, height: NodeView.minHeight - cornerRadius)
                 .LCContainer(smooth: 2, radius: padding, level: 2, noShadow: false)
                 .position(CGPoint(x: CGFloat((node.contentGlobalPositionX + node.globalPositionX) / 2), y: CGFloat(node.globalPositionY)))
             

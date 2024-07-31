@@ -48,7 +48,7 @@ extension Image {
     func LCButtonMini(width: CGFloat,
                       height: CGFloat,
                       level: Int = 1) -> some View {
-        self.LCButton(width: width, height: height, padding: 2, level: level)
+        self.LCButton(width: width, height: height, padding: 2, level: level, radius: 4)
     }
 }
 
@@ -56,13 +56,14 @@ extension Image {
     func LCButton(width: CGFloat,
                   height: CGFloat,
                   padding: CGFloat = 8,
-                  level: Int = 1) -> some View {
+                  level: Int = 1,
+                  radius: CGFloat = LCConstants.cornerRadius) -> some View {
         self.resizable()
             .aspectRatio(contentMode: .fit)
             .bold()
             .frame(width: width - padding * 2, height: height - padding * 2)
             .padding(padding)
-            .LCContainer(level: level)
+            .LCContainer(radius: radius, level: level)
     }
 }
 
