@@ -282,7 +282,7 @@ struct NodeView: View {
             isDragging = false
             
             if node.parent != nil {
-                node.rearrangeSiblingsPositionY()
+                node.setLocalPosition(positionX: node.lastLocalPositionX, positionY: node.lastLocalPositionY)
             } else {
                 node.snapToGrid()
             }
