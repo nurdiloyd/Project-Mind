@@ -72,7 +72,9 @@ final class NodeData {
     
     public func resetContentInfoText()
     {
-        contentInfo = children.sorted(by: { $0.order < $1.order })
+        contentInfo = children.filter({ NodeData in
+            !NodeData.title.isEmptyOrWithWhiteSpace
+        }).sorted(by: { $0.order < $1.order })
                 .map { "\($0.title)" }
                 .joined(separator: " ")
     }
@@ -195,5 +197,7 @@ final class NodeData {
                 }
             }
         }
+        
+        resetContentInfoText()
     }
 }
