@@ -18,6 +18,7 @@ struct NodeView: View {
     @State private var isAddingImage: Bool = false
     @State private var onCreation: Bool = false
     @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var imageLoadingOnLoad: Bool = true
     @State private var image: NSImage? = nil
     private var hasImage: Bool { return image != nil }
     
@@ -123,7 +124,7 @@ struct NodeView: View {
                     }
                     
                     Button(action: {
-                        createChildNode()
+                        createAChildNode(node)
                     }) {
                         Image(systemName: "plus")
                             .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
@@ -143,9 +144,11 @@ struct NodeView: View {
         .animation(.spring(duration: 0.3), value: isDeleting)
         .onAppear { loadNode() }
         .readSize { newSize in
-            node.height = newSize.height
-            withAnimation {
-                node.rearrangeSiblingsPositionY()
+            if !imageLoadingOnLoad
+            {
+                withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
+                    node.setHeight(height: newSize.height)
+                }
             }
         }
         .position(CGPoint(x: CGFloat(node.globalPositionX), y: CGFloat(node.globalPositionY)))
@@ -212,8 +215,14 @@ struct NodeView: View {
             isEditing = true
         }
         
+        imageLoadingOnLoad = !node.imageName.isEmptyOrWithWhiteSpace
         if let imageData = FileHelper.loadImage(filename: node.imageName) {
             image = NSImage(data: imageData)
+            imageLoadingOnLoad = false
+        }
+        else
+        {
+            imageLoadingOnLoad = false
         }
     }
     
@@ -345,17 +354,15 @@ struct NodeView: View {
     
     private func createSiblingNode() {
         if let parent = node.parent {
-            withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-                createNode(parent)
-            }
+            createAChildNode(parent)
         }
     }
     
-    private func createChildNode() {
+    private func createAChildNode(_ parent: NodeData) {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-            createNode(node)
-            node.rearrangeChildrenPositionY()
-            node.rearrangeSiblingsPositionY()
+            createNode(parent)
+            parent.rearrangeChildrenPositionY()
+            parent.rearrangeSiblingsPositionY()
         }
     }
     

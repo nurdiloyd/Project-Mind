@@ -13,7 +13,7 @@ final class NodeData {
     var lastLocalPositionY: Double = 0
     var contentLocalPositionX: Double = 0
     var contentLocalPositionY: Double = 0
-    var imageName: String? = nil
+    var imageName: String = ""
     var order: Int = 0
     @Relationship var parent: NodeData? = nil
     @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
@@ -136,6 +136,15 @@ final class NodeData {
         
         if let prnt = parent {
             prnt.resetContentInfoText()
+        }
+    }
+    
+    public func setHeight(height: Double)
+    {
+        if self.height != height
+        {
+            self.height = height
+            rearrangeSiblingsPositionY()
         }
     }
     
