@@ -26,8 +26,8 @@ class IntersectionManager {
         intersections[key] = nil
     }
 
-    func stopAllTimers(for node: NodeData) {
-        for key in intersections.keys where key.contains(node.id.uuidString) {
+    func stopAllTimers() {
+        for key in intersections.keys {
             intersections[key]?.invalidate()
             intersections[key] = nil
         }

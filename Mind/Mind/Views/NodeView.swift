@@ -21,7 +21,7 @@ struct NodeView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var imageLoadingOnLoad: Bool = true
     @State private var image: NSImage? = nil
-    @State private var nearestNode: NodeData? = nil
+    @State private var currentNearestNode: NodeData? = nil
     private var hasImage: Bool { return image != nil }
     
     public static let width: CGFloat = 150
@@ -258,7 +258,8 @@ struct NodeView: View {
     private func onDrag(value: DragGesture.Value) {
         if !isDragging
         {
-            nearestNode = nil
+            currentNearestNode = nil
+            IntersectionManager.shared.stopAllTimers()
         }
         
         let currentPos = value.location
@@ -300,15 +301,14 @@ struct NodeView: View {
         
         checkForOverlap(currentNode: node, currentPos: currentPos)
     }
-        
+    
     private func checkForOverlap(currentNode: NodeData, currentPos: CGPoint) {
         let width = NodeView.width
         let currentNodeFrame = CGRect(x: currentNode.globalPositionX, y: currentNode.globalPositionY, width: width, height: currentNode.height)
         
         var nearestNode: NodeData? = nil
         var nearestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
-        
-        for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != currentNode.id){
+        for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != currentNode.id) {
             let otherNodeFrame = CGRect(x: otherNode.globalPositionX, y: otherNode.globalPositionY, width: width, height: otherNode.height)
             
             if currentNodeFrame.intersects(otherNodeFrame) {
@@ -321,9 +321,9 @@ struct NodeView: View {
         }
 
         if let nearestNode = nearestNode {
-            if self.nearestNode != nearestNode {
-                self.nearestNode = nearestNode
-                IntersectionManager.shared.stopAllTimers(for: currentNode)
+            if currentNearestNode != nearestNode {
+                currentNearestNode = nearestNode
+                IntersectionManager.shared.stopAllTimers()
                 
                 IntersectionManager.shared.startIntersectionTimer(node1: currentNode, node2: nearestNode) {
                     DispatchQueue.main.async {
@@ -333,8 +333,8 @@ struct NodeView: View {
                 }
             }
         } else {
-            self.nearestNode = nil
-            IntersectionManager.shared.stopAllTimers(for: currentNode)
+            currentNearestNode = nil
+            IntersectionManager.shared.stopAllTimers()
         }
     }
     
