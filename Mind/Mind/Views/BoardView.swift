@@ -25,8 +25,7 @@ struct BoardView: View {
                         
                         let nodes = sortedNodes(board.nodes)
                         ForEach(nodes, id: \.id) { node in
-                            if node.shouldShowSelf
-                            {
+                            if node.shouldShowSelf {
                                 NodeView(node: node,
                                          createNode: {parent in createNode(parent: parent)},
                                          deleteNode: deleteNode)
@@ -99,15 +98,13 @@ struct BoardView: View {
         var queueNested = [NodeData]()
         
         while !queue.isEmpty || !queueNested.isEmpty {
-            if (queueNested.isEmpty)
-            {
+            if queueNested.isEmpty {
                 let node = queue.removeFirst()
                 sorted.append(node)
                 
                 let children = node.children
                 queueNested.append(contentsOf: children)
-            }
-            else {
+            } else {
                 let node = queueNested.removeFirst()
                 sorted.append(node)
                 
@@ -119,8 +116,7 @@ struct BoardView: View {
         return sorted
     }
     
-    private func getNormalScale(for size: CGSize) -> CGFloat
-    {
+    private func getNormalScale(for size: CGSize) -> CGFloat {
         let minEdgeLength = min(size.width, size.height)
         let normalScale = minEdgeLength / (BoardView.boxSize * 5)
         return getScale(for: size, value: normalScale)
@@ -131,37 +127,33 @@ struct BoardView: View {
         let windowAspectRatio = size.width / size.height
         let minEdgeLength = min(size.width, size.height)
         let maxScale = minEdgeLength / BoardView.boxSize
-
+        
         if boardAspectRatio > windowAspectRatio {
             let minScale = size.width / (BoardView.boardWidth * 1.0)
             let newScale = value.clamped(to: minScale...maxScale)
             return newScale
-        }
-        else {
+        } else {
             let minScale = size.height / (BoardView.boardHeight * 1.0)
             let newScale = value.clamped(to: minScale...maxScale)
             return newScale
         }
     }
-
+    
     private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {
         let newNode = NodeData(title: "",
                                positionX: Double(positionX),
                                positionY: Double(positionY),
                                parent: parent)
-
+        
         board.nodes.append(newNode)
         insertNodeData(newNode)
     }
-
-    private func deleteNode(_ nodeData: NodeData) -> Bool
-    {
-        if let index = board.nodes.firstIndex(of: nodeData)
-        {
+    
+    private func deleteNode(_ nodeData: NodeData) -> Bool {
+        if let index = board.nodes.firstIndex(of: nodeData) {
             nodeData.removeParent()
             deleteNodeData(nodeData)
             board.nodes.remove(at: index)
-            saveContext()
             
             return true
         }
@@ -180,7 +172,7 @@ struct BoardView: View {
     public func insertNodeData(_ nodeData: NodeData) {
         context.insert(nodeData)
     }
-
+    
     public func deleteNodeData(_ nodeData: NodeData) {
         FileHelper.deleteImage(filename: nodeData.imageName)
         context.delete(nodeData)

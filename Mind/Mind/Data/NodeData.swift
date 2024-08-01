@@ -149,6 +149,22 @@ final class NodeData {
         }
     }
     
+    public func toggleExpand()
+    {
+        isExpanded.toggle()
+        
+        rearrangeContent()
+        rearrangeSiblingsPositionY()
+    }
+    
+    public func rearrangeSiblingsPositionY()
+    {
+        if let prnt = parent {
+            prnt.rearrangeChildrenPositionY()
+            prnt.rearrangeSiblingsPositionY()
+        }
+    }
+    
     public func rearrangeChildrenPositionY() {
         let sortedChildren = children.sorted(by: { $0.order > $1.order })
         
@@ -169,22 +185,6 @@ final class NodeData {
         expandedContentHeight = totalHeight
         
         rearrangeContent()
-    }
-    
-    public func rearrangeSiblingsPositionY()
-    {
-        if let prnt = parent {
-            prnt.rearrangeChildrenPositionY()
-            prnt.rearrangeSiblingsPositionY()
-        }
-    }
-    
-    public func toggleExpand()
-    {
-        isExpanded.toggle()
-        
-        rearrangeContent()
-        rearrangeSiblingsPositionY()
     }
     
     private func rearrangeContent()
