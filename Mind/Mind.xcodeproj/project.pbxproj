@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CE0124302C3E264E0027AC1D /* BoardCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE01242F2C3E264E0027AC1D /* BoardCardView.swift */; };
 		CE3ED4472C37A22E00F411B1 /* OtherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */; };
+		CE43FC462C5B0E0A0004CE99 /* IntersectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43FC452C5B0E0A0004CE99 /* IntersectionManager.swift */; };
 		CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62E71A2C3CC52300129F2F /* EntranceView.swift */; };
 		CE62E71D2C3CC79E00129F2F /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62E71C2C3CC79E00129F2F /* BoardView.swift */; };
 		CE6FC7872C4A131F003DB3C7 /* GPTServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6FC7862C4A131F003DB3C7 /* GPTServices.swift */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		CE01242F2C3E264E0027AC1D /* BoardCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCardView.swift; sourceTree = "<group>"; };
 		CE3ED4462C37A22E00F411B1 /* OtherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtensions.swift; sourceTree = "<group>"; };
+		CE43FC452C5B0E0A0004CE99 /* IntersectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntersectionManager.swift; sourceTree = "<group>"; };
 		CE62E71A2C3CC52300129F2F /* EntranceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceView.swift; sourceTree = "<group>"; };
 		CE62E71C2C3CC79E00129F2F /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		CE62E71E2C3CD1AF00129F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				CE7AD59E2C36357E003EFDE5 /* FileHelper.swift */,
 				CE90DF0D2C49F1BE00AF07B8 /* LCConstants.swift */,
 				CE5BBFEE2C37A89E0030217A /* Extensions */,
+				CE43FC452C5B0E0A0004CE99 /* IntersectionManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 				CEA338752C3CD93000266B55 /* BoardData.swift in Sources */,
 				CE90DF0E2C49F1BE00AF07B8 /* LCConstants.swift in Sources */,
 				CE7AD59F2C36357E003EFDE5 /* FileHelper.swift in Sources */,
+				CE43FC462C5B0E0A0004CE99 /* IntersectionManager.swift in Sources */,
 				CE6FC7892C4A1364003DB3C7 /* GPTTest.swift in Sources */,
 				CE7AD5A52C3635C5003EFDE5 /* NodeView.swift in Sources */,
 				CE62E71B2C3CC52300129F2F /* EntranceView.swift in Sources */,

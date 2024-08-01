@@ -28,7 +28,8 @@ struct BoardView: View {
                             if node.shouldShowSelf {
                                 NodeView(node: node,
                                          createNode: {parent in createNode(parent: parent)},
-                                         deleteNode: deleteNode)
+                                         deleteNode: deleteNode,
+                                         board: board)
                             }
                         }
                     }

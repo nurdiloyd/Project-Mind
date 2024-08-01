@@ -5,6 +5,7 @@ struct NodeView: View {
     public let node: NodeData
     public var createNode: (NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
+    public var board: BoardData
     
     @State private var gptService = GPTService()
     @FocusState private var isFocus: Bool
@@ -20,6 +21,7 @@ struct NodeView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var imageLoadingOnLoad: Bool = true
     @State private var image: NSImage? = nil
+    @State private var nearestNode: NodeData? = nil
     private var hasImage: Bool { return image != nil }
     
     public static let width: CGFloat = 150
@@ -254,6 +256,11 @@ struct NodeView: View {
     }
     
     private func onDrag(value: DragGesture.Value) {
+        if !isDragging
+        {
+            nearestNode = nil
+        }
+        
         let currentPos = value.location
         let deltaX = currentPos.x - node.lastGlobalPositionX
         let deltaY = currentPos.y - node.lastGlobalPositionY
@@ -290,6 +297,56 @@ struct NodeView: View {
                 }
             }
         }
+        
+        checkForOverlap(currentNode: node, currentPos: currentPos)
+    }
+        
+    private func checkForOverlap(currentNode: NodeData, currentPos: CGPoint) {
+        let width = NodeView.width
+        let currentNodeFrame = CGRect(x: currentNode.globalPositionX, y: currentNode.globalPositionY, width: width, height: currentNode.height)
+        
+        var nearestNode: NodeData? = nil
+        var nearestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
+        
+        for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != currentNode.id){
+            let otherNodeFrame = CGRect(x: otherNode.globalPositionX, y: otherNode.globalPositionY, width: width, height: otherNode.height)
+            
+            if currentNodeFrame.intersects(otherNodeFrame) {
+                let distance = hypot(currentNode.globalPositionX - otherNode.globalPositionX, currentNode.globalPositionY - otherNode.globalPositionY)
+                if distance < nearestDistance {
+                    nearestDistance = distance
+                    nearestNode = otherNode
+                }
+            }
+        }
+
+        if let nearestNode = nearestNode {
+            if self.nearestNode != nearestNode {
+                self.nearestNode = nearestNode
+                IntersectionManager.shared.stopAllTimers(for: currentNode)
+                
+                IntersectionManager.shared.startIntersectionTimer(node1: currentNode, node2: nearestNode) {
+                    DispatchQueue.main.async {
+                        print("Nodes intersecting for 2 seconds: \(currentNode.title) and \(nearestNode.title)")
+                        //setParent(child: currentNode, parent: nearestNode)
+                    }
+                }
+            }
+        } else {
+            self.nearestNode = nil
+            IntersectionManager.shared.stopAllTimers(for: currentNode)
+        }
+    }
+    
+    private func setParent(child: NodeData, parent: NodeData)
+    {
+        if let prnt = child.parent {
+            child.removeParent()
+            prnt.rearrangeChildrenPositionY()
+            prnt.rearrangeSiblingsPositionY()
+        }
+        
+        parent.addChild(child)
     }
     
     private func onDragEnd(value: DragGesture.Value) {
