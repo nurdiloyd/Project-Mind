@@ -304,12 +304,12 @@ struct NodeView: View {
     
     private func checkForOverlap(currentNode: NodeData, currentPos: CGPoint) {
         let width = NodeView.width
-        let currentNodeFrame = CGRect(x: currentNode.globalPositionX, y: currentNode.globalPositionY, width: width, height: currentNode.height)
+        let currentNodeFrame = CGRect(x: currentNode.globalPositionX - width / 2, y: currentNode.globalPositionY - currentNode.height / 2, width: width, height: currentNode.height)
         
         var nearestNode: NodeData? = nil
         var nearestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
         for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != currentNode.id) {
-            let otherNodeFrame = CGRect(x: otherNode.globalPositionX, y: otherNode.globalPositionY, width: width, height: otherNode.height)
+            let otherNodeFrame = CGRect(x: otherNode.globalPositionX - width / 2, y: otherNode.globalPositionY - otherNode.height / 2, width: width, height: otherNode.height)
             
             if currentNodeFrame.intersects(otherNodeFrame) {
                 let distance = hypot(currentNode.globalPositionX - otherNode.globalPositionX, currentNode.globalPositionY - otherNode.globalPositionY)
