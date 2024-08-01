@@ -45,27 +45,23 @@ final class NodeData {
         }
     }
 
-    init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
+    init(title: String, positionX: Double = 0, positionY: Double = 0) {
         self.id = UUID()
         self.title = "\(title)"
         self.localPositionX = positionX
         self.localPositionY = positionY
         self.lastLocalPositionX = positionX
         self.lastLocalPositionY = positionY
-        self.parent = parent
-        
-        if let prnt = parent
-        {
-            prnt.addChild(self)
-        }
     }
 
-    private func addChild(_ nodeData: NodeData) {
-        isExpanded = true
-        nodeData.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
-        children.append(nodeData)
+    public func addChild(_ child: NodeData) {
+        child.parent = self
+        child.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
+        children.append(child)
         
-        resetContentInfoText()
+        isExpanded = true
+        rearrangeChildrenPositionY()
+        rearrangeSiblingsPositionY()
     }
     
     public func removeChild(_ nodeData: NodeData) {

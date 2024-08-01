@@ -27,7 +27,7 @@ struct BoardView: View {
                         ForEach(nodes, id: \.id) { node in
                             if node.shouldShowSelf {
                                 NodeView(node: node,
-                                         createNode: {parent in createNode(parent: parent)},
+                                         createNode: { createNode() },
                                          deleteNode: deleteNode,
                                          board: board)
                             }
@@ -64,7 +64,7 @@ struct BoardView: View {
                 Button {
                     let positionX = BoardView.boardWidth / 2
                     let positionY = BoardView.boardHeight / 2
-                    createNode(positionX: positionX, positionY: positionY)
+                    let _ = createNode(positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
                 }
@@ -140,14 +140,13 @@ struct BoardView: View {
         }
     }
     
-    private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {
-        let newNode = NodeData(title: "",
-                               positionX: Double(positionX),
-                               positionY: Double(positionY),
-                               parent: parent)
+    private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) -> NodeData {
+        let newNode = NodeData(title: "", positionX: Double(positionX), positionY: Double(positionY))
         
         board.nodes.append(newNode)
         insertNodeData(newNode)
+        
+        return newNode
     }
     
     private func deleteNode(_ nodeData: NodeData) -> Bool {

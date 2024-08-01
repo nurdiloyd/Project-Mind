@@ -3,7 +3,7 @@ import PhotosUI
 
 struct NodeView: View {
     public let node: NodeData
-    public var createNode: (NodeData) -> Void
+    public var createNode: () -> NodeData
     public var deleteNode: (NodeData) -> Bool
     public var board: BoardData
     
@@ -321,14 +321,14 @@ struct NodeView: View {
         }
 
         if let nearestNode = nearestNode {
-            if currentNearestNode != nearestNode {
+            if currentNearestNode != nearestNode && nearestNode != currentNode.parent {
                 currentNearestNode = nearestNode
                 IntersectionManager.shared.stopAllTimers()
                 
                 IntersectionManager.shared.startIntersectionTimer(node1: currentNode, node2: nearestNode) {
                     DispatchQueue.main.async {
                         print("Nodes intersecting for 2 seconds: \(currentNode.title) and \(nearestNode.title)")
-                        //setParent(child: currentNode, parent: nearestNode)
+                        setParent(child: currentNode, parent: nearestNode)
                     }
                 }
             }
@@ -346,7 +346,12 @@ struct NodeView: View {
             prnt.rearrangeSiblingsPositionY()
         }
         
+        let posX = child.globalPositionX - parent.globalPositionX
+        let posY = child.globalPositionY - parent.globalPositionY
+        
         parent.addChild(child)
+        
+        child.setLocalPosition(positionX: posX, positionY: posY)
     }
     
     private func onDragEnd(value: DragGesture.Value) {
@@ -417,9 +422,8 @@ struct NodeView: View {
     
     private func createNode(parent: NodeData) {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-            createNode(parent)
-            parent.rearrangeChildrenPositionY()
-            parent.rearrangeSiblingsPositionY()
+            let newNode = createNode()
+            parent.addChild(newNode)
         }
     }
     
