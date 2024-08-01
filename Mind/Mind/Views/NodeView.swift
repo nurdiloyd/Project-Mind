@@ -124,7 +124,7 @@ struct NodeView: View {
                     }
                     
                     Button(action: {
-                        createAChildNode(node)
+                        createNode(parent: node)
                     }) {
                         Image(systemName: "plus")
                             .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
@@ -237,12 +237,18 @@ struct NodeView: View {
             }
             else
             {
-                if onCreation && node.isLastChild
-                {
-                    onCreation = false
-                    isFocus = false
-                    createSiblingNode()
+                if onCreation && node.isLastChild {
+                    if let parent = node.parent
+                    {
+                        createNode(parent: parent)
+                    }
                 }
+                else {
+                    createNode(parent: node)
+                }
+                
+                onCreation = false
+                isFocus = false
             }
         }
     }
@@ -352,13 +358,7 @@ struct NodeView: View {
         }
     }
     
-    private func createSiblingNode() {
-        if let parent = node.parent {
-            createAChildNode(parent)
-        }
-    }
-    
-    private func createAChildNode(_ parent: NodeData) {
+    private func createNode(parent: NodeData) {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
             createNode(parent)
             parent.rearrangeChildrenPositionY()

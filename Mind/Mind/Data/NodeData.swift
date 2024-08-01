@@ -40,8 +40,9 @@ final class NodeData {
         if let prnt = parent {
             return prnt.children.min(by: { $0.order > $1.order })?.id == self.id
         }
-        
-        return true
+        else {
+            return false
+        }
     }
 
     init(title: String, positionX: Double = 0, positionY: Double = 0, parent: NodeData? = nil) {
