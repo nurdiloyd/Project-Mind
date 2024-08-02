@@ -327,8 +327,12 @@ struct NodeView: View {
                 
                 IntersectionManager.shared.startIntersectionTimer(node1: currentNode, node2: nearestNode) {
                     DispatchQueue.main.async {
-                        print("Nodes intersecting for 2 seconds: \(currentNode.title) and \(nearestNode.title)")
-                        setParent(child: currentNode, parent: nearestNode)
+                        let currentNodeFrame = CGRect(x: currentNode.globalPositionX - width / 2, y: currentNode.globalPositionY - currentNode.height / 2, width: width, height: currentNode.height)
+                        let otherNodeFrame = CGRect(x: nearestNode.globalPositionX - width / 2, y: nearestNode.globalPositionY - nearestNode.height / 2, width: width, height: nearestNode.height)
+                        if currentNodeFrame.intersects(otherNodeFrame) {
+                            print("Nodes intersecting for 2 seconds: \(currentNode.title) and \(nearestNode.title)")
+                            setParent(child: currentNode, parent: nearestNode)
+                        }
                     }
                 }
             }
@@ -350,7 +354,9 @@ struct NodeView: View {
         
         parent.addChild(child)
         
-        child.setLocalPosition(positionX: posX, positionY: posY)
+        if isDragging {
+            child.setLocalPosition(positionX: posX, positionY: posY)
+        }
     }
     
     private func onDragEnd(value: DragGesture.Value) {
