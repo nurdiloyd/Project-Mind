@@ -270,8 +270,8 @@ struct NodeView: View {
         
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
             isDragging = true
-            node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
         }
+        node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
         
         if let parent = node.parent {
             for sibling in parent.children {
@@ -283,7 +283,7 @@ struct NodeView: View {
                     sibling.order = tmpOrder
                     
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
-                        node.rearrangeSelf()
+                        parent.rearrangeSelf()
                     }
                     print("order")
                     node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
