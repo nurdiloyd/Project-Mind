@@ -12,7 +12,7 @@ class IntersectionManager {
         let key = intersectionKey(node1: node1, node2: node2)
         
         if intersections[key] == nil {
-            let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
+            let timer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { _ in
                 completion()
             }
             

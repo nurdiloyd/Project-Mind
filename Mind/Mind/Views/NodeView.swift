@@ -290,7 +290,7 @@ struct NodeView: View {
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
                         parent.rearrangeSelf()
                     }
-                    print("order")
+                    
                     node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
                 }
             }
@@ -303,7 +303,7 @@ struct NodeView: View {
             }
         }
         
-        if waitForIt && abs(difX) < 135 {
+        if waitForIt && abs(difX) < 85 {
             waitForIt = false
         }
         
@@ -338,7 +338,7 @@ struct NodeView: View {
                         let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - node.height / 2, width: width, height: node.height)
                         let otherNodeFrame = CGRect(x: nearestNode.globalPositionX - width / 2, y: nearestNode.globalPositionY - nearestNode.height / 2, width: width, height: nearestNode.height)
                         if currentNodeFrame.intersects(otherNodeFrame) {
-                            print("Nodes intersecting for 2 seconds: \(node.title) and \(nearestNode.title)")
+                            waitForIt = true
                             setParent(parent: nearestNode)
                         }
                     }
@@ -365,8 +365,6 @@ struct NodeView: View {
         if isDragging {
             node.setLocalPosition(positionX: posX, positionY: posY)
         }
-        
-        waitForIt = true
     }
     
     private func onDragEnd(value: DragGesture.Value) {
