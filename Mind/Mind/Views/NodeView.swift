@@ -203,8 +203,7 @@ struct NodeView: View {
         }
     }
     
-    private func loadNode()
-    {
+    private func loadNode() {
         if !node.isInit
         {
             node.isInit = true
@@ -350,8 +349,7 @@ struct NodeView: View {
         }
     }
     
-    private func setParent(parent: NodeData)
-    {
+    private func setParent(parent: NodeData) {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
             let prePosX = node.globalPositionX
             let prePosY = node.globalPositionY
@@ -382,15 +380,23 @@ struct NodeView: View {
     }
     
     private func loadImage(photoPickerItem: PhotosPickerItem?) {
-        if let item = photoPickerItem {
-            Task {
-                if let imageData = try? await item.loadTransferable(type: Data.self) {
-                    if let resizedImage = NSImage(data: imageData)?.cropToSquare().resize(to: 400) {
+        guard let item = photoPickerItem else { return }
+
+        Task {
+            do {
+                if let imageData = try await item.loadTransferable(type: Data.self) {
+                    if let originalImage = NSImage(data: imageData) {
+                        let resizedImage = originalImage.cropToSquare().resize(to: 400)
                         if let compressedImageData = resizedImage.compressToJPEG() {
+                            //DispatchQueue.global(qos: .utility).async {
                             let imageName = "image_\(UUID().uuidString).jpeg"
-                            image = resizedImage
-                            node.imageName = imageName
                             FileHelper.saveImage(data: compressedImageData, filename: imageName)
+                            
+                            DispatchQueue.main.async {
+                                self.image = NSImage(data: compressedImageData)
+                                self.node.imageName = imageName
+                            }
+                            //}
                         }
                     }
                 }
