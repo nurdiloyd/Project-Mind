@@ -156,8 +156,14 @@ final class NodeData {
     
     public func rearrangeSelfAndParent()
     {
-        rearrangeChildrenPositionY()
+        rearrangeSelf()
         rearrangeParent()
+    }
+    
+    public func rearrangeSelf()
+    {
+        rearrangeChildrenPositionY()
+        rearrangeContent()
     }
     
     private func rearrangeParent()
@@ -186,8 +192,6 @@ final class NodeData {
         }
         
         expandedContentHeight = totalHeight
-        
-        rearrangeContent()
     }
     
     private func rearrangeContent() {

@@ -283,9 +283,10 @@ struct NodeView: View {
                     sibling.order = tmpOrder
                     
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
-                        node.rearrangeSiblingsPositionY()
-                        node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
+                        node.rearrangeSelf()
                     }
+                    print("order")
+                    node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
                 }
             }
             
@@ -293,8 +294,6 @@ struct NodeView: View {
             {
                 withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
                     node.removeParent()
-                    parent.rearrangeChildrenPositionY()
-                    parent.rearrangeSiblingsPositionY()
                 }
             }
         }
@@ -344,10 +343,13 @@ struct NodeView: View {
     
     private func setParent(child: NodeData, parent: NodeData)
     {
+        let prePosX = child.globalPositionX
+        let prePosY = child.globalPositionY
+        
         child.removeParent()
         
-        let posX = child.globalPositionX - parent.globalPositionX
-        let posY = child.globalPositionY - parent.globalPositionY
+        let posX = prePosX - parent.globalPositionX
+        let posY = prePosY - parent.globalPositionY
         
         parent.addChild(child)
         
