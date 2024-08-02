@@ -342,8 +342,7 @@ struct NodeView: View {
     {
         if let prnt = child.parent {
             child.removeParent()
-            prnt.rearrangeChildrenPositionY()
-            prnt.rearrangeSiblingsPositionY()
+            prnt.rearrangeSelfAndParent()
         }
         
         let posX = child.globalPositionX - parent.globalPositionX
@@ -407,8 +406,7 @@ struct NodeView: View {
                 }
                 
                 if let prnt = parent {
-                    prnt.rearrangeChildrenPositionY()
-                    prnt.rearrangeSiblingsPositionY()
+                    prnt.rearrangeSelfAndParent()
                 }
                 
                 for child in children {

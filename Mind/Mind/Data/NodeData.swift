@@ -60,8 +60,7 @@ final class NodeData {
         children.append(child)
         
         isExpanded = true
-        rearrangeChildrenPositionY()
-        rearrangeSiblingsPositionY()
+        rearrangeSelfAndParent()
     }
     
     public func removeChild(_ nodeData: NodeData) {
@@ -138,7 +137,7 @@ final class NodeData {
         if self.height != height
         {
             self.height = height
-            rearrangeSiblingsPositionY()
+            rearrangeParent()
         }
     }
     
@@ -147,18 +146,23 @@ final class NodeData {
         isExpanded.toggle()
         
         rearrangeContent()
-        rearrangeSiblingsPositionY()
+        rearrangeParent()
     }
     
-    public func rearrangeSiblingsPositionY()
+    public func rearrangeSelfAndParent()
+    {
+        rearrangeChildrenPositionY()
+        rearrangeParent()
+    }
+    
+    private func rearrangeParent()
     {
         if let prnt = parent {
-            prnt.rearrangeChildrenPositionY()
-            prnt.rearrangeSiblingsPositionY()
+            prnt.rearrangeSelfAndParent()
         }
     }
     
-    public func rearrangeChildrenPositionY() {
+    private func rearrangeChildrenPositionY() {
         let sortedChildren = children.sorted(by: { $0.order > $1.order })
         
         var totalHeight = -NodeView.vStackSpace
