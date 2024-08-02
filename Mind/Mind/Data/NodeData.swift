@@ -197,8 +197,8 @@ final class NodeData {
                 let lPosX = lNode.lastLocalPositionX
                 
                 if isExpanded {
-                    let fPosY = fNode.localPositionY
-                    let lPosY = lNode.localPositionY
+                    let fPosY = fNode.lastLocalPositionY
+                    let lPosY = lNode.lastLocalPositionY
                     
                     contentLocalPositionX = (fPosX + lPosX) / 2
                     contentLocalPositionY = (fPosY + fNode.height / 2 + lPosY - lNode.height / 2) / 2
