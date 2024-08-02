@@ -93,12 +93,12 @@ final class NodeData {
         }
     }
     
-    public func snapToGrid() {
-        let positionX = snapX(localPositionX)
-        let positionY = snapY(localPositionY)
+    public func place(positionX: Double, positionY: Double, snap: Bool = true) {
+        let posX = snap ? snapX(positionX) : positionX
+        let posY = snap ? snapY(positionY) : positionY
         
-        setLocalPosition(positionX: positionX, positionY: positionY)
-        resetLastLocalPosition()
+        setLocalPosition(positionX: posX, positionY: posY)
+        setLastLocalPosition(positionX: posX, positionY: posY)
     }
     
     public func snapX(_ positionX: Double) -> Double
@@ -121,9 +121,6 @@ final class NodeData {
         lastLocalPositionY = positionY
     }
     
-    public func resetLastLocalPosition() {
-        setLastLocalPosition(positionX: localPositionX, positionY: localPositionY)
-    }
     
     public func setTitle(title: String) {
         let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
@@ -171,10 +168,11 @@ final class NodeData {
         
         var currentY = totalHeight / 2
         for child in sortedChildren {
-            let positionX = NodeView.snapX
-            let positionY = currentY - child.globalHeight / 2
-            child.setLocalPosition(positionX: positionX, positionY: positionY)
-            child.resetLastLocalPosition()
+            let posX = NodeView.snapX
+            let posY = currentY - child.globalHeight / 2
+            
+            child.place(positionX: posX, positionY: posY, snap: false)
+            
             currentY -= (child.globalHeight + NodeView.vStackSpace)
         }
         
@@ -183,8 +181,7 @@ final class NodeData {
         rearrangeContent()
     }
     
-    private func rearrangeContent()
-    {
+    private func rearrangeContent() {
         if let fNode = children.max(by: { $0.order < $1.order }) {
             if let lNode = children.min(by: { $0.order < $1.order }) {
                 let fPosX = fNode.lastLocalPositionX

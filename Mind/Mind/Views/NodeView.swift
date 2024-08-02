@@ -361,7 +361,7 @@ struct NodeView: View {
             if node.parent != nil {
                 node.setLocalPosition(positionX: node.lastLocalPositionX, positionY: node.lastLocalPositionY)
             } else {
-                node.snapToGrid()
+                node.place(positionX: node.localPositionX, positionY: node.localPositionY)
             }
         }
     }
@@ -412,7 +412,7 @@ struct NodeView: View {
                 }
                 
                 for child in children {
-                    child.snapToGrid()
+                    child.place(positionX: child.localPositionX, positionY: child.localPositionX)
                 }
             } else {
                 isDeleting = false

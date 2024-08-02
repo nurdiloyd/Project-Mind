@@ -19,9 +19,14 @@ struct BoardView: View {
             ZStack{
                 ZStack {
                     ZStack {
-                        Circle()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color(NSColor.windowFrameTextColor))
+                        ZStack{
+                            Circle()
+                                .foregroundStyle(Color(NSColor.windowFrameTextColor))
+                            Text("\(board.nodes.count)")
+                                .foregroundStyle(Color(NSColor.windowBackgroundColor))
+                                .font(.headline)
+                        }
+                        .frame(width: 20, height: 20)
                         
                         let nodes = sortedNodes(board.nodes)
                         ForEach(nodes, id: \.id) { node in
@@ -63,7 +68,7 @@ struct BoardView: View {
                 Spacer()
                 Button {
                     let positionX = BoardView.boardWidth / 2
-                    let positionY = BoardView.boardHeight / 2
+                    let positionY = BoardView.boardHeight / 2 - NodeView.snapY
                     let _ = createNode(positionX: positionX, positionY: positionY)
                 } label: {
                     Image(systemName: "plus.circle")
