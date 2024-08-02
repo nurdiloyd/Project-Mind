@@ -12,6 +12,7 @@ struct NodeView: View {
     @State private var inputText: String = ""
     @State private var isEditing: Bool = false
     @State private var isDragging: Bool = false
+    @State private var waitForIt: Bool = false
     @State private var isHovering: Bool = false
     @State private var isHoveringText: Bool = false
     @State private var isDeleting: Bool = false
@@ -263,14 +264,18 @@ struct NodeView: View {
         }
         
         let currentPos = value.location
-        let deltaX = currentPos.x - node.lastGlobalPositionX
+        let difX = currentPos.x - node.lastGlobalPositionX
+        let deltaX = node.hasParent && !waitForIt
+                      ? difX.sign() * (4.0 * 8.0 * abs(difX)).squareRoot()
+                      : difX
         let deltaY = currentPos.y - node.lastGlobalPositionY
-        let localPositionX = node.lastLocalPositionX + (node.hasParent ? (deltaX.sign() * (4.0 * 8.0 * abs(deltaX)).squareRoot()) : deltaX)
+        let localPositionX = node.lastLocalPositionX + deltaX
         let localPositionY = node.lastLocalPositionY + deltaY
         
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
             isDragging = true
         }
+        
         node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
         
         if let parent = node.parent {
@@ -290,7 +295,7 @@ struct NodeView: View {
                 }
             }
             
-            if abs(deltaX) > 135
+            if !waitForIt && abs(difX) > 135
             {
                 withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
                     node.removeParent()
@@ -298,20 +303,24 @@ struct NodeView: View {
             }
         }
         
-        checkForOverlap(currentNode: node, currentPos: currentPos)
+        if waitForIt && abs(difX) < 135 {
+            waitForIt = false
+        }
+        
+        checkForOverlap(currentPos: currentPos)
     }
     
-    private func checkForOverlap(currentNode: NodeData, currentPos: CGPoint) {
+    private func checkForOverlap(currentPos: CGPoint) {
         let width = NodeView.width
-        let currentNodeFrame = CGRect(x: currentNode.globalPositionX - width / 2, y: currentNode.globalPositionY - currentNode.height / 2, width: width, height: currentNode.height)
+        let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - node.height / 2, width: width, height: node.height)
         
         var nearestNode: NodeData? = nil
         var nearestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
-        for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != currentNode.id) {
+        for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != node.id) {
             let otherNodeFrame = CGRect(x: otherNode.globalPositionX - width / 2, y: otherNode.globalPositionY - otherNode.height / 2, width: width, height: otherNode.height)
             
             if currentNodeFrame.intersects(otherNodeFrame) {
-                let distance = hypot(currentNode.globalPositionX - otherNode.globalPositionX, currentNode.globalPositionY - otherNode.globalPositionY)
+                let distance = hypot(node.globalPositionX - otherNode.globalPositionX, node.globalPositionY - otherNode.globalPositionY)
                 if distance < nearestDistance {
                     nearestDistance = distance
                     nearestNode = otherNode
@@ -320,17 +329,17 @@ struct NodeView: View {
         }
 
         if let nearestNode = nearestNode {
-            if currentNearestNode != nearestNode && nearestNode != currentNode.parent {
+            if currentNearestNode != nearestNode && nearestNode != node.parent {
                 currentNearestNode = nearestNode
                 IntersectionManager.shared.stopAllTimers()
                 
-                IntersectionManager.shared.startIntersectionTimer(node1: currentNode, node2: nearestNode) {
+                IntersectionManager.shared.startIntersectionTimer(node1: node, node2: nearestNode) {
                     DispatchQueue.main.async {
-                        let currentNodeFrame = CGRect(x: currentNode.globalPositionX - width / 2, y: currentNode.globalPositionY - currentNode.height / 2, width: width, height: currentNode.height)
+                        let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - node.height / 2, width: width, height: node.height)
                         let otherNodeFrame = CGRect(x: nearestNode.globalPositionX - width / 2, y: nearestNode.globalPositionY - nearestNode.height / 2, width: width, height: nearestNode.height)
                         if currentNodeFrame.intersects(otherNodeFrame) {
-                            print("Nodes intersecting for 2 seconds: \(currentNode.title) and \(nearestNode.title)")
-                            setParent(child: currentNode, parent: nearestNode)
+                            print("Nodes intersecting for 2 seconds: \(node.title) and \(nearestNode.title)")
+                            setParent(parent: nearestNode)
                         }
                     }
                 }
@@ -341,21 +350,23 @@ struct NodeView: View {
         }
     }
     
-    private func setParent(child: NodeData, parent: NodeData)
+    private func setParent(parent: NodeData)
     {
-        let prePosX = child.globalPositionX
-        let prePosY = child.globalPositionY
+        let prePosX = node.globalPositionX
+        let prePosY = node.globalPositionY
         
-        child.removeParent()
+        node.removeParent()
         
         let posX = prePosX - parent.globalPositionX
         let posY = prePosY - parent.globalPositionY
         
-        parent.addChild(child)
+        parent.addChild(node)
         
         if isDragging {
-            child.setLocalPosition(positionX: posX, positionY: posY)
+            node.setLocalPosition(positionX: posX, positionY: posY)
         }
+        
+        waitForIt = true
     }
     
     private func onDragEnd(value: DragGesture.Value) {

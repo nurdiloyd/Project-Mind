@@ -22,11 +22,11 @@ struct BoardView: View {
                         ZStack{
                             Circle()
                                 .foregroundStyle(Color(NSColor.windowFrameTextColor))
+                                .frame(width: 40, height: 40)
                             Text("\(board.nodes.count)")
                                 .foregroundStyle(Color(NSColor.windowBackgroundColor))
                                 .font(.headline)
                         }
-                        .frame(width: 20, height: 20)
                         
                         let nodes = sortedNodes(board.nodes)
                         ForEach(nodes, id: \.id) { node in
