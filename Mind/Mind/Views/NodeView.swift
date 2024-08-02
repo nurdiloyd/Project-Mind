@@ -49,9 +49,15 @@ struct NodeView: View {
                     .textFieldStyle(PlainTextFieldStyle())
                     .frame(height: NodeView.titleHeight)
                 } else {
-                    Text("\(node.title)")
+                    let noTitle = node.title.isEmptyOrWithWhiteSpace
+                    Text("\(noTitle  ? "NodeTitle" : node.title)")
                         .foregroundColor(LCConstants.textColor)
-                        .font(.headline)
+                        .if(noTitle) {
+                            $0.font(.subheadline).italic()
+                        }
+                        .if(!noTitle) {
+                            $0.font(.headline)
+                        }
                         .frame(height: NodeView.titleHeight)
                         .scaleEffect(isHoveringText ? 1.1 : 1.0)
                         .onHover { hovering in
@@ -210,11 +216,6 @@ struct NodeView: View {
             onCreation = true
             isEditing = true
             isFocus.toggle()
-        }
-        
-        if node.title.isEmptyOrWithWhiteSpace
-        {
-            isEditing = true
         }
         
         imageLoadingOnLoad = !node.imageName.isEmptyOrWithWhiteSpace
