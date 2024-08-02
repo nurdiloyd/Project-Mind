@@ -53,7 +53,7 @@ final class NodeData {
         self.lastLocalPositionX = positionX
         self.lastLocalPositionY = positionY
     }
-
+    
     public func addChild(_ child: NodeData) {
         child.parent = self
         child.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
@@ -63,31 +63,36 @@ final class NodeData {
         rearrangeSelfAndParent()
     }
     
-    public func removeChild(_ nodeData: NodeData) {
-        nodeData.parent = nil
-        if let parentIndex = children.firstIndex(of: nodeData)
+    private func removeChild(_ child: NodeData) {
+        child.place(positionX: child.globalPositionX, positionY: child.globalPositionY)
+        child.parent = nil
+        
+        if let index = children.firstIndex(of: child)
         {
-            children.remove(at: parentIndex)
+            children.remove(at: index)
         }
         
-        resetContentInfoText()
+        rearrangeSelfAndParent()
     }
     
-    public func resetContentInfoText()
+    public func removeAllChildren()
     {
-        contentInfo = children.filter({ NodeData in
-            !NodeData.title.isEmptyOrWithWhiteSpace
-        }).sorted(by: { $0.order < $1.order })
-                .map { "\($0.title)" }
-                .joined(separator: " ")
+        for child in children {
+            child.place(positionX: child.globalPositionX, positionY: child.globalPositionY)
+            child.parent = nil
+            
+            if let index = children.firstIndex(of: child)
+            {
+                children.remove(at: index)
+            }
+        }
+        
+        rearrangeSelfAndParent()
     }
     
     public func removeParent()
     {
         if let prnt = parent {
-            setLocalPosition(positionX: globalPositionX, positionY: globalPositionY)
-            setLastLocalPosition(positionX: snapX(lastGlobalPositionX), positionY: snapY(lastGlobalPositionY))
-            
             prnt.removeChild(self)
         }
     }
@@ -215,5 +220,14 @@ final class NodeData {
         }
         
         resetContentInfoText()
+    }
+    
+    private func resetContentInfoText()
+    {
+        contentInfo = children.filter({ NodeData in
+            !NodeData.title.isEmptyOrWithWhiteSpace
+        }).sorted(by: { $0.order < $1.order })
+                .map { "\($0.title)" }
+                .joined(separator: " ")
     }
 }

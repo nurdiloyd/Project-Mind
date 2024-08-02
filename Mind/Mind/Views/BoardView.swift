@@ -157,6 +157,8 @@ struct BoardView: View {
     private func deleteNode(_ nodeData: NodeData) -> Bool {
         if let index = board.nodes.firstIndex(of: nodeData) {
             nodeData.removeParent()
+            nodeData.removeAllChildren()
+            
             deleteNodeData(nodeData)
             board.nodes.remove(at: index)
             

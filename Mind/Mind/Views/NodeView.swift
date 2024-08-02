@@ -344,10 +344,7 @@ struct NodeView: View {
     
     private func setParent(child: NodeData, parent: NodeData)
     {
-        if let prnt = child.parent {
-            child.removeParent()
-            prnt.rearrangeSelfAndParent()
-        }
+        child.removeParent()
         
         let posX = child.globalPositionX - parent.globalPositionX
         let posY = child.globalPositionY - parent.globalPositionY
@@ -397,28 +394,9 @@ struct NodeView: View {
     private func deleteThisNode() {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
             isDeleting = true
-            node.isExpanded = true
             
-            let parent = node.parent
-            let children = node.children
-            let posX = node.globalPositionX
-            let posY = node.globalPositionY
-            
-            let isDeleted = deleteNode(node)
-            if isDeleted {
-                for child in children {
-                    child.localPositionX = child.localPositionX + posX
-                    child.localPositionY = child.localPositionY + posY
-                }
-                
-                if let prnt = parent {
-                    prnt.rearrangeSelfAndParent()
-                }
-                
-                for child in children {
-                    child.place(positionX: child.localPositionX, positionY: child.localPositionX)
-                }
-            } else {
+            if !deleteNode(node)
+            {
                 isDeleting = false
             }
         }
