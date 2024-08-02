@@ -148,8 +148,8 @@ struct BoardView: View {
     private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) -> NodeData {
         let newNode = NodeData(title: "", positionX: Double(positionX), positionY: Double(positionY))
         
-        board.nodes.append(newNode)
         insertNodeData(newNode)
+        board.nodes.append(newNode)
         
         return newNode
     }
@@ -169,8 +169,8 @@ struct BoardView: View {
     }
     
     private func clearBoard() {
-        for node in board.nodes {
-            deleteNodeData(node)
+        for nodeData in board.nodes {
+            deleteNodeData(nodeData)
         }
         
         board.nodes.removeAll()
