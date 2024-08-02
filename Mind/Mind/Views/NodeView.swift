@@ -361,7 +361,7 @@ struct NodeView: View {
             isDragging = false
             
             if node.parent != nil {
-                node.setLocalPosition(positionX: node.lastLocalPositionX, positionY: node.lastLocalPositionY)
+                node.place(positionX: node.lastLocalPositionX, positionY: node.lastLocalPositionY, snap: false)
             } else {
                 node.place(positionX: node.localPositionX, positionY: node.localPositionY)
             }
