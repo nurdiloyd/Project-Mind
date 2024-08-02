@@ -352,18 +352,20 @@ struct NodeView: View {
     
     private func setParent(parent: NodeData)
     {
-        let prePosX = node.globalPositionX
-        let prePosY = node.globalPositionY
-        
-        node.removeParent()
-        
-        let posX = prePosX - parent.globalPositionX
-        let posY = prePosY - parent.globalPositionY
-        
-        parent.addChild(node)
-        
-        if isDragging {
-            node.setLocalPosition(positionX: posX, positionY: posY)
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 20)) {
+            let prePosX = node.globalPositionX
+            let prePosY = node.globalPositionY
+            
+            node.removeParent()
+            
+            let posX = prePosX - parent.globalPositionX
+            let posY = prePosY - parent.globalPositionY
+            
+            parent.addChild(node)
+            
+            if isDragging {
+                node.setLocalPosition(positionX: posX, positionY: posY)
+            }
         }
     }
     
