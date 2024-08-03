@@ -46,7 +46,7 @@ struct BoardView: View {
             .background(LCConstants.groundColor)
             .onTapGesture(count: 2) {
                 withAnimation {
-                    scale = getNormalScale(for: currentSize)
+                    scale = getDefaultScale()
                     lastScale = scale
                 }
             }
@@ -85,7 +85,7 @@ struct BoardView: View {
         .gesture(
             MagnificationGesture()
                 .onChanged { value in
-                    scale = getScale(for: currentSize, value: lastScale * value)
+                    scale = getScale(value: lastScale * value)
                 }
                 .onEnded { value in
                     lastScale = scale
@@ -93,7 +93,7 @@ struct BoardView: View {
         )
         .readSize { size in
             currentSize = size
-            scale = getScale(for: currentSize, value: lastScale)
+            scale = getScale(value: lastScale)
             lastScale = scale
         }
     }
@@ -122,13 +122,15 @@ struct BoardView: View {
         return sorted
     }
     
-    private func getNormalScale(for size: CGSize) -> CGFloat {
+    private func getDefaultScale() -> CGFloat {
+        let size = currentSize
         let minEdgeLength = min(size.width, size.height)
-        let normalScale = minEdgeLength / (BoardView.boxSize * 5)
-        return getScale(for: size, value: normalScale)
+        let defaultScale = minEdgeLength / (BoardView.boxSize * 5)
+        return getScale(value: defaultScale)
     }
     
-    private func getScale(for size: CGSize, value: CGFloat) -> CGFloat {
+    private func getScale(value: CGFloat) -> CGFloat {
+        let size = currentSize
         let boardAspectRatio = BoardView.boardWidth / BoardView.boardHeight
         let windowAspectRatio = size.width / size.height
         let minEdgeLength = min(size.width, size.height)
