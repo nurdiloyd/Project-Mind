@@ -7,7 +7,6 @@ struct NodeView: View {
     public var deleteNode: (NodeData) -> Bool
     public var board: BoardData
     
-    @State private var gptService = GPTService()
     @FocusState private var isFocus: Bool
     @State private var inputText: String = ""
     @State private var isEditing: Bool = false
@@ -428,18 +427,5 @@ struct NodeView: View {
             let newNode = createNode()
             parent.addChild(newNode)
         }
-    }
-    
-    private func fetchMeaning(word: String) {
-        /*
-        self.isEditing = false
-        gptService.fetchMeaning(for: word) { meaning in
-            if let meaning = meaning {
-                DispatchQueue.main.async {
-                    node.title = meaning
-                }
-            }
-        }
-         */
     }
 }
