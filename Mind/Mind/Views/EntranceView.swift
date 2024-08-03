@@ -12,7 +12,7 @@ struct EntranceView: View {
         VStack(spacing: 40) {
             Spacer(minLength: 20)
             
-            let radius = LCConstants.cornerRadius + padding / 2
+            let radius = LCConstants.cornerRadius
             
             Image("Image")
                 .resizable()
@@ -39,6 +39,7 @@ struct EntranceView: View {
             }
             .frame(minHeight: 85, maxHeight: 280)
             .frame(width: 260)
+            .scrollDisabled(boards.count < 6)
             .LCContainer(smooth: 7, radius: radius, level: 1)
             
             Spacer(minLength: 20)

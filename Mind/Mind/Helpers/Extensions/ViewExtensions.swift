@@ -71,14 +71,15 @@ extension View {
     func LCContainer(smooth: CGFloat = 4, 
                      radius: CGFloat = LCConstants.cornerRadius,
                      level: Int = 1,
-                     noShadow: Bool = false) -> some View {
+                     noShadow: Bool = false,
+                     opacity: CGFloat = 1) -> some View {
         
         let color: Color = LCConstants.getColor(level)
         let textColor: Color = LCConstants.getTextColor(level)
         
         return self
             .foregroundColor(textColor)
-            .background(color)
+            .background(color.opacity(opacity))
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .if(!noShadow)
             {
