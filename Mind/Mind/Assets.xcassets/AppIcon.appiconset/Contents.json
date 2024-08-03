@@ -1,61 +1,61 @@
 {
   "images" : [
     {
-      "filename" : "Cactus16.png",
+      "filename" : "Icon-macOS-16x16@1x.png.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "Cactus32.png",
+      "filename" : "Icon-macOS-16x16@2x.png.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "Cactus32 1.png",
+      "filename" : "Icon-macOS-32x32@1x.png.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "Cactus64.png",
+      "filename" : "Icon-macOS-32x32@2x.png.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "Cactus128.png",
+      "filename" : "Icon-macOS-128x128@1x.png.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "Cactus256.png",
+      "filename" : "Icon-macOS-128x128@2x.png.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "Cactus256 1.png",
+      "filename" : "Icon-macOS-256x256@1x.png.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
-      "filename" : "Cactus512.png",
+      "filename" : "Icon-macOS-256x256@2x.png.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
-      "filename" : "Cactus512 1.png",
+      "filename" : "Icon-macOS-512x512@1x.png.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "Cactus1024.png",
+      "filename" : "Icon-macOS-512x512@2x.png.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
