@@ -22,8 +22,7 @@ struct EntranceView: View {
                         ForEach(boards, id: \.id) { board in
                             BoardCardView(board: board,
                                           openBoard: openBoard,
-                                          deleteBoard:deleteBoard,
-                                          setTitle: setTitle)
+                                          deleteBoard: deleteBoard)
                         }
                     } else {
                         Text("Create a board")
@@ -35,7 +34,7 @@ struct EntranceView: View {
             }
             .frame(width: BoardCardView.width + EntranceView.padding * 2)
             .frame(minHeight: (BoardCardView.height + EntranceView.padding) * 1 + EntranceView.padding, maxHeight: (BoardCardView.height + EntranceView.padding) * 5 + EntranceView.padding)
-            .scrollDisabled(boards.count < 6)
+            .scrollDisabled(boards.count < 2)
             .LCContainer(smooth: 7, radius: EntranceView.radius, level: 1)
         }
         .padding(40)
@@ -61,12 +60,6 @@ struct EntranceView: View {
                 }
  */
             }
-        }
-    }
-    
-    private func setTitle(_ board: BoardData, title: String) {
-        if !title.isEmptyOrWithWhiteSpace {
-            board.title = title
         }
     }
     

@@ -12,4 +12,11 @@ class BoardData {
         self.id = UUID()
         self.title = title
     }
+    
+    public func setTitle(title: String) {
+        let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedTitle.isEmptyOrWithWhiteSpace {
+            self.title = trimmedTitle
+        }
+    }
 }

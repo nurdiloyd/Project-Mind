@@ -5,7 +5,6 @@ struct BoardCardView: View {
     public let board: BoardData
     public var openBoard: (BoardData) -> Void
     public var deleteBoard: (BoardData) -> Void
-    public var setTitle: (BoardData, String) -> Void
     
     @FocusState private var isFocus: Bool
     @State private var isEditing: Bool = false
@@ -20,7 +19,33 @@ struct BoardCardView: View {
     
     var body: some View {
         HStack (spacing: BoardCardView.padding) {
-            Button(action: {
+            ZStack() {
+                if isEditing
+                {
+                    TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
+                        if !isStart && !onCreation
+                        {
+                            setIsEditing(false)
+                            setTitle(title: inputText)
+                        }
+                        
+                        onCreation = false
+                    })
+                    .font(.title2)
+                    .focused($isFocus)
+                    .multilineTextAlignment(.center)
+                    .textFieldStyle(PlainTextFieldStyle())
+                }
+                else {
+                    Text("\(board.title)")
+                        .font(.title)
+                }
+            }
+            .padding(8)
+            .frame(maxWidth: .infinity)
+            .frame(height: BoardCardView.height)
+            .LCContainer(smooth: isInner ? 4 : 8, radius: BoardCardView.radius, level: 2)
+            .onTapGesture(count: 1, perform: {
                 withAnimation(.interpolatingSpring(stiffness: 1000, damping: 30)) {
                     isInner = true
                 }
@@ -28,40 +53,7 @@ struct BoardCardView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     openBoard(board)
                 }
-            }) {
-                Group
-                {
-                    if isEditing
-                    {
-                        TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
-                            if !isStart && !onCreation
-                            {
-                                setIsEditing(false)
-                                setTitle(board, inputText)
-                            }
-                            
-                            onCreation = false
-                        })
-                        .font(.title2)
-                        .focused($isFocus)
-                        .multilineTextAlignment(.center)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .onSubmit {
-                            setIsEditing(false)
-                            setTitle(board, inputText)
-                        }
-                    }
-                    else {
-                        Text("\(board.title)")
-                            .font(.title)
-                    }
-                }
-                .padding(8)
-                .frame(maxWidth: .infinity)
-                .frame(height: BoardCardView.height)
-                .LCContainer(smooth: isInner ? 4 : 8, radius: BoardCardView.radius, level: 2)
-            }
-            .buttonStyle(.plain)
+            })
             .onHover(perform: { hover in
                 withAnimation(.interpolatingSpring(stiffness: 200, damping: 20)) {
                     isInner = !hover
@@ -82,9 +74,7 @@ struct BoardCardView: View {
                 .buttonStyle(.plain)
                 
                 Button(action: {
-                    withAnimation(.interpolatingSpring(stiffness: 500, damping: 30)) {
-                        deleteBoard(board)
-                    }
+                    deleteBoard(board)
                 }) {
                     Image(systemName: "minus")
                         .LCButton(width: width, height: height, level: 2, radius: BoardCardView.radius)
@@ -107,5 +97,9 @@ struct BoardCardView: View {
     private func setIsEditing(_ editing: Bool)
     {
         isEditing = editing
+    }
+    
+    private func setTitle(title: String) {
+        board.setTitle(title: title)
     }
 }
