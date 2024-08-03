@@ -29,13 +29,13 @@ struct BoardView: View {
                         }
                         
                         let nodes = sortedNodes(board.nodes)
-                        ForEach(nodes, id: \.id) { node in
-                            if node.shouldShowSelf {
-                                NodeView(node: node,
-                                         createNode: { createNode() },
-                                         deleteNode: deleteNode,
-                                         board: board)
-                            }
+                        ForEach(nodes.filter({ NodeData in
+                            NodeData.shouldShowSelf
+                        }), id: \.id) { node in
+                            NodeView(node: node,
+                                     createNode: { createNode() },
+                                     deleteNode: deleteNode,
+                                     board: board)
                         }
                     }
                     .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
