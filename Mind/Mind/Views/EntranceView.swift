@@ -6,21 +6,18 @@ struct EntranceView: View {
     @Query private var boards: [BoardData]
     
     var openBoard: (BoardData) -> Void
-    private let padding: CGFloat = 22.5
+    public static let padding: CGFloat = 8
+    public static let radius = LCConstants.cornerRadius
     
     var body: some View {
         VStack(spacing: 40) {
-            Spacer(minLength: 20)
-            
-            let radius = LCConstants.cornerRadius
-            
             Image("Image")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .LCContainer(smooth: 7, radius: radius)
+                .LCContainer(smooth: 7, radius: LCConstants.cornerRadius * 2)
             
             ScrollView([.vertical], showsIndicators: false) {
-                VStack{
+                VStack(spacing: EntranceView.padding) {
                     if boards.count > 0 {
                         ForEach(boards, id: \.id) { board in
                             BoardCardView(board: board,
@@ -30,21 +27,19 @@ struct EntranceView: View {
                         }
                     } else {
                         Text("Create a board")
-                            .frame(width: 215, height: 40)
-                            .LCContainer(level: 2)
+                            .frame(width: BoardCardView.width, height: BoardCardView.height)
+                            .LCContainer(radius: BoardCardView.radius, level: 2)
                     }
                 }
-                .padding(padding)
-                .frame(minWidth: 300, minHeight: 40)
+                .padding(EntranceView.padding)
             }
-            .frame(minHeight: 85, maxHeight: 280)
-            .frame(width: 260)
+            .frame(width: BoardCardView.width + EntranceView.padding * 2)
+            .frame(minHeight: (BoardCardView.height + EntranceView.padding) * 1 + EntranceView.padding, maxHeight: (BoardCardView.height + EntranceView.padding) * 5 + EntranceView.padding)
             .scrollDisabled(boards.count < 6)
-            .LCContainer(smooth: 7, radius: radius, level: 1)
-            
-            Spacer(minLength: 20)
+            .LCContainer(smooth: 7, radius: EntranceView.radius, level: 1)
         }
-        .frame(minWidth: 300, maxWidth: .infinity, maxHeight: .infinity)
+        .padding(40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(LCConstants.getColor(0))
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
@@ -54,8 +49,9 @@ struct EntranceView: View {
                 
                 Button(action: deleteAllBoards) {
                     Image(systemName: "trash")
+                        .foregroundStyle(Color(NSColor.systemRed))
                 }
-                
+/*
                 Button(action: exportDatabase) {
                     Image(systemName: "square.and.arrow.up")
                 }
@@ -63,6 +59,7 @@ struct EntranceView: View {
                 Button(action: importDatabase) {
                     Image(systemName: "square.and.arrow.down")
                 }
+ */
             }
         }
     }

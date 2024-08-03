@@ -13,8 +13,13 @@ struct BoardCardView: View {
     @State private var onCreation: Bool = false
     @State private var isInner: Bool = true
     
+    @State public static var radius: CGFloat =  EntranceView.radius - EntranceView.padding / 2.0
+    @State public static var padding: CGFloat = EntranceView.padding / 2.0
+    @State public static var width: CGFloat = 210
+    @State public static var height: CGFloat = 40
+    
     var body: some View {
-        HStack (spacing: 5) {
+        HStack (spacing: BoardCardView.padding) {
             Button(action: {
                 withAnimation(.interpolatingSpring(stiffness: 1000, damping: 30)) {
                     isInner = true
@@ -24,38 +29,37 @@ struct BoardCardView: View {
                     openBoard(board)
                 }
             }) {
-                if isEditing
+                Group
                 {
-                    TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
-                        if !isStart && !onCreation
-                        {
+                    if isEditing
+                    {
+                        TextField("Board Title", text: $inputText, onEditingChanged: { isStart in
+                            if !isStart && !onCreation
+                            {
+                                setIsEditing(false)
+                                setTitle(board, inputText)
+                            }
+                            
+                            onCreation = false
+                        })
+                        .font(.title2)
+                        .focused($isFocus)
+                        .multilineTextAlignment(.center)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .onSubmit {
                             setIsEditing(false)
                             setTitle(board, inputText)
                         }
-                        
-                        onCreation = false
-                    })
-                    .font(.title2)
-                    .focused($isFocus)
-                    .multilineTextAlignment(.center)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .padding(8)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 40)
-                    .LCContainer(level: 2)
-                    .onSubmit {
-                        setIsEditing(false)
-                        setTitle(board, inputText)
+                    }
+                    else {
+                        Text("\(board.title)")
+                            .font(.title)
                     }
                 }
-                else {
-                    Text("\(board.title)")
-                        .font(.title)
-                        .padding(8)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 40)
-                        .LCContainer(smooth: isInner ? 4 : 8, radius: LCConstants.cornerRadius * (isInner ? 1 : 1.1) , level: 2)
-                }
+                .padding(8)
+                .frame(maxWidth: .infinity)
+                .frame(height: BoardCardView.height)
+                .LCContainer(smooth: isInner ? 4 : 8, radius: BoardCardView.radius, level: 2)
             }
             .buttonStyle(.plain)
             .onHover(perform: { hover in
@@ -64,27 +68,31 @@ struct BoardCardView: View {
                 }
             })
             
-            Button(action: {
-                inputText = board.title
-                setIsEditing(true)
-                isFocus.toggle()
-            }) {
-                Image(systemName: "square.and.pencil")
-                    .LCButton(width: 30, height: 30, level: 2)
-            }
-            .buttonStyle(.plain)
-            
-            Button(action: {
-                withAnimation(.interpolatingSpring(stiffness: 500, damping: 30)) {
-                    deleteBoard(board)
+            VStack(spacing: BoardCardView.padding) {
+                let width = 30.0
+                let height = (BoardCardView.height - BoardCardView.padding) / 2
+                Button(action: {
+                    inputText = board.title
+                    setIsEditing(true)
+                    isFocus.toggle()
+                }) {
+                    Image(systemName: "square.and.pencil")
+                        .LCButton(width: width, height: height, padding: 3, level: 2, radius: BoardCardView.radius)
                 }
-            }) {
-                Image(systemName: "minus")
-                    .LCButton(width: 30, height: 30, level: 2)
+                .buttonStyle(.plain)
+                
+                Button(action: {
+                    withAnimation(.interpolatingSpring(stiffness: 500, damping: 30)) {
+                        deleteBoard(board)
+                    }
+                }) {
+                    Image(systemName: "minus")
+                        .LCButton(width: width, height: height, level: 2, radius: BoardCardView.radius)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
-        .frame(width: 215, height: 40)
+        .frame(width: BoardCardView.width, height: BoardCardView.height)
         .onAppear {
             if !board.isInit {
                 board.isInit = true
@@ -98,8 +106,6 @@ struct BoardCardView: View {
     
     private func setIsEditing(_ editing: Bool)
     {
-        withAnimation(.interpolatingSpring(stiffness: 100, damping: 5)) {
-            isEditing = editing
-        }
+        isEditing = editing
     }
 }
