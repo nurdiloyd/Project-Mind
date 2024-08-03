@@ -149,7 +149,6 @@ struct NodeView: View {
         }
         .frame(width: NodeView.width)
         .opacity(isDeleting ? 0.0 : 1.0)
-        .animation(.spring(duration: 0.3), value: isDeleting)
         .onAppear { loadNode() }
         .readSize { newSize in
             if !imageLoadingOnLoad

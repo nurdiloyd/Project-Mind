@@ -72,6 +72,7 @@ final class NodeData {
             children.remove(at: index)
         }
         
+        isExpanded = true
         rearrangeSelfAndParent()
     }
     
