@@ -41,15 +41,15 @@ struct NodeView: View {
             VStack(spacing: 0) {
                 if isEditing {
                     TextField("Node Title", text: $inputText, onCommit: onEditTextFieldEnd)
-                    .font(.headline.weight(.light))
-                    .focused($isFocus)
-                    .foregroundColor(LCConstants.textColor)
-                    .multilineTextAlignment(.center)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .frame(height: NodeView.titleHeight)
+                        .font(.headline.weight(.light))
+                        .focused($isFocus)
+                        .foregroundColor(LCConstants.textColor)
+                        .multilineTextAlignment(.center)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .frame(height: NodeView.titleHeight)
                 } else {
                     let noTitle = node.title.isEmptyOrWithWhiteSpace
-                    Text("\(noTitle  ? "NodeTitle" : node.title)")
+                    Text("\(noTitle  ? inputText : node.title)")
                         .foregroundColor(LCConstants.textColor)
                         .if(noTitle) {
                             $0.font(.subheadline).italic()
@@ -209,8 +209,10 @@ struct NodeView: View {
     }
     
     private func loadNode() {
+        inputText = "Node Title"
         if !node.isInit
         {
+            inputText = ""
             node.isInit = true
             onCreation = true
             isEditing = true
@@ -235,6 +237,7 @@ struct NodeView: View {
             
             if node.title.isEmptyOrWithWhiteSpace
             {
+                inputText = ""
                 deleteThisNode()
             }
             else
