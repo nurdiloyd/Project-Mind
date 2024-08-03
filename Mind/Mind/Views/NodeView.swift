@@ -414,6 +414,9 @@ struct NodeView: View {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
             isDeleting = true
             
+            node.removeParent()
+            node.removeAllChildren()
+            
             if !deleteNode(node)
             {
                 isDeleting = false

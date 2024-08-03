@@ -16,7 +16,7 @@ final class NodeData {
     var imageName: String = ""
     var order: Int = 0
     @Relationship var parent: NodeData? = nil
-    @Relationship(inverse: \NodeData.parent) var children: [NodeData] = []
+    @Relationship var children: [NodeData] = []
     var height: Double = NodeView.minHeight
     var contentHeight: Double = 0
     var expandedContentHeight: Double = 0
@@ -63,38 +63,39 @@ final class NodeData {
         rearrangeSelfAndParent()
     }
     
-    private func removeChild(_ child: NodeData) {
-        child.place(positionX: child.globalPositionX, positionY: child.globalPositionY)
-        child.parent = nil
-        
-        if let index = children.firstIndex(of: child)
-        {
-            children.remove(at: index)
-        }
-        
-        isExpanded = true
-        rearrangeSelfAndParent()
-    }
-    
     public func removeAllChildren()
     {
         for child in children {
-            child.place(positionX: child.globalPositionX, positionY: child.globalPositionY)
-            child.parent = nil
-            
-            if let index = children.firstIndex(of: child)
-            {
-                children.remove(at: index)
-            }
+            child.removePar()
         }
         
+        children.removeAll()
+        
         rearrangeSelfAndParent()
+    }
+    
+    public func removePar()
+    {
+        let posX = globalPositionX
+        let posY = globalPositionY
+        
+        parent = nil
+        
+        place(positionX: posX, positionY: posY)
     }
     
     public func removeParent()
     {
         if let prnt = parent {
-            prnt.removeChild(self)
+            removePar()
+            
+            if let index = prnt.children.firstIndex(of: self)
+            {
+                prnt.children.remove(at: index)
+            }
+            
+            prnt.isExpanded = true
+            prnt.rearrangeSelfAndParent()
         }
     }
     
