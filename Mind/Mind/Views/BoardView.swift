@@ -168,11 +168,14 @@ struct BoardView: View {
     }
     
     private func clearBoard() {
-        for nodeData in board.nodes {
-            deleteNodeData(nodeData)
+        if board.title != "main"
+        {
+            for nodeData in board.nodes {
+                deleteNodeData(nodeData)
+            }
+            
+            board.nodes.removeAll()
         }
-        
-        board.nodes.removeAll()
     }
     
     public func insertNodeData(_ nodeData: NodeData) {
@@ -182,15 +185,5 @@ struct BoardView: View {
     public func deleteNodeData(_ nodeData: NodeData) {
         FileHelper.deleteImage(filename: nodeData.imageName)
         context.delete(nodeData)
-    }
-    
-    public func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
     }
 }

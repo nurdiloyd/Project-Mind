@@ -37,8 +37,8 @@ struct NodeView: View {
     public static let shadow: CGFloat = 3
     
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
+        Group {
+            Group {
                 if isEditing {
                     TextField("Node Title", text: $inputText, onCommit: onEditTextFieldEnd)
                         .font(.headline.weight(.light))

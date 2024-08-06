@@ -75,13 +75,16 @@ struct EntranceView: View {
     }
     
     private func deleteBoard(_ board: BoardData) {
-        for node in board.nodes {
-            deleteNodeData(node)
+        if board.title != "main"
+        {
+            for node in board.nodes {
+                deleteNodeData(node)
+            }
+            
+            board.nodes.removeAll()
+            
+            deleteBoardData(board)
         }
-        
-        board.nodes.removeAll()
-        
-        deleteBoardData(board)
     }
     
     public func deleteNodeData(_ node: NodeData) {
