@@ -7,6 +7,7 @@ struct BoardView: View {
     let board: BoardData
     let onBack: () -> Void
     
+    @State private var sortedNodes: [NodeData] = [NodeData]()
     @State private var lastScale: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
     @State private var currentSize: CGSize = .zero
@@ -28,14 +29,14 @@ struct BoardView: View {
                                 .font(.headline)
                         }
                         
-                        let nodes = sortedNodes(board.nodes)
-                        ForEach(nodes.filter({ NodeData in
-                            NodeData.shouldShowSelf
-                        }), id: \.id) { node in
-                            NodeView(node: node,
-                                     createNode: { createNode() },
-                                     deleteNode: deleteNode,
-                                     board: board)
+                        ForEach(sortedNodes, id: \.id) { node in
+                            if node.shouldShowSelf {
+                                NodeView(node: node,
+                                         createNode: { parent in createNode(parent: parent) },
+                                         deleteNode: deleteNode,
+                                         sortNodes: sortNodes,
+                                         board: board)
+                            }
                         }
                     }
                     .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
@@ -50,6 +51,9 @@ struct BoardView: View {
                     lastScale = scale
                 }
             }
+        }
+        .onAppear{
+            sortNodes()
         }
         .defaultScrollAnchor(.center)
         .toolbar {
@@ -98,7 +102,8 @@ struct BoardView: View {
         }
     }
     
-    private func sortedNodes(_ nodes: [NodeData]) -> [NodeData] {
+    private func sortNodes() {
+        let nodes = board.nodes
         var sorted = [NodeData]()
         var queue = nodes.filter { $0.parent == nil }
         var queueNested = [NodeData]()
@@ -119,7 +124,7 @@ struct BoardView: View {
             }
         }
         
-        return sorted
+        sortedNodes = sorted
     }
     
     private func getDefaultScale() -> CGFloat {
@@ -147,19 +152,23 @@ struct BoardView: View {
         }
     }
     
-    private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) -> NodeData {
+    private func createNode(parent: NodeData? = nil, positionX: CGFloat = 0, positionY: CGFloat = 0) {
         let newNode = NodeData(title: "", positionX: Double(positionX), positionY: Double(positionY))
         
         insertNodeData(newNode)
         board.nodes.append(newNode)
         
-        return newNode
+        parent?.addChild(newNode)
+        
+        sortNodes()
     }
     
     private func deleteNode(_ nodeData: NodeData) -> Bool {
         if let index = board.nodes.firstIndex(of: nodeData) {
             deleteNodeData(nodeData)
             board.nodes.remove(at: index)
+            
+            sortNodes()
             
             return true
         }
@@ -175,6 +184,8 @@ struct BoardView: View {
             }
             
             board.nodes.removeAll()
+            
+            sortNodes()
         }
     }
     

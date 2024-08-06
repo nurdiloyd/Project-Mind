@@ -3,8 +3,9 @@ import PhotosUI
 
 struct NodeView: View {
     public let node: NodeData
-    public var createNode: () -> NodeData
+    public var createNode: (NodeData) -> Void
     public var deleteNode: (NodeData) -> Bool
+    public var sortNodes: () -> Void
     public var board: BoardData
     
     @FocusState private var isFocus: Bool
@@ -38,7 +39,7 @@ struct NodeView: View {
     
     var body: some View {
         Group {
-            Group {
+            VStack(spacing: 0) {
                 if isEditing {
                     TextField("Node Title", text: $inputText, onCommit: onEditTextFieldEnd)
                         .font(.headline.weight(.light))
@@ -132,7 +133,7 @@ struct NodeView: View {
                     }
                     
                     Button(action: {
-                        createNode(parent: node)
+                        createNodeWithAnimation(parent: node)
                     }) {
                         Image(systemName: "plus")
                             .LCButtonMini(width: symbolSize, height: symbolSize, level: level)
@@ -245,11 +246,11 @@ struct NodeView: View {
                 if onCreation && node.isLastChild {
                     if let parent = node.parent
                     {
-                        createNode(parent: parent)
+                        createNodeWithAnimation(parent: parent)
                     }
                 }
                 else {
-                    createNode(parent: node)
+                    createNodeWithAnimation(parent: node)
                 }
                 
                 onCreation = false
@@ -281,6 +282,7 @@ struct NodeView: View {
         node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
         
         if let parent = node.parent {
+            var orderChanged = false
             for sibling in parent.children {
                 if (node.globalPositionY > sibling.globalPositionY && node.order < sibling.order) ||
                     (node.globalPositionY < sibling.globalPositionY && node.order > sibling.order)
@@ -294,6 +296,7 @@ struct NodeView: View {
                     }
                     
                     node.setLocalPosition(positionX: localPositionX, positionY: localPositionY)
+                    orderChanged = true
                 }
             }
             
@@ -301,7 +304,13 @@ struct NodeView: View {
             {
                 withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
                     node.removeParent()
+                    orderChanged = true
                 }
+            }
+            
+            if orderChanged
+            {
+                sortNodes()
             }
         }
         
@@ -367,6 +376,8 @@ struct NodeView: View {
             if isDragging {
                 node.setLocalPosition(positionX: posX, positionY: posY)
             }
+            
+            sortNodes()
         }
     }
     
@@ -391,7 +402,6 @@ struct NodeView: View {
                     if let originalImage = NSImage(data: imageData) {
                         let resizedImage = originalImage.cropToSquare().resize(to: 400)
                         if let compressedImageData = resizedImage.compressToJPEG() {
-                            //DispatchQueue.global(qos: .utility).async {
                             let imageName = "image_\(UUID().uuidString).jpeg"
                             FileHelper.saveImage(data: compressedImageData, filename: imageName)
                             
@@ -399,7 +409,6 @@ struct NodeView: View {
                                 self.image = NSImage(data: compressedImageData)
                                 self.node.imageName = imageName
                             }
-                            //}
                         }
                     }
                 }
@@ -427,10 +436,9 @@ struct NodeView: View {
         }
     }
     
-    private func createNode(parent: NodeData) {
+    private func createNodeWithAnimation(parent: NodeData) {
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
-            let newNode = createNode()
-            parent.addChild(newNode)
+            createNode(parent)
         }
     }
 }
