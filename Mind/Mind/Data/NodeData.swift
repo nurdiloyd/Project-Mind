@@ -285,7 +285,7 @@ final class NodeData: Codable {
         try container.encode(contentLocalPositionY, forKey: .contentLocalPositionY)
         try container.encode(imageName, forKey: .imageName)
         try container.encode(order, forKey: .order)
-        try container.encode(parent, forKey: .parent)
+        try container.encode(parent?.id, forKey: .parent)
         try container.encode(height, forKey: .height)
         try container.encode(contentHeight, forKey: .contentHeight)
         try container.encode(expandedContentHeight, forKey: .expandedContentHeight)

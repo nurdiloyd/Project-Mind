@@ -107,22 +107,23 @@ struct EntranceView: View {
         savePanel.prompt = "Save"
         savePanel.canCreateDirectories = true
         savePanel.nameFieldLabel = "Folder Name:"
-        savePanel.nameFieldStringValue = "BoardDataExport"
+        savePanel.nameFieldStringValue = "Data"
         
         savePanel.begin { response in
             if response == .OK, let directoryURL = savePanel.url {
                 let folderURL = directoryURL
-                let imagesFolderURL = directoryURL.appendingPathComponent("Images")
                 
                 do {
                     try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-                    try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
                     
                     for board in boards {
-                        let boardFileURL = folderURL.appendingPathComponent("board_\(board.title).json")
+                        let boardId = board.id
+                        let boardFileURL = folderURL.appendingPathComponent("board_\(boardId).json")
                         let jsonData = try JSONEncoder().encode(board)
                         try jsonData.write(to: boardFileURL)
                         
+                        let imagesFolderURL = folderURL.appendingPathComponent("board_images_\(boardId)")
+                        try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
                         for node in board.nodes {
                             if !node.imageName.isEmptyOrWithWhiteSpace {
                                 let imageName = node.imageName
