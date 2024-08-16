@@ -5,6 +5,7 @@ struct BoardCardView: View {
     public let board: BoardData
     public var openBoard: (BoardData) -> Void
     public var deleteBoard: (BoardData) -> Void
+    public var sortBoards: () -> Void
     
     @FocusState private var isFocus: Bool
     @State private var isEditing: Bool = false
@@ -101,5 +102,6 @@ struct BoardCardView: View {
     
     private func setTitle(title: String) {
         board.setTitle(title: title)
+        sortBoards()
     }
 }

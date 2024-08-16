@@ -137,7 +137,7 @@ struct BoardView: View {
     private func sortNodes() {
         let nodes = board.nodes
         var sorted = [NodeData]()
-        var queue = nodes.filter { $0.parent == nil }
+        var queue = nodes.filter { $0.parent == nil }.sorted { $0.title < $1.title }
         var queueNested = [NodeData]()
         
         while !queue.isEmpty || !queueNested.isEmpty {

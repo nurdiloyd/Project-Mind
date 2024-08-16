@@ -5,6 +5,7 @@ struct EntranceView: View {
     @Environment(\.modelContext) private var context
     @Query private var boards: [BoardData]
     
+    @State private var sortedBoards: [BoardData] = [BoardData]()
     var openBoard: (BoardData) -> Void
     public static let padding: CGFloat = 8
     public static let radius = LCConstants.cornerRadius
@@ -18,11 +19,12 @@ struct EntranceView: View {
             
             ScrollView([.vertical], showsIndicators: false) {
                 VStack(spacing: EntranceView.padding) {
-                    if boards.count > 0 {
-                        ForEach(boards, id: \.id) { board in
+                    if sortedBoards.count > 0 {
+                        ForEach(sortedBoards, id: \.id) { board in
                             BoardCardView(board: board,
                                           openBoard: openBoard,
-                                          deleteBoard: deleteBoard)
+                                          deleteBoard: deleteBoard,
+                                          sortBoards: sortBoardsWithAnimation)
                         }
                     } else {
                         Text("Create a board")
@@ -34,12 +36,15 @@ struct EntranceView: View {
             }
             .frame(width: BoardCardView.width + EntranceView.padding * 2)
             .frame(minHeight: (BoardCardView.height + EntranceView.padding) * 1 + EntranceView.padding, maxHeight: (BoardCardView.height + EntranceView.padding) * 5 + EntranceView.padding)
-            .scrollDisabled(boards.count < 2)
+            .scrollDisabled(sortedBoards.count < 2)
             .LCContainer(smooth: 7, radius: EntranceView.radius, level: 1)
         }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(LCConstants.getColor(0))
+        .onAppear {
+            sortBoards()
+        }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button(action: createNewBoard) {
@@ -61,9 +66,30 @@ struct EntranceView: View {
         }
     }
     
+    private func sortBoardsWithAnimation() {
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
+            sortBoards()
+        }
+    }
+    
+    private func sortBoards()
+    {
+        var sorted = [BoardData]()
+        var queue = boards.sorted { $0.title < $1.title }
+        
+        while !queue.isEmpty {
+            let board = queue.removeFirst()
+            sorted.append(board)
+        }
+        
+        sortedBoards = sorted
+        
+    }
     private func createNewBoard() {
         let newBoard = BoardData(title: "New Board")
         insertBoardData(newBoard)
+        
+        sortBoardsWithAnimation()
     }
     
     private func deleteAllBoards() {
@@ -73,16 +99,15 @@ struct EntranceView: View {
     }
     
     private func deleteBoard(_ board: BoardData) {
-        if board.title != "main"
-        {
-            for node in board.nodes {
-                deleteNodeData(node)
-            }
-            
-            board.nodes.removeAll()
-            
-            deleteBoardData(board)
+        for node in board.nodes {
+            deleteNodeData(node)
         }
+        
+        board.nodes.removeAll()
+        
+        deleteBoardData(board)
+        
+        sortBoardsWithAnimation()
     }
     
     public func deleteNodeData(_ node: NodeData) {
@@ -202,6 +227,8 @@ struct EntranceView: View {
                             }
                         }
                     }
+                    
+                    sortBoardsWithAnimation()
                 } catch {
                     print("Failed to import database: \(error.localizedDescription)")
                 }
