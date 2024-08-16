@@ -20,6 +20,7 @@
 		CE7AD5A52C3635C5003EFDE5 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A42C3635C5003EFDE5 /* NodeView.swift */; };
 		CE7AD5A72C3635D7003EFDE5 /* NodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */; };
 		CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */; };
+		CE86BADC2C6D6D07000027E1 /* NodeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE86BADB2C6D6D06000027E1 /* NodeCardView.swift */; };
 		CE90DF0E2C49F1BE00AF07B8 /* LCConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE90DF0D2C49F1BE00AF07B8 /* LCConstants.swift */; };
 		CEA338752C3CD93000266B55 /* BoardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA338742C3CD93000266B55 /* BoardData.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +43,7 @@
 		CE7AD5A42C3635C5003EFDE5 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
 		CE7AD5A62C3635D7003EFDE5 /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		CE7AD5B02C36363F003EFDE5 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
+		CE86BADB2C6D6D06000027E1 /* NodeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCardView.swift; sourceTree = "<group>"; };
 		CE90DF0D2C49F1BE00AF07B8 /* LCConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LCConstants.swift; sourceTree = "<group>"; };
 		CEA338742C3CD93000266B55 /* BoardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -142,6 +144,7 @@
 				CE01242F2C3E264E0027AC1D /* BoardCardView.swift */,
 				CE62E71C2C3CC79E00129F2F /* BoardView.swift */,
 				CE7AD5A42C3635C5003EFDE5 /* NodeView.swift */,
+				CE86BADB2C6D6D06000027E1 /* NodeCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				CE62E71D2C3CC79E00129F2F /* BoardView.swift in Sources */,
 				CE7AD58E2C36351D003EFDE5 /* ContentView.swift in Sources */,
 				CE0124302C3E264E0027AC1D /* BoardCardView.swift in Sources */,
+				CE86BADC2C6D6D07000027E1 /* NodeCardView.swift in Sources */,
 				CE7AD58C2C36351D003EFDE5 /* MindApp.swift in Sources */,
 				CE7AD5B12C36363F003EFDE5 /* ViewExtensions.swift in Sources */,
 				CEA338752C3CD93000266B55 /* BoardData.swift in Sources */,

@@ -23,6 +23,7 @@ final class NodeData {
     var isExpanded: Bool = false
     var isInit: Bool = false
     var contentInfo: String = ""
+    var cardState: Int = 0
     
     @Transient var globalPositionX: Double { localPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
@@ -154,6 +155,11 @@ final class NodeData {
         
         rearrangeContent()
         rearrangeParent()
+    }
+    
+    public func toggleCardState()
+    {
+        cardState = (cardState + 1) % 4
     }
     
     public func rearrangeSelfAndParent()

@@ -28,8 +28,8 @@ struct NodeView: View {
     public static let width: CGFloat = 150
     public static let minHeight: CGFloat = NodeView.titleHeight
     public static let maxHeight: CGFloat = NodeView.titleHeight + NodeView.imageHeight
-    private static let titleHeight: CGFloat = 30
-    private static let imageHeight: CGFloat = NodeView.width
+    public static let titleHeight: CGFloat = 30
+    public static let imageHeight: CGFloat = NodeView.width
     private static let countCorrespondsMaxHeight: CGFloat = 5
     private static let hStackSpace: CGFloat = vStackSpace
     public static let vStackSpace: CGFloat = (NodeView.maxHeight - NodeView.minHeight * NodeView.countCorrespondsMaxHeight) / (NodeView.countCorrespondsMaxHeight - 1)

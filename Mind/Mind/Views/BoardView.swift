@@ -16,46 +16,82 @@ struct BoardView: View {
     public static let boardHeight: CGFloat = 400 * NodeView.snapY
     
     var body: some View {
-        ScrollView([.horizontal, .vertical], showsIndicators: true) {
-            ZStack{
-                ZStack {
-                    ZStack {
-                        ZStack{
-                            Circle()
-                                .foregroundStyle(Color(NSColor.windowFrameTextColor))
-                                .frame(width: 40, height: 40)
-                            Text("\(board.nodes.count)")
-                                .foregroundStyle(Color(NSColor.windowBackgroundColor))
-                                .font(.headline)
-                        }
-                        
-                        ForEach(sortedNodes, id: \.id) { node in
-                            if node.shouldShowSelf {
-                                NodeView(node: node,
-                                         createNode: { parent in createNode(parent: parent) },
-                                         deleteNode: deleteNode,
-                                         sortNodes: sortNodes,
-                                         board: board)
+        Group {
+            if (!board.isflashCardView)
+            {
+                ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                    ZStack{
+                        ZStack {
+                            ZStack {
+                                ZStack{
+                                    Circle()
+                                        .foregroundStyle(Color(NSColor.windowFrameTextColor))
+                                        .frame(width: 40, height: 40)
+                                    Text("\(board.nodes.count)")
+                                        .foregroundStyle(Color(NSColor.windowBackgroundColor))
+                                        .font(.headline)
+                                }
+                                
+                                ForEach(sortedNodes, id: \.id) { node in
+                                    if node.shouldShowSelf {
+                                        NodeView(node: node,
+                                                 createNode: { parent in createNode(parent: parent) },
+                                                 deleteNode: deleteNode,
+                                                 sortNodes: sortNodes,
+                                                 board: board)
+                                    }
+                                }
                             }
+                            .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
+                            .scaleEffect(scale)
+                        }
+                        .frame(width: BoardView.boardWidth * scale, height: BoardView.boardHeight * scale)
+                    }
+                    .background(LCConstants.groundColor)
+                    .onTapGesture(count: 2) {
+                        withAnimation {
+                            scale = getDefaultScale()
+                            lastScale = scale
                         }
                     }
-                    .frame(width: BoardView.boardWidth, height: BoardView.boardHeight)
-                    .scaleEffect(scale)
                 }
-                .frame(width: BoardView.boardWidth * scale, height: BoardView.boardHeight * scale)
-            }
-            .background(LCConstants.groundColor)
-            .onTapGesture(count: 2) {
-                withAnimation {
-                    scale = getDefaultScale()
+                .defaultScrollAnchor(.center)
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            scale = getScale(value: lastScale * value)
+                        }
+                        .onEnded { value in
+                            lastScale = scale
+                        }
+                )
+                .readSize { size in
+                    currentSize = size
+                    scale = getScale(value: lastScale)
                     lastScale = scale
                 }
             }
+            else {
+                let width = NodeView.width
+                let spacing = NodeView.vStackSpace
+                let adaptiveColumn = [GridItem(.adaptive(minimum: width, maximum: width), spacing: spacing)]
+                
+                ScrollView(showsIndicators: true) {
+                    LazyVGrid(columns: adaptiveColumn, spacing: spacing) {
+                        ForEach(sortedNodes, id: \.id) { node in
+                            if node.children.count > 0 || node.imageName != "" {
+                                NodeCardView(node: node)
+                            }
+                        }
+                    }
+                    .padding(spacing)
+                }
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear{
             sortNodes()
         }
-        .defaultScrollAnchor(.center)
         .toolbar {
             ToolbarItemGroup(placement: .principal) {
                 Button(action: {
@@ -66,39 +102,35 @@ struct BoardView: View {
                 
                 Text(board.title)
                     .font(.headline)
+                
+                Button(action: {
+                    board.toggleView()
+                }) {
+                    let image = board.isflashCardView ? "rectangle.grid.2x2.fill" : "rectangle.grid.2x2"
+                    Image(systemName: image)
+                }
             }
             
             ToolbarItemGroup(placement: .primaryAction) {
                 Spacer()
-                Button {
-                    let positionX = BoardView.boardWidth / 2
-                    let positionY = BoardView.boardHeight / 2 - NodeView.snapY
-                    let _ = createNode(positionX: positionX, positionY: positionY)
-                } label: {
-                    Image(systemName: "plus.circle")
-                }
-                
-                Button {
-                    clearBoard()
-                } label: {
-                    Image(systemName: "trash")
-                        .foregroundStyle(Color(NSColor.systemRed))
+                if (!board.isflashCardView)
+                {
+                    Button {
+                        let positionX = BoardView.boardWidth / 2
+                        let positionY = BoardView.boardHeight / 2 - NodeView.snapY
+                        let _ = createNode(positionX: positionX, positionY: positionY)
+                    } label: {
+                        Image(systemName: "plus.circle")
+                    }
+                    
+                    Button {
+                        clearBoard()
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundStyle(Color(NSColor.systemRed))
+                    }
                 }
             }
-        }
-        .gesture(
-            MagnificationGesture()
-                .onChanged { value in
-                    scale = getScale(value: lastScale * value)
-                }
-                .onEnded { value in
-                    lastScale = scale
-                }
-        )
-        .readSize { size in
-            currentSize = size
-            scale = getScale(value: lastScale)
-            lastScale = scale
         }
     }
     

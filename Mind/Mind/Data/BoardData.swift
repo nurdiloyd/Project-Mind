@@ -7,6 +7,7 @@ class BoardData {
     var title: String
     @Relationship var nodes: [NodeData] = []
     var isInit: Bool = false
+    var isflashCardView: Bool = false
     
     init(title: String) {
         self.id = UUID()
@@ -18,5 +19,10 @@ class BoardData {
         if !trimmedTitle.isEmptyOrWithWhiteSpace {
             self.title = trimmedTitle
         }
+    }
+    
+    public func toggleView()
+    {
+        isflashCardView.toggle()
     }
 }

@@ -6,21 +6,19 @@ struct ContentView: View {
     @State private var selectedBoard: BoardData? = nil
     
     var body: some View {
-        Group {
-            if showBoardPage, let board = selectedBoard {
-                BoardView(board: board, onBack: {
-                    withAnimation {
-                        showBoardPage = false
-                    }
-                })
-            } else {
-                EntranceView(openBoard: { board in
-                    selectedBoard = board
-                    withAnimation {
-                        showBoardPage = true
-                    }
-                })
-            }
+        if showBoardPage, let board = selectedBoard {
+            BoardView(board: board, onBack: {
+                withAnimation {
+                    showBoardPage = false
+                }
+            })
+        } else {
+            EntranceView(openBoard: { board in
+                selectedBoard = board
+                withAnimation {
+                    showBoardPage = true
+                }
+            })
         }
     }
 }
