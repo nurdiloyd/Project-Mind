@@ -4,7 +4,7 @@ import PhotosUI
 import SwiftUI
 
 @Model
-final class NodeData {
+final class NodeData: Codable {
     @Attribute(.unique) var id: UUID
     var title: String = ""
     var localPositionX: Double = 0
@@ -29,7 +29,7 @@ final class NodeData {
     @Transient var globalPositionY: Double { localPositionY + (parent?.globalPositionY ?? 0) }
     @Transient var lastGlobalPositionX: Double { lastLocalPositionX + (parent?.globalPositionX ?? 0) }
     @Transient var lastGlobalPositionY: Double { lastLocalPositionY + (parent?.globalPositionY ?? 0) }
-    @Transient var isExpandable: Bool {children.count > 0}
+    @Transient var isExpandable: Bool { children.count > 0 }
     @Transient var hasParent: Bool { parent != nil }
     @Transient var globalHeight: Double { max(height, isExpanded ? expandedContentHeight : contentHeight) }
     @Transient var shouldShowSelf: Bool { !hasParent || (parent?.shouldShowChildren ?? false) }
@@ -64,8 +64,7 @@ final class NodeData {
         rearrangeSelfAndParent()
     }
     
-    public func removeAllChildren()
-    {
+    public func removeAllChildren() {
         for child in children {
             child.removePar()
         }
@@ -75,8 +74,7 @@ final class NodeData {
         rearrangeSelfAndParent()
     }
     
-    public func removePar()
-    {
+    public func removePar() {
         let posX = globalPositionX
         let posY = globalPositionY
         
@@ -85,13 +83,11 @@ final class NodeData {
         place(positionX: posX, positionY: posY)
     }
     
-    public func removeParent()
-    {
+    public func removeParent() {
         if let prnt = parent {
             removePar()
             
-            if let index = prnt.children.firstIndex(of: self)
-            {
+            if let index = prnt.children.firstIndex(of: self) {
                 prnt.children.remove(at: index)
             }
             
@@ -108,13 +104,11 @@ final class NodeData {
         setLastLocalPosition(positionX: posX, positionY: posY)
     }
     
-    public func snapX(_ positionX: Double) -> Double
-    {
+    public func snapX(_ positionX: Double) -> Double {
         return (positionX / NodeView.snapX).rounded() * NodeView.snapX
     }
     
-    public func snapY(_ positionY: Double) -> Double
-    {
+    public func snapY(_ positionY: Double) -> Double {
         return (positionY / NodeView.snapY).rounded() * NodeView.snapY
     }
     
@@ -128,7 +122,6 @@ final class NodeData {
         lastLocalPositionY = positionY
     }
     
-    
     public func setTitle(title: String) {
         let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedTitle.isEmptyOrWithWhiteSpace {
@@ -140,42 +133,35 @@ final class NodeData {
         }
     }
     
-    public func setHeight(height: Double)
-    {
-        if self.height != height
-        {
+    public func setHeight(height: Double) {
+        if self.height != height {
             self.height = height
             rearrangeParent()
         }
     }
     
-    public func toggleExpand()
-    {
+    public func toggleExpand() {
         isExpanded.toggle()
         
         rearrangeContent()
         rearrangeParent()
     }
     
-    public func toggleCardState()
-    {
+    public func toggleCardState() {
         cardState = (cardState + 1) % 4
     }
     
-    public func rearrangeSelfAndParent()
-    {
+    public func rearrangeSelfAndParent() {
         rearrangeSelf()
         rearrangeParent()
     }
     
-    public func rearrangeSelf()
-    {
+    public func rearrangeSelf() {
         rearrangeChildrenPositionY()
         rearrangeContent()
     }
     
-    private func rearrangeParent()
-    {
+    private func rearrangeParent() {
         if let prnt = parent {
             prnt.rearrangeSelfAndParent()
         }
@@ -234,12 +220,78 @@ final class NodeData {
         resetContentInfoText()
     }
     
-    private func resetContentInfoText()
-    {
+    private func resetContentInfoText() {
         contentInfo = children.filter({ NodeData in
             !NodeData.title.isEmptyOrWithWhiteSpace
         }).sorted(by: { $0.order < $1.order })
-                .map { "\($0.title)" }
-                .joined(separator: " ")
+            .map { "\($0.title)" }
+            .joined(separator: " ")
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case localPositionX
+        case localPositionY
+        case lastLocalPositionX
+        case lastLocalPositionY
+        case contentLocalPositionX
+        case contentLocalPositionY
+        case imageName
+        case order
+        case parent
+        case children
+        case height
+        case contentHeight
+        case expandedContentHeight
+        case isExpanded
+        case isInit
+        case contentInfo
+        case cardState
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        localPositionX = try container.decode(Double.self, forKey: .localPositionX)
+        localPositionY = try container.decode(Double.self, forKey: .localPositionY)
+        lastLocalPositionX = try container.decode(Double.self, forKey: .lastLocalPositionX)
+        lastLocalPositionY = try container.decode(Double.self, forKey: .lastLocalPositionY)
+        contentLocalPositionX = try container.decode(Double.self, forKey: .contentLocalPositionX)
+        contentLocalPositionY = try container.decode(Double.self, forKey: .contentLocalPositionY)
+        imageName = try container.decode(String.self, forKey: .imageName)
+        order = try container.decode(Int.self, forKey: .order)
+        parent = try container.decodeIfPresent(NodeData.self, forKey: .parent)
+        children = try container.decode([NodeData].self, forKey: .children)
+        height = try container.decode(Double.self, forKey: .height)
+        contentHeight = try container.decode(Double.self, forKey: .contentHeight)
+        expandedContentHeight = try container.decode(Double.self, forKey: .expandedContentHeight)
+        isExpanded = try container.decode(Bool.self, forKey: .isExpanded)
+        isInit = try container.decode(Bool.self, forKey: .isInit)
+        contentInfo = try container.decode(String.self, forKey: .contentInfo)
+        cardState = try container.decode(Int.self, forKey: .cardState)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(localPositionX, forKey: .localPositionX)
+        try container.encode(localPositionY, forKey: .localPositionY)
+        try container.encode(lastLocalPositionX, forKey: .lastLocalPositionX)
+        try container.encode(lastLocalPositionY, forKey: .lastLocalPositionY)
+        try container.encode(contentLocalPositionX, forKey: .contentLocalPositionX)
+        try container.encode(contentLocalPositionY, forKey: .contentLocalPositionY)
+        try container.encode(imageName, forKey: .imageName)
+        try container.encode(order, forKey: .order)
+        try container.encode(parent, forKey: .parent)
+        try container.encode(height, forKey: .height)
+        try container.encode(contentHeight, forKey: .contentHeight)
+        try container.encode(expandedContentHeight, forKey: .expandedContentHeight)
+        try container.encode(isExpanded, forKey: .isExpanded)
+        try container.encode(isInit, forKey: .isInit)
+        try container.encode(contentInfo, forKey: .contentInfo)
+        try container.encode(cardState, forKey: .cardState)
     }
 }

@@ -17,7 +17,7 @@ struct BoardView: View {
     
     var body: some View {
         Group {
-            if (!board.isflashCardView)
+            if (!board.isFlashCardView)
             {
                 ScrollView([.horizontal, .vertical], showsIndicators: true) {
                     ZStack{
@@ -106,14 +106,14 @@ struct BoardView: View {
                 Button(action: {
                     board.toggleView()
                 }) {
-                    let image = board.isflashCardView ? "rectangle.grid.2x2.fill" : "rectangle.grid.2x2"
+                    let image = board.isFlashCardView ? "rectangle.grid.2x2.fill" : "rectangle.grid.2x2"
                     Image(systemName: image)
                 }
             }
             
             ToolbarItemGroup(placement: .primaryAction) {
                 Spacer()
-                if (!board.isflashCardView)
+                if (!board.isFlashCardView)
                 {
                     Button {
                         let positionX = BoardView.boardWidth / 2

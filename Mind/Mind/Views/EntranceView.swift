@@ -50,11 +50,11 @@ struct EntranceView: View {
                     Image(systemName: "trash")
                         .foregroundStyle(Color(NSColor.systemRed))
                 }
-/*
+
                 Button(action: exportDatabase) {
                     Image(systemName: "square.and.arrow.up")
                 }
-                
+                /*
                 Button(action: importDatabase) {
                     Image(systemName: "square.and.arrow.down")
                 }
@@ -101,19 +101,36 @@ struct EntranceView: View {
     }
     
     private func exportDatabase() {
-        /*
-        let fileManager = FileManager.default
-        let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let exportURL = documentDirectory.appendingPathComponent("ExportedDatabase.json")
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Select Directory to Save Board Data"
+        openPanel.message = "Choose a directory to save your boards data"
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
         
-        do {
-            let jsonData = try JSONEncoder().encode(boards[1])
-            try jsonData.write(to: exportURL)
-            print("Database exported to \(exportURL.path)")
-        } catch {
-            print("Failed to export database: \(error.localizedDescription)")
+        openPanel.begin { response in
+            if response == .OK, let directoryURL = openPanel.url {
+                let folderName = "BoardDataExport"
+                let folderURL = directoryURL.appendingPathComponent(folderName)
+                
+                do {
+                    try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+                    
+                    for board in boards {
+                        let fileURL = folderURL.appendingPathComponent("board_\(board.title).json")
+                        do {
+                            let jsonData = try JSONEncoder().encode(board)
+                            try jsonData.write(to: fileURL)
+                            print("Database exported to \(fileURL.path)")
+                        } catch {
+                            print("Failed to export database: \(error.localizedDescription)")
+                        }
+                    }
+                } catch {
+                    print("Failed to create directory: \(error.localizedDescription)")
+                }
+            }
         }
-         */
     }
     
     private func importDatabase() {
