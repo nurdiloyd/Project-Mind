@@ -101,51 +101,40 @@ struct EntranceView: View {
     }
     
     private func exportDatabase() {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Select Directory to Save Board Data"
-        openPanel.message = "Choose a directory to save your data"
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
-        openPanel.allowsMultipleSelection = false
+        let savePanel = NSSavePanel()
+        savePanel.title = "Save Board Data"
+        savePanel.message = "Choose a location to save your board data"
+        savePanel.prompt = "Save"
+        savePanel.canCreateDirectories = true
+        savePanel.nameFieldLabel = "Folder Name:"
+        savePanel.nameFieldStringValue = "BoardDataExport"
         
-        openPanel.begin { response in
-            if response == .OK, let directoryURL = openPanel.url {
-                let folderName = "BoardDataExport"
-                let folderURL = directoryURL.appendingPathComponent(folderName)
+        savePanel.begin { response in
+            if response == .OK, let directoryURL = savePanel.url {
+                let folderURL = directoryURL
+                let imagesFolderURL = directoryURL.appendingPathComponent("Images")
                 
                 do {
                     try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+                    try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
                     
                     for board in boards {
                         let boardFileURL = folderURL.appendingPathComponent("board_\(board.title).json")
-                        do {
-                            let jsonData = try JSONEncoder().encode(board)
-                            try jsonData.write(to: boardFileURL)
-                            print("Database exported to \(boardFileURL.path)")
-                        } catch {
-                            print("Failed to export database: \(error.localizedDescription)")
-                        }
-                        
-                        let imagesFolderURL = folderURL.appendingPathComponent("Images")
-                        try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
+                        let jsonData = try JSONEncoder().encode(board)
+                        try jsonData.write(to: boardFileURL)
                         
                         for node in board.nodes {
                             if !node.imageName.isEmptyOrWithWhiteSpace {
                                 let imageName = node.imageName
                                 if let imageData = FileHelper.loadImage(filename: imageName) {
                                     let imageFileURL = imagesFolderURL.appendingPathComponent(imageName)
-                                    do {
-                                        try imageData.write(to: imageFileURL)
-                                        print("Image exported to \(imageFileURL.path)")
-                                    } catch {
-                                        print("Failed to export image: \(error.localizedDescription)")
-                                    }
+                                    try imageData.write(to: imageFileURL)
                                 }
                             }
                         }
                     }
                 } catch {
-                    print("Failed to create directory: \(error.localizedDescription)")
+                    print("Failed to export database: \(error.localizedDescription)")
                 }
             }
         }
