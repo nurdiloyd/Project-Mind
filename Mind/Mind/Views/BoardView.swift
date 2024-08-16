@@ -209,16 +209,13 @@ struct BoardView: View {
     }
     
     private func clearBoard() {
-        if board.title != "main"
-        {
-            for nodeData in board.nodes {
-                deleteNodeData(nodeData)
-            }
-            
-            board.nodes.removeAll()
-            
-            sortNodes()
+        for nodeData in board.nodes {
+            deleteNodeData(nodeData)
         }
+        
+        board.nodes.removeAll()
+        
+        sortNodes()
     }
     
     public func insertNodeData(_ nodeData: NodeData) {
