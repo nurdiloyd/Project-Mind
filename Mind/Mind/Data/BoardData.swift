@@ -15,9 +15,8 @@ class BoardData: Codable {
     }
     
     public func setTitle(title: String) {
-        let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        if !trimmedTitle.isEmptyOrWithWhiteSpace {
-            self.title = trimmedTitle
+        if !title.isEmptyOrWithWhiteSpace {
+            self.title = title
         }
     }
     
