@@ -103,7 +103,7 @@ struct EntranceView: View {
     private func exportDatabase() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Select Directory to Save Board Data"
-        openPanel.message = "Choose a directory to save your boards data"
+        openPanel.message = "Choose a directory to save your data"
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
@@ -117,13 +117,31 @@ struct EntranceView: View {
                     try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
                     
                     for board in boards {
-                        let fileURL = folderURL.appendingPathComponent("board_\(board.title).json")
+                        let boardFileURL = folderURL.appendingPathComponent("board_\(board.title).json")
                         do {
                             let jsonData = try JSONEncoder().encode(board)
-                            try jsonData.write(to: fileURL)
-                            print("Database exported to \(fileURL.path)")
+                            try jsonData.write(to: boardFileURL)
+                            print("Database exported to \(boardFileURL.path)")
                         } catch {
                             print("Failed to export database: \(error.localizedDescription)")
+                        }
+                        
+                        let imagesFolderURL = folderURL.appendingPathComponent("Images")
+                        try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
+                        
+                        for node in board.nodes {
+                            if !node.imageName.isEmptyOrWithWhiteSpace {
+                                let imageName = node.imageName
+                                if let imageData = FileHelper.loadImage(filename: imageName) {
+                                    let imageFileURL = imagesFolderURL.appendingPathComponent(imageName)
+                                    do {
+                                        try imageData.write(to: imageFileURL)
+                                        print("Image exported to \(imageFileURL.path)")
+                                    } catch {
+                                        print("Failed to export image: \(error.localizedDescription)")
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch {
