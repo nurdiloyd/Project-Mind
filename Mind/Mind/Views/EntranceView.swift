@@ -122,7 +122,7 @@ struct EntranceView: View {
                         let jsonData = try JSONEncoder().encode(board)
                         try jsonData.write(to: boardFileURL)
                         
-                        let imagesFolderURL = folderURL.appendingPathComponent("board_images_\(boardId)")
+                        let imagesFolderURL = folderURL.appendingPathComponent("images_\(boardId)")
                         try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
                         for node in board.nodes {
                             if !node.imageName.isEmptyOrWithWhiteSpace {
@@ -143,26 +143,61 @@ struct EntranceView: View {
     
     private func importDatabase() {
         /*
-        let panel = NSOpenPanel()
-        panel.allowedFileTypes = ["json"]
-        panel.begin { response in
-            if response == .OK, let url = panel.url {
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Import Board Data"
+        openPanel.message = "Choose a directory to import your board data"
+        openPanel.prompt = "Import"
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        openPanel.canCreateDirectories = false
+        openPanel.allowsMultipleSelection = false
+
+        openPanel.begin { response in
+            if response == .OK, let directoryURL = openPanel.url {
                 do {
-                    let jsonData = try Data(contentsOf: url)
-                    let importedBoard = try JSONDecoder().decode(BoardData.self, from: jsonData)
-                    let newBoard = BoardData(boardData: importedBoard)
-                    print("aaa")
-                    insertBoardData(newBoard)
-                    print("bbb")
-                    let nodes = newBoard.nodes
-                    print("ccc")
-                    let nodeDictionary = Dictionary(uniqueKeysWithValues: nodes.map { ($0.id, $0) })
-                    for node in nodes {
-                        if let parentID = node.parentID, let parentNode = nodeDictionary[parentID] {
-                            node.parent = parentNode
+                    let fileManager = FileManager.default
+                    let contents = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil, options: [])
+
+                    for contentURL in contents {
+                        print(contentURL)
+                    }
+                    
+                    for contentURL in contents {
+                        if contentURL.pathExtension == "json", contentURL.lastPathComponent.hasPrefix("board_") {
+                            let jsonData = try Data(contentsOf: contentURL)
+                            let board = try JSONDecoder().decode(BoardData.self, from: jsonData)
+                            
+                            for node in board.nodes {
+                                if let parentId = node.parentId {
+                                    for parent in board.nodes {
+                                        if parentId == parent.id {
+                                            parent.addChild(node)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Import the images associated with the board
+                            let boardId = board.id
+                            print("titl \(board.title)")
+                            let imagesFolderURL = directoryURL.appendingPathComponent("images_\(boardId)")
+                            if fileManager.fileExists(atPath: imagesFolderURL.path) {
+                                let imageFiles = try fileManager.contentsOfDirectory(at: imagesFolderURL, includingPropertiesForKeys: nil, options: [])
+                                
+                                for imageFile in imageFiles {
+                                    let imageName = imageFile.lastPathComponent
+                                    let imageData = try Data(contentsOf: imageFile)
+                                    FileHelper.saveImage(data: imageData, filename: imageName)
+                                }
+                            }
+                            
+                            insertBoardData(board)
                         }
                     }
+                    
                     print("Database imported successfully")
+
                 } catch {
                     print("Failed to import database: \(error.localizedDescription)")
                 }

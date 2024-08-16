@@ -239,7 +239,7 @@ final class NodeData: Codable {
         case contentLocalPositionY
         case imageName
         case order
-        case parent
+        case parentId
         case children
         case height
         case contentHeight
@@ -285,7 +285,7 @@ final class NodeData: Codable {
         try container.encode(contentLocalPositionY, forKey: .contentLocalPositionY)
         try container.encode(imageName, forKey: .imageName)
         try container.encode(order, forKey: .order)
-        try container.encode(parent?.id, forKey: .parent)
+        try container.encode(parent?.id, forKey: .parentId)
         try container.encode(height, forKey: .height)
         try container.encode(contentHeight, forKey: .contentHeight)
         try container.encode(expandedContentHeight, forKey: .expandedContentHeight)
