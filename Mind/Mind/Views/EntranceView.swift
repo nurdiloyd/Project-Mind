@@ -54,11 +54,9 @@ struct EntranceView: View {
                 Button(action: exportDatabase) {
                     Image(systemName: "square.and.arrow.up")
                 }
-                /*
                 Button(action: importDatabase) {
                     Image(systemName: "square.and.arrow.down")
                 }
- */
             }
         }
     }
@@ -142,7 +140,6 @@ struct EntranceView: View {
     }
     
     private func importDatabase() {
-        /*
         let openPanel = NSOpenPanel()
         openPanel.title = "Import Board Data"
         openPanel.message = "Choose a directory to import your board data"
@@ -152,35 +149,27 @@ struct EntranceView: View {
         openPanel.canCreateDirectories = false
         openPanel.allowsMultipleSelection = false
 
+        var previousBoardIds: [UUID] = []
+        for board in boards {
+            previousBoardIds.append(board.id)
+        }
+        
         openPanel.begin { response in
             if response == .OK, let directoryURL = openPanel.url {
                 do {
                     let fileManager = FileManager.default
                     let contents = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil, options: [])
-
-                    for contentURL in contents {
-                        print(contentURL)
-                    }
                     
                     for contentURL in contents {
                         if contentURL.pathExtension == "json", contentURL.lastPathComponent.hasPrefix("board_") {
                             let jsonData = try Data(contentsOf: contentURL)
                             let board = try JSONDecoder().decode(BoardData.self, from: jsonData)
                             
-                            for node in board.nodes {
-                                if let parentId = node.parentId {
-                                    for parent in board.nodes {
-                                        if parentId == parent.id {
-                                            parent.addChild(node)
-                                            break
-                                        }
-                                    }
-                                }
+                            if previousBoardIds.contains(board.id) {
+                                continue
                             }
                             
-                            // Import the images associated with the board
                             let boardId = board.id
-                            print("titl \(board.title)")
                             let imagesFolderURL = directoryURL.appendingPathComponent("images_\(boardId)")
                             if fileManager.fileExists(atPath: imagesFolderURL.path) {
                                 let imageFiles = try fileManager.contentsOfDirectory(at: imagesFolderURL, includingPropertiesForKeys: nil, options: [])
@@ -196,13 +185,27 @@ struct EntranceView: View {
                         }
                     }
                     
-                    print("Database imported successfully")
-
+                    for board in boards {
+                        if previousBoardIds.contains(board.id)
+                        {
+                            continue
+                        }
+                        
+                        for node in board.nodes {
+                            if let parentId = node.parentId {
+                                for parent in board.nodes {
+                                    if parentId == parent.id {
+                                        parent.addChild(node)
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } catch {
                     print("Failed to import database: \(error.localizedDescription)")
                 }
             }
         }
-        */
     }
 }

@@ -371,7 +371,7 @@ struct NodeView: View {
             let posX = prePosX - parent.globalPositionX
             let posY = prePosY - parent.globalPositionY
             
-            parent.addChild(node)
+            parent.appendChild(node)
             
             if isDragging {
                 node.setLocalPosition(positionX: posX, positionY: posY)

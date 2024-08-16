@@ -31,9 +31,8 @@ struct FileHelper {
         if !fileManager.fileExists(atPath: path.path) {
             do {
                 try fileManager.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
-                print("Directory created at \(path.path)")
             } catch {
-                print("Error creating directory: \(error.localizedDescription)")
+                print("Directory can not be created: \(error.localizedDescription)")
             }
         }
     }
@@ -42,9 +41,8 @@ struct FileHelper {
         let fileURL = getImagesDirectory().appendingPathComponent(filename)
         do {
             try data.write(to: fileURL)
-            print("Image saved \(filename)")
         } catch {
-            print("Image is not saved: \(error.localizedDescription)")
+            print("Image can not be saved: \(error.localizedDescription)")
         }
     }
 
@@ -57,10 +55,9 @@ struct FileHelper {
             let fileURL = getImagesDirectory().appendingPathComponent(name)
             do {
                 let data = try Data(contentsOf: fileURL)
-                print("Image loaded \(name)")
                 return data
             } catch {
-                print("Image is not loaded: \(error.localizedDescription)")
+                print("Image can not be loaded: \(error.localizedDescription)")
                 return nil
             }
         }
@@ -77,9 +74,8 @@ struct FileHelper {
             let fileURL = getImagesDirectory().appendingPathComponent(name)
             do {
                 try FileManager.default.removeItem(at: fileURL)
-                print("Image deleted \(fileURL.path)")
             } catch {
-                print("Image is not deleted: \(error.localizedDescription)")
+                print("Image can not be deleted: \(error.localizedDescription)")
             }
         }
     }

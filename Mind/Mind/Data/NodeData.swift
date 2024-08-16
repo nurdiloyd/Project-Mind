@@ -15,6 +15,7 @@ final class NodeData: Codable {
     var contentLocalPositionY: Double = 0
     var imageName: String = ""
     var order: Int = 0
+    var parentId: UUID? = nil
     @Relationship var parent: NodeData? = nil
     @Relationship var children: [NodeData] = []
     var height: Double = NodeView.minHeight
@@ -57,8 +58,13 @@ final class NodeData: Codable {
     
     public func addChild(_ child: NodeData) {
         child.parent = self
-        child.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
         children.append(child)
+    }
+    
+    public func appendChild(_ child: NodeData) {
+        child.order = (children.max(by: { $0.order < $1.order })?.order ?? 0) + 1
+        
+        addChild(child)
         
         isExpanded = true
         rearrangeSelfAndParent()
@@ -262,8 +268,7 @@ final class NodeData: Codable {
         contentLocalPositionY = try container.decode(Double.self, forKey: .contentLocalPositionY)
         imageName = try container.decode(String.self, forKey: .imageName)
         order = try container.decode(Int.self, forKey: .order)
-        parent = try container.decodeIfPresent(NodeData.self, forKey: .parent)
-        children = try container.decode([NodeData].self, forKey: .children)
+        parentId = try container.decodeIfPresent(UUID.self, forKey: .parentId)
         height = try container.decode(Double.self, forKey: .height)
         contentHeight = try container.decode(Double.self, forKey: .contentHeight)
         expandedContentHeight = try container.decode(Double.self, forKey: .expandedContentHeight)

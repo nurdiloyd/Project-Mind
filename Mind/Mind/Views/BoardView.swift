@@ -190,7 +190,7 @@ struct BoardView: View {
         insertNodeData(newNode)
         board.nodes.append(newNode)
         
-        parent?.addChild(newNode)
+        parent?.appendChild(newNode)
         
         sortNodes()
     }
