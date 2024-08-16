@@ -162,11 +162,14 @@ struct EntranceView: View {
                     
                     for board in boards {
                         let boardId = board.id
-                        let boardFileURL = folderURL.appendingPathComponent("board_\(boardId).json")
+                        let boardFolderURL = folderURL.appendingPathComponent("board_\(boardId)")
+                        try FileManager.default.createDirectory(at: boardFolderURL, withIntermediateDirectories: true, attributes: nil)
+
+                        let boardFileURL = boardFolderURL.appendingPathComponent("board.json")
                         let jsonData = try JSONEncoder().encode(board)
                         try jsonData.write(to: boardFileURL)
                         
-                        let imagesFolderURL = folderURL.appendingPathComponent("images_\(boardId)")
+                        let imagesFolderURL = boardFolderURL.appendingPathComponent("images")
                         try FileManager.default.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true, attributes: nil)
                         for node in board.nodes {
                             if !node.imageName.isEmptyOrWithWhiteSpace {
@@ -204,19 +207,20 @@ struct EntranceView: View {
             if response == .OK, let directoryURL = openPanel.url {
                 do {
                     let fileManager = FileManager.default
-                    let contents = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil, options: [])
+                    let boardDirectories = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil, options: [])
                     
-                    for contentURL in contents {
-                        if contentURL.pathExtension == "json", contentURL.lastPathComponent.hasPrefix("board_") {
-                            let jsonData = try Data(contentsOf: contentURL)
+                    for boardDirectoryURL in boardDirectories {
+                        let boardFolderPath = boardDirectoryURL.appendingPathComponent("board.json")
+                        
+                        if fileManager.fileExists(atPath: boardFolderPath.path) {
+                            let jsonData = try Data(contentsOf: boardFolderPath)
                             let board = try JSONDecoder().decode(BoardData.self, from: jsonData)
                             
                             if previousBoardIds.contains(board.id) {
                                 continue
                             }
                             
-                            let boardId = board.id
-                            let imagesFolderURL = directoryURL.appendingPathComponent("images_\(boardId)")
+                            let imagesFolderURL = boardDirectoryURL.appendingPathComponent("images")
                             if fileManager.fileExists(atPath: imagesFolderURL.path) {
                                 let imageFiles = try fileManager.contentsOfDirectory(at: imagesFolderURL, includingPropertiesForKeys: nil, options: [])
                                 
@@ -232,18 +236,14 @@ struct EntranceView: View {
                     }
                     
                     for board in boards {
-                        if previousBoardIds.contains(board.id)
-                        {
+                        if previousBoardIds.contains(board.id) {
                             continue
                         }
                         
                         for node in board.nodes {
                             if let parentId = node.parentId {
-                                for parent in board.nodes {
-                                    if parentId == parent.id {
-                                        parent.addChild(node)
-                                        break
-                                    }
+                                if let parent = board.nodes.first(where: { $0.id == parentId }) {
+                                    parent.addChild(node)
                                 }
                             }
                         }
