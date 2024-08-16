@@ -8,6 +8,7 @@ struct ContentView: View {
     var body: some View {
         if showBoardPage, let board = selectedBoard {
             BoardView(board: board, onBack: {
+                selectedBoard = nil
                 withAnimation {
                     showBoardPage = false
                 }
