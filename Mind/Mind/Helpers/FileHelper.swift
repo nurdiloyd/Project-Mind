@@ -1,4 +1,6 @@
+import SwiftUI
 import Foundation
+import AppKit
 
 struct FileHelper {
     #if DEBUG
@@ -7,9 +9,11 @@ struct FileHelper {
     private static let environment = "release"
     #endif
     
+    private static let dataPath = "app_data_\(environment)"
+    
     static func getSavingDirectory() -> URL {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let appPath = path.appendingPathComponent("app_data_\(environment)")
+        let appPath = path.appendingPathComponent(dataPath)
         createDirectoryIfNeeded(at: appPath)
         
         return appPath
@@ -79,4 +83,49 @@ struct FileHelper {
             }
         }
     }
+    
+    static func exportSavingDirectory() {
+          let savePanel = NSSavePanel()
+          savePanel.title = "Export Saving Directory"
+          savePanel.message = "Choose a location to save your app data"
+          savePanel.canCreateDirectories = true
+          savePanel.nameFieldStringValue = dataPath
+
+          savePanel.begin { response in
+              guard response == .OK, let exportURL = savePanel.url else {
+                  print("Export was canceled or failed.")
+                  return
+              }
+
+              let savingDirectory = getSavingDirectory()
+
+              do {
+                  try copyDirectoryContents(from: savingDirectory, to: exportURL)
+                  print("Directory exported successfully to \(exportURL.path)")
+              } catch {
+                  print("Failed to export directory: \(error.localizedDescription)")
+              }
+          }
+      }
+
+      private static func copyDirectoryContents(from sourceURL: URL, to destinationURL: URL) throws {
+          let fileManager = FileManager.default
+          
+          if !fileManager.fileExists(atPath: destinationURL.path) {
+              try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+          }
+
+          let items = try fileManager.contentsOfDirectory(atPath: sourceURL.path)
+
+          for item in items {
+              let sourceItemURL = sourceURL.appendingPathComponent(item)
+              let destinationItemURL = destinationURL.appendingPathComponent(item)
+
+              if fileManager.fileExists(atPath: destinationItemURL.path) {
+                  try fileManager.removeItem(at: destinationItemURL)
+              }
+
+              try fileManager.copyItem(at: sourceItemURL, to: destinationItemURL)
+          }
+      }
 }
