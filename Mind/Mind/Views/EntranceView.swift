@@ -24,7 +24,7 @@ struct EntranceView: View {
                             BoardCardView(board: board,
                                           openBoard: openBoard,
                                           deleteBoard: deleteBoard,
-                                          setTitle:{ title in setBoardTitle(board, title: title)})
+                                          setTitle: { title in setBoardTitle(board, title: title) })
                         }
                     } else {
                         Text("Create a board")
@@ -66,8 +66,7 @@ struct EntranceView: View {
         }
     }
     
-    private func setBoardTitle(_ board: BoardData, title: String)
-    {
+    private func setBoardTitle(_ board: BoardData, title: String) {
         let trimmedTitle = title.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         let newTitle = checkDuplicateTitle(board, trimmedTitle, 0)
         
@@ -75,8 +74,7 @@ struct EntranceView: View {
         sortBoardsWithAnimation()
     }
     
-    private func checkDuplicateTitle(_ board: BoardData, _ title: String, _ counter: Int) -> String
-    {
+    private func checkDuplicateTitle(_ board: BoardData, _ title: String, _ counter: Int) -> String {
         let ss = counter == 0 ? title : "\(title)(\(counter))"
         for otherBoard in boards {
             if otherBoard.id != board.id && otherBoard.title == ss {
@@ -93,8 +91,7 @@ struct EntranceView: View {
         }
     }
     
-    private func sortBoards()
-    {
+    private func sortBoards() {
         var sorted = [BoardData]()
         var queue = boards.sorted { $0.title < $1.title }
         
@@ -117,6 +114,8 @@ struct EntranceView: View {
         for board in boards {
             deleteBoard(board)
         }
+        
+        sortedBoards = []
     }
     
     private func deleteBoard(_ board: BoardData) {
