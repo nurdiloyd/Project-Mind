@@ -23,6 +23,11 @@ struct MindApp: App {
                             window.styleMask = [.titled, .resizable, .closable, .miniaturizable, .fullSizeContentView]
                             window.isReleasedWhenClosed = false
                             window.center()
+                            
+                            #if DEBUG
+                            window.title += " (Dev)"
+                            #endif
+                            
                             window.makeKeyAndOrderFront(nil)
                         }
                     }
