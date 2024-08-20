@@ -327,20 +327,26 @@ struct NodeView: View {
         
         var nearestNode: NodeData? = nil
         var nearestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
-        for otherNode in board.nodes where (otherNode.shouldShowSelf && otherNode.id != node.id) {
-            let otherNodeFrame = CGRect(x: otherNode.globalPositionX - width / 2, y: otherNode.globalPositionY - otherNode.height / 2, width: width, height: otherNode.height)
-            
-            if currentNodeFrame.intersects(otherNodeFrame) {
-                let distance = hypot(node.globalPositionX - otherNode.globalPositionX, node.globalPositionY - otherNode.globalPositionY)
-                if distance < nearestDistance {
-                    nearestDistance = distance
-                    nearestNode = otherNode
+        for otherNode in board.nodes {
+            if (otherNode.id != node.id 
+                && (otherNode.parent == nil || otherNode.parent != node.parent)
+                && otherNode != node.parent
+                && otherNode.shouldShowSelf)
+            {
+                let otherNodeFrame = CGRect(x: otherNode.globalPositionX - width / 2, y: otherNode.globalPositionY - otherNode.height / 2, width: width, height: otherNode.height)
+                
+                if currentNodeFrame.intersects(otherNodeFrame) {
+                    let distance = hypot(node.globalPositionX - otherNode.globalPositionX, node.globalPositionY - otherNode.globalPositionY)
+                    if distance < nearestDistance {
+                        nearestDistance = distance
+                        nearestNode = otherNode
+                    }
                 }
             }
         }
 
         if let nearestNode = nearestNode {
-            if currentNearestNode != nearestNode && nearestNode != node.parent {
+            if currentNearestNode != nearestNode {
                 currentNearestNode = nearestNode
                 IntersectionManager.shared.stopAllTimers()
                 
