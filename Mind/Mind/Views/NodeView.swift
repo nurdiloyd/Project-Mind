@@ -322,8 +322,9 @@ struct NodeView: View {
     }
     
     private func checkForOverlap(currentPos: CGPoint) {
-        let width = NodeView.width
-        let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - node.height / 2, width: width, height: node.height)
+        let width = NodeView.width / 4.0
+        let nodeHeight = node.height / 2.0
+        let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - nodeHeight / 2, width: width, height: nodeHeight)
         
         var nearestNode: NodeData? = nil
         var nearestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
@@ -333,7 +334,8 @@ struct NodeView: View {
                 && otherNode != node.parent
                 && otherNode.shouldShowSelf)
             {
-                let otherNodeFrame = CGRect(x: otherNode.globalPositionX - width / 2, y: otherNode.globalPositionY - otherNode.height / 2, width: width, height: otherNode.height)
+                let otherNodeHeight = otherNode.height / 2.0
+                let otherNodeFrame = CGRect(x: otherNode.globalPositionX - width / 2, y: otherNode.globalPositionY - otherNodeHeight / 2, width: width, height: otherNodeHeight)
                 
                 if currentNodeFrame.intersects(otherNodeFrame) {
                     let distance = hypot(node.globalPositionX - otherNode.globalPositionX, node.globalPositionY - otherNode.globalPositionY)
@@ -352,8 +354,10 @@ struct NodeView: View {
                 
                 IntersectionManager.shared.startIntersectionTimer(node1: node, node2: nearestNode) {
                     DispatchQueue.main.async {
-                        let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - node.height / 2, width: width, height: node.height)
-                        let otherNodeFrame = CGRect(x: nearestNode.globalPositionX - width / 2, y: nearestNode.globalPositionY - nearestNode.height / 2, width: width, height: nearestNode.height)
+                        let nodeHeight = node.height / 2.0
+                        let otherNodeHeight = nearestNode.height / 2.0
+                        let currentNodeFrame = CGRect(x: node.globalPositionX - width / 2, y: node.globalPositionY - nodeHeight / 2, width: width, height: nodeHeight)
+                        let otherNodeFrame = CGRect(x: nearestNode.globalPositionX - width / 2, y: nearestNode.globalPositionY - otherNodeHeight / 2, width: width, height: otherNodeHeight)
                         if currentNodeFrame.intersects(otherNodeFrame) {
                             waitForIt = true
                             setParent(parent: nearestNode)
